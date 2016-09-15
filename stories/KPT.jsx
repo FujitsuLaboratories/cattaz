@@ -19,7 +19,7 @@ Cell.propTypes = {
   rowSpan: React.PropTypes.number,
   items: React.PropTypes.arrayOf(React.PropTypes.string),
 };
-Cell.defalutProps = {
+Cell.defaultProps = {
   rowSpan: 1,
   items: [],
 };
