@@ -17,12 +17,14 @@
     "eslint-plugin-react": "6.2.2",
     "eslint-plugin-jsx-a11y": "2.2.2",
     "eslint-config-airbnb": "11.1.0",
-    "copy-webpack-plugin": "3.0.1"
+    "copy-webpack-plugin": "3.0.1",
+    "http-server": "0.9.0"
   },
   "scripts": {
     "lint": "eslint --color .storybook/**/*.js stories/**/*.js stories/**/*.jsx",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
+    "server": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
