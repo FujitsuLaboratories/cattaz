@@ -26,13 +26,15 @@ Cell.defalutProps = {
 
 export default function KPT(props) {
   return (<table>
-    <tr>
-      <Cell title="Keep" items={props.keeps} />
-      <Cell title="Try" items={props.tries} rowSpan={2} />
-    </tr>
-    <tr>
-      <Cell title="Problem" items={props.problems} />
-    </tr>
+    <tbody>
+      <tr>
+        <Cell title="Keep" items={props.keeps} />
+        <Cell title="Try" items={props.tries} rowSpan={2} />
+      </tr>
+      <tr>
+        <Cell title="Problem" items={props.problems} />
+      </tr>
+    </tbody>
   </table>);
 }
 KPT.propTypes = {

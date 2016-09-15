@@ -1,5 +1,5 @@
 import React from 'react';
-import MonacoEditor from 'react-monaco-editor';
+import MonacoEditor from 'react-monaco-editor/lib';
 import Markdown from 'react-markdown';
 
 const defaultValue = `# Markdown editor with preview
