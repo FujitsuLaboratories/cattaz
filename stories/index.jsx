@@ -3,6 +3,8 @@ import { storiesOf, action, linkTo } from '@kadira/storybook';
 import Button from './Button.jsx';
 import Welcome from './Welcome.jsx';
 import NormalWikiEditor from '../src/NormalWikiEditor.jsx';
+import WikiApp from './WikiApp.jsx';
+import KPT from './KPT.jsx';
 
 storiesOf('Welcome', module)
   .add('to Storybook', () => (
@@ -21,3 +23,42 @@ storiesOf('Normal Wiki', module)
   .add('with preview', () => (
     <NormalWikiEditor />
   ));
+
+storiesOf('Wiki KPT app', module)
+  .add('start code block', () => (
+    <WikiApp
+      markdown={`# KPT
+
+Here is KPT application:
+
+\`\`\`kpt
+\`\`\`
+`}
+      preview={<div>
+        <h1>KPT</h1>
+        <p>Here is KPT application:</p>
+        <KPT />
+      </div>}
+    />
+  ))
+  .add('add keep', () => (
+    <WikiApp
+      markdown={`# KPT
+
+Here is KPT application:
+
+\`\`\`kpt
+* KEEP
+  * keep1
+* PROBLEM
+* TRY
+\`\`\`
+`}
+      preview={<div>
+        <h1>KPT</h1>
+        <p>Here is KPT application:</p>
+        <KPT keeps={['keep1']} />
+      </div>}
+    />
+  ))
+;
