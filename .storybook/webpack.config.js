@@ -1,4 +1,4 @@
-const defaultConfigFunc = require('@kadira/storybook/dist/server/config/defaults/webpack.config.js');
+const defaultConfigFunc = require('@kadira/storybook/dist/server/config/defaults/webpack.config');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function configure(base) {
@@ -12,6 +12,6 @@ function configure(base) {
     ])
   );
   return config;
-};
+}
 
 module.exports = configure;
