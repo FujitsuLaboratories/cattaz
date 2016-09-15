@@ -1,4 +1,5 @@
 import React from 'react';
+import MonacoEditor from 'react-monaco-editor/lib';
 import Markdown from 'react-markdown';
 
 const defaultValue = `# Markdown editor with preview
@@ -17,7 +18,7 @@ export default class NormalWikiEditor extends React.Component {
     this.handleEdit = this.handleEdit.bind(this);
   }
   handleEdit() {
-    const text = this.editor.value;
+    const text = this.monaco.editor.getModel().getValue();
     this.setState({ text });
   }
   render() {
@@ -26,7 +27,7 @@ export default class NormalWikiEditor extends React.Component {
       margin: '0.5em',
     };
     return (<div style={{ display: 'flex' }}>
-      <textarea ref={(c) => { this.editor = c; }} onChange={this.handleEdit} style={style} rows="10" defaultValue={defaultValue} />
+      <MonacoEditor ref={(c) => { this.monaco = c; }} onChange={this.handleEdit} language="markdown" value={defaultValue} style={style} />
       <Markdown source={this.state.text} style={style} />
     </div>);
   }
