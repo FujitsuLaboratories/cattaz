@@ -5,7 +5,8 @@
   "main": ".storybook/config.js",
   "dependencies": {
     "react": "15.3.1",
-    "react-dom": "15.3.1"
+    "react-dom": "15.3.1",
+    "react-markdown": "2.4.2"
   },
   "devDependencies": {
     "@kadira/storybook": "2.14.0",
