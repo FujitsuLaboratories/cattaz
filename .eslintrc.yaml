@@ -1,0 +1,12 @@
+---
+  root: true
+  extends:
+    - airbnb
+  rules:
+    max-len: off
+    valid-jsdoc:
+      - warn
+      -
+        requireParamDescription: false
+        requireReturn: false
+        requireReturnDescription: false
