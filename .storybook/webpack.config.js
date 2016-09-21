@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function configure(base) {
   const config = defaultConfigFunc(base);
+  config.devtool = 'eval-source-map';
   config.plugins.push(
     new CopyWebpackPlugin([
       {
