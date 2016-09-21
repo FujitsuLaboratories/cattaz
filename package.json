@@ -10,6 +10,7 @@
     "react-monaco-editor": "0.4.0"
   },
   "devDependencies": {
+    "cross-env": "2.0.1",
     "lodash": "4.16.1",
     "@kadira/storybook": "2.15.1",
     "eslint": "3.5.0",
@@ -22,8 +23,8 @@
   },
   "scripts": {
     "lint": "eslint --color src/**/*.js src/**/*.jsx .storybook/**/*.js stories/**/*.js stories/**/*.jsx",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
+    "build-storybook": "cross-env NODE_ENV=production build-storybook",
     "server": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
