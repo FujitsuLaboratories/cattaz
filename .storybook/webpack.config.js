@@ -8,12 +8,23 @@ function configure(base) {
   const config = defaultConfigFunc(base);
   config.devtool = isProduction ? 'source-map' : 'eval-source-map';
   config.plugins.push(
-    new CopyWebpackPlugin([
-      {
-        from: `node_modules/monaco-editor/${isProduction ? 'min' : 'dev'}/vs`,
-        to: 'vs',
-      },
-    ])
+    new CopyWebpackPlugin(
+      isProduction ? [
+        {
+          from: 'node_modules/monaco-editor/min',
+          to: 'lib',
+        },
+        {
+          from: 'node_modules/monaco-editor/min-maps',
+          to: 'min-maps',
+        },
+      ] : [
+        {
+          from: 'node_modules/monaco-editor/dev',
+          to: 'lib',
+        },
+      ]
+    )
   );
   return config;
 }
