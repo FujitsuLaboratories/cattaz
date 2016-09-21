@@ -1,67 +1,46 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 
-export default class Mandara extends React.Component {
+export default class Mandala extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { mandara: `# Mandara
+    this.state = { mandala: '', blocks: Array(9) };
+    this.mandalaFront = `# Mandala
 
-Here is Mandara application:
+Here is Mandala application:
 
-\`\`\`mandara
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-* text1, text2, text3, text4, text5, text6, text7, text8, text9
-\`\`\`
-` };
-    this.state.blocks = Array(9);
-    this.state.mandaraCode = '';
+\`\`\`mandala
+`;
+    this.mandalaBehind = `\`\`\`
+`;
+    let mandalaCode = '';
     for (let i = 0; i < this.state.blocks.length; i++) {
-      this.state.blocks[i] = (['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
-      this.state.mandaraCode += '* ';
+      this.state.blocks[i] = (['1', '2', '3', '4', '5', '6', '7', '8', '9']);
+      mandalaCode += '* ';
       for (let j = 0; j < (this.state.blocks[i].length - 1); j++) {
-        this.state.mandaraCode += `${this.state.blocks[i][j]}, `;
+        mandalaCode += `${this.state.blocks[i][j]}, `;
       }
-      this.state.mandaraCode += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
+      mandalaCode += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
     }
+    this.state.mandala = this.mandalaFront + mandalaCode + this.mandalaBehind;
   }
   handleChange(event) {
-    // console.log(event.changeEvent.target.id);
-    // console.log(event.changeEvent.target.value);
-
     const blockNum = parseInt(event.changeEvent.target.id.slice(5, 6), 10);
     const cellNum = parseInt(event.changeEvent.target.id.slice(10, 11), 10);
     this.state.blocks[blockNum][cellNum] = event.changeEvent.target.value;
-
-    let mandaraCodeTmp = '';
+    let mandalaCode = '';
     for (let i = 0; i < this.state.blocks.length; i++) {
-      mandaraCodeTmp += '* ';
+      mandalaCode += '* ';
       for (let j = 0; j < (this.state.blocks[i].length - 1); j++) {
-        mandaraCodeTmp += `${this.state.blocks[i][j]}, `;
+        mandalaCode += `${this.state.blocks[i][j]}, `;
       }
-      mandaraCodeTmp += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
+      mandalaCode += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
     }
 
-    this.setState({ mandaraCode: mandaraCodeTmp });
-    this.setState({ mandara: mandaraCodeTmp });
+    this.setState({ mandala: this.mandalaFront + mandalaCode + this.mandalaBehind });
   }
   render() {
-    /*
-    const container = {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      margin: '0',
-      backgroundColor: 'yellow',
-    };*/
     const board = {
       display: 'flex',
       justifyContent: 'center',
@@ -80,8 +59,7 @@ Here is Mandara application:
       <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />
     );
     return (<div style={{ display: 'flex' }}>
-      <MonacoEditor language="markdown" value={this.state.mandara} style={style} />
-      <textarea style={{ fontSize: '8px', width: '90%' }} value={this.state.mandaraCode} />
+      <MonacoEditor language="markdown" value={this.state.mandala} style={style} />
       <div style={style}>
         <div style={board}>
           {dispBlocks}
@@ -91,7 +69,7 @@ Here is Mandara application:
   }
 }
 
-Mandara.propTypes = {
+Mandala.propTypes = {
   handleChange: React.PropTypes.function,
 };
 
@@ -164,4 +142,3 @@ Cell.propTypes = {
   text: React.PropTypes.string,
   handleChange: React.PropTypes.function,
 };
-

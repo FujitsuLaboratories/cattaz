@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import Button from './Button.jsx';
 import Welcome from './Welcome.jsx';
-import Mandara from './Mandara.jsx';
+import Mandala from './Mandala.jsx';
 import NormalWikiEditor from '../src/NormalWikiEditor.jsx';
 import WikiApp from './WikiApp.jsx';
 import KPT from './KPT.jsx';
@@ -18,11 +18,6 @@ storiesOf('Button', module)
   ))
   .add('with some emoji', () => (
     <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
-
-storiesOf('Mandara', module)
-  .add('with text', () => (
-    <Mandara onClick={action('clicked')}>Hello Button</Mandara>
   ));
 
 storiesOf('Normal Wiki', module)
@@ -68,3 +63,8 @@ Here is KPT application:
     />
   ))
 ;
+
+storiesOf('Mandala', module)
+  .add('with text', () => (
+    <Mandala />
+  ));
