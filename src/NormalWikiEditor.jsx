@@ -17,8 +17,7 @@ export default class NormalWikiEditor extends React.Component {
     this.state = { text: defaultValue };
     this.handleEdit = this.handleEdit.bind(this);
   }
-  handleEdit() {
-    const text = this.monaco.editor.getModel().getValue();
+  handleEdit(text) {
     this.setState({ text });
   }
   render() {
@@ -27,7 +26,7 @@ export default class NormalWikiEditor extends React.Component {
       margin: '0.5em',
     };
     return (<div style={{ display: 'flex' }}>
-      <MonacoEditor ref={(c) => { this.monaco = c; }} onChange={this.handleEdit} language="markdown" value={defaultValue} style={style} />
+      <MonacoEditor onChange={this.handleEdit} language="markdown" value={this.state.text} style={style} />
       <Markdown source={this.state.text} style={style} />
     </div>);
   }
