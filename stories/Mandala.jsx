@@ -1,5 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
+import monacoRequireConfig from '../src/monacoRequireConfig';
 
 export default class Mandala extends React.Component {
   constructor(props) {
@@ -53,13 +54,12 @@ Here is Mandala application:
     };
     const style = {
       width: '50%',
-      margin: '0.5em',
     };
     const dispBlocks = this.state.blocks.map((block, key) =>
       <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />
     );
     return (<div style={{ display: 'flex' }}>
-      <MonacoEditor language="markdown" value={this.state.mandala} style={style} />
+      <MonacoEditor language="markdown" value={this.state.mandala} style={style} height={500} requireConfig={monacoRequireConfig} />
       <div style={style}>
         <div style={board}>
           {dispBlocks}
