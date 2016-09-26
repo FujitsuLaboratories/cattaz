@@ -26,6 +26,7 @@ function configure(base) {
       ]
     )
   );
+  config.resolve.extensions.push('.jsx');
   return config;
 }
 
