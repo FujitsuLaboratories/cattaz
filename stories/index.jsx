@@ -1,10 +1,10 @@
 import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
-import Button from './Button.jsx';
-import Welcome from './Welcome.jsx';
-import NormalWikiEditor from '../src/NormalWikiEditor.jsx';
-import WikiApp from './WikiApp.jsx';
-import KPT from './KPT.jsx';
+import Button from './Button';
+import Welcome from './Welcome';
+import NormalWikiEditor from '../src/NormalWikiEditor';
+import WikiApp from './WikiApp';
+import KPT from './KPT';
 
 storiesOf('Welcome', module)
   .add('to Storybook', () => (

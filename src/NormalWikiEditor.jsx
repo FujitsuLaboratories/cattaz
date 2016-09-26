@@ -2,7 +2,7 @@ import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 import Markdown from 'react-markdown';
 
-import monacoRequireConfig from './monacoRequireConfig.js';
+import monacoRequireConfig from './monacoRequireConfig';
 
 const defaultValue = `# Markdown editor with preview
 

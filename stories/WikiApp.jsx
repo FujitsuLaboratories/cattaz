@@ -1,7 +1,7 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 
-import monacoRequireConfig from '../src/monacoRequireConfig.js';
+import monacoRequireConfig from '../src/monacoRequireConfig';
 
 export default function WikiApp(props) {
   return (<div style={{ display: 'flex' }}>
