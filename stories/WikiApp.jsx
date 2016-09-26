@@ -1,14 +1,12 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 
+import monacoRequireConfig from '../src/monacoRequireConfig';
+
 export default function WikiApp(props) {
-  const style = {
-    width: '50%',
-    margin: '0.5em',
-  };
   return (<div style={{ display: 'flex' }}>
-    <MonacoEditor language="markdown" value={props.markdown} style={style} />
-    <div style={style}>
+    <MonacoEditor language="markdown" defaultValue={props.markdown} width="50%" height={500} requireConfig={monacoRequireConfig} />
+    <div>
       {props.preview}
     </div>
   </div>);

@@ -7,23 +7,24 @@
     "react": "15.3.2",
     "react-dom":  "15.3.2",
     "react-markdown": "2.4.2",
-    "react-monaco-editor": "0.4.0"
+    "react-monaco-editor": "0.5.0"
   },
   "devDependencies": {
+    "cross-env": "3.0.0",
     "lodash": "4.16.1",
-    "@kadira/storybook": "2.15.1",
-    "eslint": "3.5.0",
-    "eslint-plugin-import": "1.15.0",
+    "@kadira/storybook": "2.18.1",
+    "eslint": "3.6.0",
+    "eslint-plugin-import": "1.16.0",
     "eslint-plugin-react": "6.3.0",
     "eslint-plugin-jsx-a11y": "2.2.2",
-    "eslint-config-airbnb": "11.1.0",
+    "eslint-config-airbnb": "12.0.0",
     "copy-webpack-plugin": "3.0.1",
     "http-server": "0.9.0"
   },
   "scripts": {
     "lint": "eslint --color src/**/*.js src/**/*.jsx .storybook/**/*.js stories/**/*.js stories/**/*.jsx",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
+    "build-storybook": "cross-env NODE_ENV=production build-storybook",
     "server": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

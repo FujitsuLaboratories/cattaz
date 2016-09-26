@@ -2,6 +2,8 @@ import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 import Markdown from 'react-markdown';
 
+import monacoRequireConfig from './monacoRequireConfig';
+
 const defaultValue = `# Markdown editor with preview
 
 You can write markdown with preview
@@ -21,13 +23,9 @@ export default class NormalWikiEditor extends React.Component {
     this.setState({ text });
   }
   render() {
-    const style = {
-      width: '50%',
-      margin: '0.5em',
-    };
     return (<div style={{ display: 'flex' }}>
-      <MonacoEditor onChange={this.handleEdit} language="markdown" value={this.state.text} style={style} />
-      <Markdown source={this.state.text} style={style} />
+      <MonacoEditor onChange={this.handleEdit} language="markdown" defaultValue={defaultValue} width="50%" height={500} requireConfig={monacoRequireConfig} />
+      <Markdown source={this.state.text} />
     </div>);
   }
 }
