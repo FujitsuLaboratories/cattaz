@@ -15,10 +15,10 @@ Here is Mandala application:
     this.mandalaBehind = `\`\`\`
 `;
     let mandalaCode = '';
-    for (let i = 0; i < this.state.blocks.length; i++) {
+    for (let i = 0; i < this.state.blocks.length; i += 1) {
       this.state.blocks[i] = (['1', '2', '3', '4', '5', '6', '7', '8', '9']);
       mandalaCode += '* ';
-      for (let j = 0; j < (this.state.blocks[i].length - 1); j++) {
+      for (let j = 0; j < (this.state.blocks[i].length - 1); j += 1) {
         mandalaCode += `${this.state.blocks[i][j]}, `;
       }
       mandalaCode += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
@@ -30,9 +30,9 @@ Here is Mandala application:
     const cellNum = parseInt(event.changeEvent.target.id.slice(10, 11), 10);
     this.state.blocks[blockNum][cellNum] = event.changeEvent.target.value;
     let mandalaCode = '';
-    for (let i = 0; i < this.state.blocks.length; i++) {
+    for (let i = 0; i < this.state.blocks.length; i += 1) {
       mandalaCode += '* ';
-      for (let j = 0; j < (this.state.blocks[i].length - 1); j++) {
+      for (let j = 0; j < (this.state.blocks[i].length - 1); j += 1) {
         mandalaCode += `${this.state.blocks[i][j]}, `;
       }
       mandalaCode += `${this.state.blocks[i][this.state.blocks.length - 1]}\n`;
@@ -70,7 +70,7 @@ Here is Mandala application:
 }
 
 Mandala.propTypes = {
-  handleChange: React.PropTypes.function,
+  handleChange: React.PropTypes.func,
 };
 
 class Block extends React.Component {
@@ -99,17 +99,17 @@ class Block extends React.Component {
       <Cell key={`row${key + 6}`} id={`${this.props.id}_row${key + 6}`} text={text} handleChange={this.handleChange} />
     );
     return (<div style={blockStyle}>
-        {row1}<br />
-        {row2}<br />
-        {row3}
+      {row1}<br />
+      {row2}<br />
+      {row3}
     </div>);
   }
 }
 
 Block.propTypes = {
   id: React.PropTypes.string,
-  textList: React.PropTypes.string,
-  handleChange: React.PropTypes.function,
+  textList: React.PropTypes.array,
+  handleChange: React.PropTypes.func,
 };
 
 class Cell extends React.Component {
@@ -130,6 +130,7 @@ class Cell extends React.Component {
       height: 80,
       margin: 3,
       borderRadius: 5,
+      resize: 'none',
     };
     return (
       <textarea id={this.props.id} style={cellStyle} value={this.state.text} onChange={this.handleChange} />
@@ -140,5 +141,5 @@ class Cell extends React.Component {
 Cell.propTypes = {
   id: React.PropTypes.string,
   text: React.PropTypes.string,
-  handleChange: React.PropTypes.function,
+  handleChange: React.PropTypes.func,
 };
