@@ -3,6 +3,7 @@ import { storiesOf, action, linkTo } from '@kadira/storybook';
 import Button from './Button';
 import Welcome from './Welcome';
 import NormalWikiEditor from '../src/NormalWikiEditor';
+import AppEnabledWikiEditor from '../src/AppEnabledWikiEditor';
 import WikiApp from './WikiApp';
 import KPT from './KPT';
 
@@ -61,4 +62,5 @@ Here is KPT application:
       </div>}
     />
   ))
+  .add('real app', () => <AppEnabledWikiEditor />)
 ;
