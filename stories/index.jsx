@@ -4,6 +4,7 @@ import Button from './Button';
 import Welcome from './Welcome';
 import NormalWikiEditor from '../src/NormalWikiEditor';
 import AppEnabledWikiEditor from '../src/AppEnabledWikiEditor';
+import AppEnabledWikiEditorMandala from '../src/AppEnabledWikiEditorMandala';
 import WikiApp from './WikiApp';
 import KPT from './KPT';
 import Mandala from './Mandala';
@@ -69,4 +70,6 @@ Here is KPT application:
 storiesOf('Mandala', module)
   .add('with text', () => (
     <Mandala />
-  ));
+  ))
+  .add('real app', () => <AppEnabledWikiEditorMandala />)
+;
