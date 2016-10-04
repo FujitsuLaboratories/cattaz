@@ -26,7 +26,9 @@
     "eslint-plugin-import": "2.0.0",
     "eslint-plugin-react": "6.3.0",
     "eslint-plugin-jsx-a11y": "2.2.2",
+    "eslint-plugin-ava": "3.1.0",
     "eslint-config-airbnb": "12.0.0",
+    "ava": "0.16.0",
     "webpack": "1.13.2",
     "babel-loader": "6.2.5",
     "eslint-loader": "1.5.0",
@@ -44,7 +46,14 @@
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress --colors",
     "server": "http-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "run-p -l test:*",
+    "test:ava": "cross-env NODE_ENV=test ava test/**/*.ava.js"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   },
   "author": "",
   "license": "UNLICENSED"
