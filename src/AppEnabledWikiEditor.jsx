@@ -23,13 +23,13 @@ export default class AppEnabledWikiEditor extends React.Component {
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ text, hast });
   }
-  handleAppEdit(t, position) {
+  handleAppEdit(newText, appContext) {
     const originalText = this.state.text;
-    const textBefore = originalText.substring(0, position.start.offset);
-    const textAfter = originalText.substring(position.end.offset);
-    const endMarkIndentation = position.end.column - 4;
-    const text = `${textBefore}\`\`\`kpt
-${t}
+    const textBefore = originalText.substring(0, appContext.position.start.offset);
+    const textAfter = originalText.substring(appContext.position.end.offset);
+    const endMarkIndentation = appContext.position.end.column - (1 + 3);
+    const text = `${textBefore}\`\`\`${appContext.language}
+${newText}
 ${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);

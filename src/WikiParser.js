@@ -72,9 +72,12 @@ export default class WikiParser {
           return React.createElement(appComponent, {
             data: children[0],
             onEdit: ctx.onEdit,
-            // It is not actually react props
-            // eslint-disable-next-line react/prop-types
-            position: JSON.parse(props.position),
+            appContext: {
+              language: appName,
+              // It is not actually react props
+              // eslint-disable-next-line react/prop-types
+              position: JSON.parse(props.position),
+            },
           });
         }
         throw new Error('unknown app');

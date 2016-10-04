@@ -57,19 +57,19 @@ export default class KPTApplication extends React.Component {
     const value = this.inputKeep.value;
     if (!value) return;
     this.state.kpt.addKeep(value);
-    this.props.onEdit(this.state.kpt.serialize(), this.props.position);
+    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddProblem() {
     const value = this.inputProblem.value;
     if (!value) return;
     this.state.kpt.addProblem(value);
-    this.props.onEdit(this.state.kpt.serialize(), this.props.position);
+    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddTry() {
     const value = this.inputTry.value;
     if (!value) return;
     this.state.kpt.addTry(value);
-    this.props.onEdit(this.state.kpt.serialize(), this.props.position);
+    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
     return (<td rowSpan={rowSpan} style={cellStyle}>
@@ -101,5 +101,5 @@ export default class KPTApplication extends React.Component {
 KPTApplication.propTypes = {
   data: React.PropTypes.string,
   onEdit: React.PropTypes.func,
-  position: React.PropTypes.shape({}),
+  appContext: React.PropTypes.shape({}),
 };
