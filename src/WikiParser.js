@@ -35,6 +35,12 @@ export default class WikiParser {
         return {
           type: 'element',
           tagName: `app:${language}`,
+          properties: {
+            // Original Hast posirion will be lost in hyperscript.
+            // It must be a string?
+            position: JSON.stringify(hast.position),
+          },
+          // Hast position
           position: hast.position,
           children: [{
             type: 'text',
@@ -63,10 +69,12 @@ export default class WikiParser {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
         if (appComponent) {
-          // TODO position
           return React.createElement(appComponent, {
             data: children[0],
             onEdit: ctx.onEdit,
+            // It is not actually react props
+            // eslint-disable-next-line react/prop-types
+            position: JSON.parse(props.position),
           });
         }
         throw new Error('unknown app');
