@@ -4,6 +4,8 @@ import path from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
+import WebpackUtil from './webpack.util';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
@@ -27,24 +29,6 @@ const js = {
         {
           from: 'src/index.html',
           to: '',
-        },
-      ]
-    ),
-    // TODO refactor
-    new CopyWebpackPlugin(
-      isProduction ? [
-        {
-          from: 'node_modules/monaco-editor/min',
-          to: 'lib',
-        },
-        {
-          from: 'node_modules/monaco-editor/min-maps',
-          to: 'min-maps',
-        },
-      ] : [
-        {
-          from: 'node_modules/monaco-editor/dev',
-          to: 'lib',
         },
       ]
     ),
@@ -95,5 +79,7 @@ const js = {
     ],
   },
 };
+
+WebpackUtil.enableVSCode(js);
 
 export default js;
