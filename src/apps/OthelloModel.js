@@ -1,0 +1,86 @@
+import clone from 'lodash/clone';
+import flatMap from 'lodash/flatMap';
+import fill from 'lodash/fill';
+import range from 'lodash/range';
+
+const Size = 8;
+
+export const StoneNone = 0;
+export const StoneBlack = 1;
+export const StoneWhite = 2;
+
+const initialStones = [
+  { stone: StoneBlack, x: 3, y: 3 },
+  { stone: StoneWhite, x: 4, y: 3 },
+  { stone: StoneWhite, x: 3, y: 4 },
+  { stone: StoneBlack, x: 4, y: 4 },
+];
+
+function isValidPos(x, y) {
+  return x >= 0 && y >= 0 && x < Size && y < Size;
+}
+function findFlippablesInDirection(cells, x, y, color, directionX, directionY) {
+  for (let curX = x + directionX, curY = y + directionY; isValidPos(curX, curY); curX += directionX, curY += directionY) {
+    const cur = cells[curX][curY];
+    if (cur === StoneNone) return [];
+    if (cur === color) {
+      const result = [];
+      for (let fillX = curX - directionX, fillY = curY - directionY; fillX !== x || fillY !== y; fillX -= directionX, fillY -= directionY) {
+        result.push([fillX, fillY]);
+      }
+      return result;
+    }
+    // If other colors, continue
+  }
+  return [];
+}
+function findFlippables(cells, x, y, color) {
+  const directions = [-1, 0, 1];
+  return flatMap(directions, directionX =>
+    flatMap(directions, (directionY) => {
+      if (directionX === 0 && directionY === 0) return [];
+      return findFlippablesInDirection(cells, x, y, color, directionX, directionY);
+    }),
+  );
+}
+
+export default class OthelloModel {
+  constructor() {
+    this.steps = clone(initialStones);
+  }
+  addStep(stone, x, y) {
+    const flippables = findFlippables(this.getCells(), x, y, stone);
+    if (flippables.length === 0) {
+      throw new Error(`You cannot place stone ${stone} at ${x},${y}`);
+    }
+    this.steps.push({ stone, x, y });
+  }
+  getCells() {
+    const cells = range(Size).map(() => {
+      const arr = new Array(Size);
+      fill(arr, StoneNone);
+      return arr;
+    });
+    this.steps.forEach((step) => {
+      cells[step.x][step.y] = step.stone;
+      const flippables = findFlippables(cells, step.x, step.y, step.stone);
+      flippables.forEach((pos) => {
+        cells[pos[0]][pos[1]] = step.stone;
+      });
+    });
+    return cells;
+  }
+  serialize() {
+    return JSON.stringify(this.steps, null, 2);
+  }
+  static deserialize(str) {
+    try {
+      const steps = JSON.parse(str);
+      const model = new OthelloModel();
+      model.steps = steps;
+      return model;
+    } catch (ex) {
+      return new OthelloModel();
+    }
+  }
+}
