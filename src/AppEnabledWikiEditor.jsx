@@ -1,7 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 
-import Apps from './apps';
 import WikiParser from './WikiParser';
 import monacoRequireConfig from './monacoRequireConfig';
 
@@ -24,11 +23,14 @@ export default class AppEnabledWikiEditor extends React.Component {
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ text, hast });
   }
-  handleAppEdit(text) {
-    this.setState({ text: `\`\`\`kpt
-${text}
+  handleAppEdit(t, position) {
+    const text = `\`\`\`kpt
+${t}
 \`\`\`
-` });
+`;
+    const hastOriginal = WikiParser.parseToHast(text);
+    const hast = WikiParser.convertToCustomHast(hastOriginal);
+    this.setState({ text, hast });
   }
   render() {
     return (<div>
@@ -39,10 +41,7 @@ ${text}
       </div>
       <div style={{ display: 'flex' }}>
         <MonacoEditor onChange={this.handleEdit} language="markdown" value={this.state.text} width="33%" height={500} requireConfig={monacoRequireConfig} />
-        {WikiParser.renderCustomHast(this.state.hast)}
-      </div>
-      <div>
-        {React.createElement(Apps.kpt, { data: this.getAppText(), onEdit: this.handleAppEdit })}
+        {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
       </div>
     </div>);
   }

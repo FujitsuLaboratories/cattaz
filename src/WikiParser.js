@@ -52,37 +52,34 @@ export default class WikiParser {
     return hast;
   }
   /**
-   * @private
-   * @param {string} name
-   * @param {object} props
-   * @param {array.<object>} children
-   * @returns {React.Node}
-   */
-  static createElementWrapper(name, props, children) {
-    if (name.indexOf('app:') === 0) {
-      const appName = name.substring(4);
-      const appComponent = Apps[appName];
-      if (appComponent) {
-        // TODO handler
-        // TODO position
-        return React.createElement(appComponent, { data: children[0] });
-      }
-      throw new Error('unknown app');
-    }
-    return React.createElement(name, props, children);
-  }
-  /**
    * Render custom Hast
    * @param {object} customHast
+   * @param {object} ctx
    * @returns {React.Node}
    */
-  static renderCustomHast(customHast) {
+  static renderCustomHast(customHast, ctx = {}) {
+    function h(name, props, children) {
+      if (name.indexOf('app:') === 0) {
+        const appName = name.substring(4);
+        const appComponent = Apps[appName];
+        if (appComponent) {
+          // TODO position
+          return React.createElement(appComponent, {
+            data: children[0],
+            onEdit: ctx.onEdit,
+          });
+        }
+        throw new Error('unknown app');
+      }
+      return React.createElement(name, props, children);
+    }
+
     let rootNode = customHast;
     if (rootNode.type === 'root') {
       rootNode = clone(rootNode);
       rootNode.type = 'element';
       rootNode.tagName = 'div';
     }
-    return toH(WikiParser.createElementWrapper, rootNode);
+    return toH(h, rootNode);
   }
 }
