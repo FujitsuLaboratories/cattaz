@@ -1,58 +1,45 @@
 import React from 'react';
-import remark from 'remark';
-import remarkReact from 'remark-react';
 import MonacoEditor from 'react-monaco-editor/lib';
-import defaultSanitizationConfig from 'hast-util-sanitize/lib/github.json';
-import cloneDeep from 'lodash/cloneDeep';
+import repeat from 'lodash/repeat';
 
-import Apps from './apps';
-import MyPre from './MyPre';
+import WikiParser from './WikiParser';
 import monacoRequireConfig from './monacoRequireConfig';
 
-const sanitizationConfig = cloneDeep(defaultSanitizationConfig);
-sanitizationConfig.attributes.code = ['className'];
+const defaultValue = `# KPT
 
-const defaultValue = `\`\`\`kpt
+\`\`\`kpt
 \`\`\`
 `;
-
-const remarkReactComponents = {
-  pre: MyPre,
-};
 
 export default class AppEnabledWikiEditor extends React.Component {
   constructor() {
     super();
-    this.state = { text: defaultValue };
+    this.state = { text: defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(defaultValue)) };
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
   }
-  getAppText() {
-    return this.state.text.replace('```kpt', '').replace('```', '');
-  }
   handleEdit(text) {
-    this.setState({ text });
+    const hastOriginal = WikiParser.parseToHast(text);
+    const hast = WikiParser.convertToCustomHast(hastOriginal);
+    this.setState({ text, hast });
   }
-  handleAppEdit(text) {
-    this.setState({ text: `\`\`\`kpt
-${text}
-\`\`\`
-` });
+  handleAppEdit(newText, appContext) {
+    const originalText = this.state.text;
+    const textBefore = originalText.substring(0, appContext.position.start.offset);
+    const textAfter = originalText.substring(appContext.position.end.offset);
+    const endMarkIndentation = appContext.position.end.column - (1 + 3);
+    const text = `${textBefore}\`\`\`${appContext.language}
+${newText}
+${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
+    const hastOriginal = WikiParser.parseToHast(text);
+    const hast = WikiParser.convertToCustomHast(hastOriginal);
+    this.setState({ text, hast });
   }
   render() {
-    const preview = remark().use(remarkReact, { sanitize: sanitizationConfig, remarkReactComponents }).process(this.state.text).contents;
     return (<div>
-      <div>
-        In the real use case, wiki text should be written in Markdown syntax and application data is stored in fenced code block.
-        To make things easier, this component does not parse markdown.
-        You should write only one fenced code block in the editor.
-      </div>
       <div style={{ display: 'flex' }}>
-        <MonacoEditor onChange={this.handleEdit} language="markdown" value={this.state.text} width="33%" height={500} requireConfig={monacoRequireConfig} />
-        {preview}
-      </div>
-      <div>
-        {React.createElement(Apps.kpt, { data: this.getAppText(), onEdit: this.handleAppEdit })}
+        <MonacoEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} language="markdown" value={this.state.text} width="33%" height={500} requireConfig={monacoRequireConfig} />
+        {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
       </div>
     </div>);
   }
