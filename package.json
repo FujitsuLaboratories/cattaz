@@ -47,7 +47,8 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress --colors",
     "server": "http-server",
     "test": "run-p -l test:*",
-    "test:ava": "cross-env NODE_ENV=test ava test/**/*.ava.js"
+    "test:ava": "cross-env NODE_ENV=test ava test/**/*.ava.js",
+    "watch:ava": "npm run test:ava -- --watch"
   },
   "ava": {
     "require": [
