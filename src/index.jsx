@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import NormalWikiEditor from './NormalWikiEditor';
+import AppEnabledWikiEditor from './AppEnabledWikiEditor';
 
 // Needed for onTouchTap
 // Check this repo:
@@ -11,5 +11,5 @@ import NormalWikiEditor from './NormalWikiEditor';
 injectTapEventPlugin();
 
 ReactDOM.render((
-  <NormalWikiEditor />
+  <AppEnabledWikiEditor />
 ), document.getElementById('app'));

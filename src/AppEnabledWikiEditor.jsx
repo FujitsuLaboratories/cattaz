@@ -12,9 +12,9 @@ const defaultValue = `# KPT
 `;
 
 export default class AppEnabledWikiEditor extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
-    this.state = { text: defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(defaultValue)) };
+    this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)) };
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
   }
@@ -44,3 +44,9 @@ ${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
     </div>);
   }
 }
+AppEnabledWikiEditor.propTypes = {
+  defaultValue: React.PropTypes.string,
+};
+AppEnabledWikiEditor.defaultProps = {
+  defaultValue,
+};
