@@ -5,8 +5,8 @@ import MonacoEditor from 'react-monaco-editor/lib';
 import defaultSanitizationConfig from 'hast-util-sanitize/lib/github.json';
 import cloneDeep from 'lodash/cloneDeep';
 
+import Apps from './apps';
 import MyPre from './MyPre';
-import KPTApplication from './KPTApplication';
 import monacoRequireConfig from './monacoRequireConfig';
 
 const sanitizationConfig = cloneDeep(defaultSanitizationConfig);
@@ -41,8 +41,6 @@ ${text}
   }
   render() {
     const preview = remark().use(remarkReact, { sanitize: sanitizationConfig, remarkReactComponents }).process(this.state.text).contents;
-    // TODO pick a class based on fenced code block's language
-    const appClass = KPTApplication;
     return (<div>
       <div>
         In the real use case, wiki text should be written in Markdown syntax and application data is stored in fenced code block.
@@ -54,7 +52,7 @@ ${text}
         {preview}
       </div>
       <div>
-        {React.createElement(appClass, { data: this.getAppText(), onEdit: this.handleAppEdit })}
+        {React.createElement(Apps.kpt, { data: this.getAppText(), onEdit: this.handleAppEdit })}
       </div>
     </div>);
   }
