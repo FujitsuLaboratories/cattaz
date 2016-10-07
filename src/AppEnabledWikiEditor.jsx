@@ -1,6 +1,5 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
-import repeat from 'lodash/repeat';
 
 import WikiParser from './WikiParser';
 import monacoRequireConfig from './monacoRequireConfig';
@@ -24,13 +23,7 @@ export default class AppEnabledWikiEditor extends React.Component {
     this.setState({ text, hast });
   }
   handleAppEdit(newText, appContext) {
-    const originalText = this.state.text;
-    const textBefore = originalText.substring(0, appContext.position.start.offset);
-    const textAfter = originalText.substring(appContext.position.end.offset);
-    const endMarkIndentation = appContext.position.end.column - (1 + 3);
-    const text = `${textBefore}\`\`\`${appContext.language}
-${newText}
-${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
+    const text = WikiParser.replaceAppCode(this.state.text, appContext.position, appContext.language, newText);
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ text, hast });

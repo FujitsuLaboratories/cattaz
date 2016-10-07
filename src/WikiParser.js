@@ -5,6 +5,7 @@ import toH from 'hast-to-hyperscript';
 
 import clone from 'lodash/clone';
 import isEqual from 'lodash/isEqual';
+import repeat from 'lodash/repeat';
 
 import Apps from './apps';
 
@@ -92,5 +93,21 @@ export default class WikiParser {
       rootNode.tagName = 'div';
     }
     return toH(h, rootNode);
+  }
+  /**
+   * @param {!string} originalText
+   * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
+   * @param {!string} appLanguage
+   * @param {!string} newAppText
+   * @returns {string}
+   */
+  static replaceAppCode(originalText, originalAppLocation, appLanguage, newAppText) {
+    const textBefore = originalText.substring(0, originalAppLocation.start.offset);
+    const textAfter = originalText.substring(originalAppLocation.end.offset);
+    const endMarkIndentation = originalAppLocation.end.column - (1 + 3);
+    const text = `${textBefore}\`\`\`${appLanguage}
+${newAppText}
+${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
+    return text;
   }
 }
