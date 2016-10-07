@@ -1,26 +1,28 @@
 import React from 'react';
 
 class MandalaModel {
-  constructor() {
-    this.block = [];
+  constructor(name) {
+    // this.block = [];
+    this[name] = new Array(9);
   }
   addCell(str) {
     this.block.push(str);
   }
   changeCell(target) {
-    this.block[0] = target.value;
+    console.log(target.id);
+    this.block[target.id] = target.value;
   }
   serialize() {
     return JSON.stringify(this, null, 2);
   }
-  static deserialize(str) {
+  static deserialize(str, name) {
     try {
-      const obj = JSON.parse(str);
-      const model = new MandalaModel();
+      const obj = JSON.parse(str, name);
+      const model = new MandalaModel(name);
       model.block = obj.block;
       return model;
     } catch (ex) {
-      return new MandalaModel();
+      return new MandalaModel(name);
     }
   }
 }
@@ -41,14 +43,15 @@ const cellStyle2 = {
 
 export default class MandalaApplication extends React.Component {
   constructor(props) {
+    const name = 'block';
     super();
     this.handleAddCell = this.handleAddCell.bind(this);
     this.handleCellChange = this.handleCellChange.bind(this);
-    this.state = { mandala: MandalaModel.deserialize(props.data) };
+    this.state = { mandala: MandalaModel.deserialize(props.data, name) };
   }
   componentWillReceiveProps(newProps) {
-    const mandala = MandalaModel.deserialize(newProps.data);
-    this.setState({ mandala });
+    //const mandala = MandalaModel.deserialize(newProps.data);
+    //this.setState({ mandala });
   }
   handleAddCell() {
     const value = this.inputCell.value;
@@ -63,6 +66,16 @@ export default class MandalaApplication extends React.Component {
     this.props.onEdit(this.state.mandala.serialize());
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
+    /*
+    console.log(items);
+    console.log("b");
+
+    Object.keys(items).map(function(value, index) {
+      console.log("ta" + items[value]);
+      items[value].map(s => (console.log(s)));
+    });
+    */
+
     return (<td rowSpan={rowSpan} style={cellStyle3}>
       <h3>{title}</h3>
       <ul>
