@@ -71,13 +71,7 @@ export default class MandalaApplication extends React.Component {
   }
   render() {
     return (<div>
-      <table>
-        <tbody>
-          <tr>
-            {this.renderCell(this.state.mandala.block, this.handleCellChange)}
-          </tr>
-        </tbody>
-      </table>
+      {this.renderCell(this.state.mandala.block, this.handleCellChange)}
     </div>);
   }
 }
