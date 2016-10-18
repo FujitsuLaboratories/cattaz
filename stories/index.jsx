@@ -4,8 +4,10 @@ import Button from './Button';
 import Welcome from './Welcome';
 import NormalWikiEditor from '../src/NormalWikiEditor';
 import AppEnabledWikiEditor from '../src/AppEnabledWikiEditor';
+import AppEnabledWikiEditorMandala from '../src/AppEnabledWikiEditorMandala';
 import WikiApp from './WikiApp';
 import KPT from './KPT';
+import Mandala from './Mandala';
 
 storiesOf('Welcome', module)
   .add('to Storybook', () => (
@@ -63,4 +65,11 @@ Here is KPT application:
     />
   ))
   .add('real app', () => <AppEnabledWikiEditor />)
+;
+
+storiesOf('Mandala', module)
+  .add('with text', () => (
+    <Mandala />
+  ))
+  .add('real app', () => <AppEnabledWikiEditorMandala />)
 ;
