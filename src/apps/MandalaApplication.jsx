@@ -8,8 +8,8 @@ class MandalaModel {
   constructor() {
     this.block = fill(new Array(LENGTH * LENGTH), '');
   }
-  changeCell(target) {
-    this.block[target.id] = target.value;
+  changeCell(index, value) {
+    this.block[index] = value;
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -41,7 +41,9 @@ export default class MandalaApplication extends React.Component {
     return true;
   }
   handleCellChange(event) {
-    this.state.mandala.changeCell(event.target);
+    const index = parseInt(event.target.getAttribute('data-index'), 10);
+    const value = event.target.value;
+    this.state.mandala.changeCell(index, value);
     this.props.onEdit(this.state.mandala.serialize(), this.props.appContext);
   }
   render() {
@@ -59,7 +61,7 @@ export default class MandalaApplication extends React.Component {
     };
     const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
       rowData.map((text, colIndex) =>
-        <textarea id={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />
+        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />
       )
     );
     return (<div style={blockStyle}>
