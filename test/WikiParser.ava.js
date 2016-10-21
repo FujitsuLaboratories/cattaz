@@ -21,11 +21,13 @@ code3
 \`\`\`
 `;
 
+/** @test {WikiParser.parseToHast} */
 test('parseToHast', t => {
   const hast = WikiParser.parseToHast(markdown);
   t.is(hast.children.length, 1 + 3 + 3);
 });
 
+/** @test {WikiParser.convertToCustomHast} */
 test('convertToCustomHast should not modify original hast', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastCloned = cloneDeep(hastOriginal);
@@ -33,6 +35,7 @@ test('convertToCustomHast should not modify original hast', t => {
   t.deepEqual(hastOriginal, hastCloned);
 });
 
+/** @test {WikiParser.convertToCustomHast} */
 test('convertToCustomHast should convert kpt', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
@@ -45,6 +48,7 @@ test('convertToCustomHast should convert kpt', t => {
   t.is(appNode.children[0].value, 'code1\n');
 });
 
+/** @test {WikiParser.convertToCustomHast} */
 test('convertToCustomHast should not convert unknown', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
@@ -52,6 +56,7 @@ test('convertToCustomHast should not convert unknown', t => {
   t.is(codeBlockNode.tagName, 'pre');
 });
 
+/** @test {WikiParser.renderCustomHast} */
 test('renderCustomHast should handle root node', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
@@ -61,6 +66,7 @@ test('renderCustomHast should handle root node', t => {
   t.is(reactNode.type, 'div');
 });
 
+/** @test {WikiParser.renderCustomHast} */
 test('renderCustomHast should handle app:kpt node', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
