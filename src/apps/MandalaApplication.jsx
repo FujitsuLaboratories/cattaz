@@ -1,8 +1,12 @@
 import React from 'react';
+import chunk from 'lodash/chunk';
+import fill from 'lodash/fill';
+
+const LENGTH = 3;
 
 class MandalaModel {
   constructor() {
-    this.block = ['', '', '', '', '', '', '', '', ''];
+    this.block = fill(new Array(LENGTH * LENGTH), '');
   }
   changeCell(target) {
     this.block[target.id] = target.value;
@@ -40,39 +44,28 @@ export default class MandalaApplication extends React.Component {
     this.state.mandala.changeCell(event.target);
     this.props.onEdit(this.state.mandala.serialize(), this.props.appContext);
   }
-  renderCell(items, handleCellChange) {
-    this.blockStyle = {
+  render() {
+    const blockStyle = {
       margin: 2,
       backgroundColor: '#777777',
       borderRadius: 5,
     };
-    this.cellStyle = {
+    const cellStyle = {
       width: 80,
       height: 80,
       margin: 3,
       borderRadius: 5,
       resize: 'none',
     };
-    this.row1 = items.slice(0, 3).map((text, key) =>
-      <textarea id={`${key}`} style={this.cellStyle} value={text} onChange={handleCellChange} />
+    const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
+      rowData.map((text, colIndex) =>
+        <textarea id={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />
+      )
     );
-    this.row2 = items.slice(3, 6).map((text, key) =>
-      <textarea id={`${key + 3}`} style={this.cellStyle} value={text} onChange={handleCellChange} />
-    );
-    this.row3 = items.slice(6, 9).map((text, key) =>
-      <textarea id={`${key + 6}`} style={this.cellStyle} value={text} onChange={handleCellChange} />
-    );
-    return (<div style={this.blockStyle}>
-      {this.row1}<br />
-      {this.row2}<br />
-      {this.row3}
+    return (<div style={blockStyle}>
+      {rows.map(row => [row, <br />])}
     </div>
     );
-  }
-  render() {
-    return (<div>
-      {this.renderCell(this.state.mandala.block, this.handleCellChange)}
-    </div>);
   }
 }
 
