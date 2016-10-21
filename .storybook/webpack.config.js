@@ -1,5 +1,4 @@
 const defaultConfigFunc = require('@kadira/storybook/dist/server/config/defaults/webpack.config');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const WebpackUtil = require('../webpack.util');
 

@@ -31,7 +31,7 @@ export default class AppEnabledWikiEditor extends React.Component {
   render() {
     return (<div>
       <div style={{ display: 'flex' }}>
-        <MonacoEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} language="markdown" value={this.state.text} width="33%" height={500} requireConfig={monacoRequireConfig} />
+        <MonacoEditor onChange={this.handleEdit} language="markdown" value={this.state.text} width="33%" height={500} requireConfig={monacoRequireConfig} />
         {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
       </div>
     </div>);
