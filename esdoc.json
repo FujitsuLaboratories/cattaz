@@ -1,0 +1,11 @@
+{
+  "source": "./src",
+  "includes": ["\\.(js|jsx)$"],
+  "destination": "./esdoc",
+  "test": {
+    "__comment": "AVA is not mocha, but it works",
+    "type": "mocha",
+    "source": "./test",
+    "includes": ["\\.ava\\.js$"]
+  }
+ }

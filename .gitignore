@@ -4,3 +4,4 @@ npm-debug.log
 /storybook-static
 /.nyc_output
 /coverage
+/esdoc

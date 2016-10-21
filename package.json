@@ -31,6 +31,7 @@
     "ava": "0.16.0",
     "nyc": "8.3.2",
     "babel-plugin-istanbul": "2.0.3",
+    "esdoc": "0.4.8",
     "webpack": "1.13.2",
     "babel-loader": "6.2.5",
     "eslint-loader": "1.6.0",
@@ -40,10 +41,11 @@
     "http-server": "0.9.0"
   },
   "scripts": {
-    "clean": "rimraf build storybook-static .nyc_output",
+    "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
     "lint": "eslint --color src/**/*.js src/**/*.jsx .storybook/**/*.js stories/**/*.js stories/**/*.jsx webpack.*.js",
     "build": "run-p -l build:*",
     "build:app": "cross-env NODE_ENV=production webpack --progress --colors",
+    "build:esdoc": "esdoc -c esdoc.json",
     "build:storybook": "cross-env NODE_ENV=production build-storybook",
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress --colors",
