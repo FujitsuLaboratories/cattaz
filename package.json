@@ -29,6 +29,8 @@
     "eslint-plugin-ava": "3.1.1",
     "eslint-config-airbnb": "12.0.0",
     "ava": "0.16.0",
+    "nyc": "8.3.2",
+    "babel-plugin-istanbul": "2.0.3",
     "webpack": "1.13.2",
     "babel-loader": "6.2.5",
     "eslint-loader": "1.6.0",
@@ -38,7 +40,7 @@
     "http-server": "0.9.0"
   },
   "scripts": {
-    "clean": "rimraf build storybook-static",
+    "clean": "rimraf build storybook-static .nyc_output",
     "lint": "eslint --color src/**/*.js src/**/*.jsx .storybook/**/*.js stories/**/*.js stories/**/*.jsx webpack.*.js",
     "build": "run-p -l build:*",
     "build:app": "cross-env NODE_ENV=production webpack --progress --colors",
@@ -48,6 +50,7 @@
     "server": "http-server",
     "test": "run-p -l test:*",
     "test:ava": "cross-env NODE_ENV=test ava test/**/*.ava.js",
+    "cover": "cross-env NODE_ENV=test nyc --extension .jsx --reporter lcov --reporter text npm test",
     "watch:ava": "npm run test:ava -- --watch"
   },
   "ava": {
