@@ -4,9 +4,12 @@ import MonacoEditor from 'react-monaco-editor/lib';
 import WikiParser from './WikiParser';
 import monacoRequireConfig from './monacoRequireConfig';
 
-const defaultValue = `# KPT
+const defaultValue = `# Apps
 
 \`\`\`kpt
+\`\`\`
+
+\`\`\`mandala
 \`\`\`
 `;
 
