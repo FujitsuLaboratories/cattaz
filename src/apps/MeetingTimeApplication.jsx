@@ -78,13 +78,11 @@ export default class DATEApplication extends React.Component {
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
     const setTime = MeetingTimeModel.deserialize(props.data);
-    this.lengthTime = calculationDuration(setTime.startTime, setTime.endTime);
-    this.state = { time: setTime };
+    this.state = { time: setTime, lengthTime: calculationDuration(setTime.startTime, setTime.endTime) };
   }
   componentWillReceiveProps(newProps) {
-    const time = MeetingTimeModel.deserialize(newProps.data);
-    this.lengthTime = calculationDuration(time.startTime, time.endTime);
-    this.setState({ time });
+    const setTime = MeetingTimeModel.deserialize(newProps.data);
+    this.setState({ time: setTime, lengthTime: calculationDuration(setTime.startTime, setTime.endTime) });
   }
   shouldComponentUpdate(/* newProps, nextState */) {
     // TODO
@@ -108,7 +106,7 @@ export default class DATEApplication extends React.Component {
       終了日時：&nbsp;{this.state.time.endTime.year}年{this.state.time.endTime.month}月{this.state.time.endTime.day}日（{this.state.time.endTime.week}）&nbsp;{this.state.time.endTime.hour}時{this.state.time.endTime.minute}分&nbsp;
       <input type="button" value="終了日時更新" onClick={this.handleUpdateEndTime} />
       <br />
-      会議時間：&nbsp;{this.lengthTime}
+      会議時間：&nbsp;{this.state.lengthTime}
     </div>);
   }
 }
