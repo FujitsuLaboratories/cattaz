@@ -75,4 +75,5 @@ storiesOf('Mandala', module)
 
 storiesOf('DATE', module)
   .add('real app', () => <AppEnabledWikiEditor defaultValue={'```date\n```'} />)
+  .add('real app2', () => <AppEnabledWikiEditor defaultValue={'```meetingtime\n```'} />)
 ;
