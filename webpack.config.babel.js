@@ -20,7 +20,7 @@ const js = {
     contentBase: 'build',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['', '.js', '.jsx', '.json'],
   },
   devtool: 'source-map',
   plugins: [
