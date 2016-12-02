@@ -61,8 +61,8 @@ export default class MandalaApplication extends React.Component {
     };
     const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
       rowData.map((text, colIndex) =>
-        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />
-      )
+        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />,
+      ),
     );
     return (<div style={blockStyle}>
       {rows.map(row => [row, <br />])}

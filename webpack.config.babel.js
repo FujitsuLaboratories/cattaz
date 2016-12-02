@@ -30,7 +30,7 @@ const js = {
           from: 'src/index.html',
           to: '',
         },
-      ]
+      ],
     ),
     ...(isProduction ? [
       new webpack.DefinePlugin({

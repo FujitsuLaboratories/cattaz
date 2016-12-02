@@ -56,7 +56,7 @@ Here is Mandala application:
       width: '50%',
     };
     const dispBlocks = this.state.blocks.map((block, key) =>
-      <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />
+      <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />,
     );
     return (<div style={{ display: 'flex' }}>
       <MonacoEditor language="markdown" value={this.state.mandala} style={style} height={500} requireConfig={monacoRequireConfig} />
@@ -90,13 +90,13 @@ class Block extends React.Component {
       borderRadius: 5,
     };
     const row1 = this.props.textList.slice(0, 3).map((text, key) =>
-      <Cell key={`row${key}`} id={`${this.props.id}_row${key}`} text={text} handleChange={this.handleChange} />
+      <Cell key={`row${key}`} id={`${this.props.id}_row${key}`} text={text} handleChange={this.handleChange} />,
     );
     const row2 = this.props.textList.slice(3, 6).map((text, key) =>
-      <Cell key={`row${key + 3}`} id={`${this.props.id}_row${key + 3}`} text={text} handleChange={this.handleChange} />
+      <Cell key={`row${key + 3}`} id={`${this.props.id}_row${key + 3}`} text={text} handleChange={this.handleChange} />,
     );
     const row3 = this.props.textList.slice(6, 9).map((text, key) =>
-      <Cell key={`row${key + 6}`} id={`${this.props.id}_row${key + 6}`} text={text} handleChange={this.handleChange} />
+      <Cell key={`row${key + 6}`} id={`${this.props.id}_row${key + 6}`} text={text} handleChange={this.handleChange} />,
     );
     return (<div style={blockStyle}>
       {row1}<br />
@@ -108,7 +108,7 @@ class Block extends React.Component {
 
 Block.propTypes = {
   id: React.PropTypes.string,
-  textList: React.PropTypes.array,
+  textList: React.PropTypes.arrayOf(React.PropTypes.string),
   handleChange: React.PropTypes.func,
 };
 
