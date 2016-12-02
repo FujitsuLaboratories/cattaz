@@ -1,7 +1,8 @@
 /* eslint import/no-extraneous-dependencies: [error, {devDependencies: true}] */
+/* eslint comma-dangle: off */
 
 // This file is also required by './storybook/webpack.config.js'.
-// Do not use ES6 import/export syntax.
+// Do not use ES6 import/export syntax or ES7 syntax.
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 

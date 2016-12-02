@@ -1,3 +1,5 @@
+/* eslint react/no-multi-comp: off */
+
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
 import monacoRequireConfig from '../src/monacoRequireConfig';
