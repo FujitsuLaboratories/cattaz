@@ -72,7 +72,7 @@ class MeetingTimeModel {
   }
 }
 
-export default class DATEApplication extends React.Component {
+export default class MeetingTimeApplication extends React.Component {
   constructor(props) {
     super();
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
@@ -111,7 +111,7 @@ export default class DATEApplication extends React.Component {
   }
 }
 
-DATEApplication.propTypes = {
+MeetingTimeApplication.propTypes = {
   data: React.PropTypes.string,
   onEdit: React.PropTypes.func,
   appContext: React.PropTypes.shape({}),
