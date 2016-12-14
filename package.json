@@ -62,6 +62,9 @@
     ],
     "babel": "inherit"
   },
-  "author": "",
-  "license": "UNLICENSED"
+  "author": "Ohtake, Tomohiro <ohtake.tomohiro@jp.fujitsu.com>",
+  "contributors": [
+    "Seki, Yohei <seki.yohei@jp.fujitsu.com>"
+  ],
+  "license": "MIT"
 }
