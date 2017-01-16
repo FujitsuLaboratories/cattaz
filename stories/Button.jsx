@@ -21,7 +21,7 @@ const Button = ({ children, onClick }) => (
 
 Button.propTypes = {
   children: React.PropTypes.string.isRequired,
-  onClick: React.PropTypes.func,
+  onClick: React.PropTypes.func.isRequired,
 };
 
 export default Button;

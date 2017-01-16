@@ -1,4 +1,5 @@
 /* eslint react/no-multi-comp: off */
+/* eslint react/no-array-index-key: off */
 
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor/lib';
@@ -72,7 +73,7 @@ Here is Mandala application:
 }
 
 Mandala.propTypes = {
-  handleChange: React.PropTypes.func,
+  handleChange: React.PropTypes.func.isRequired,
 };
 
 class Block extends React.Component {
@@ -109,9 +110,9 @@ class Block extends React.Component {
 }
 
 Block.propTypes = {
-  id: React.PropTypes.string,
-  textList: React.PropTypes.arrayOf(React.PropTypes.string),
-  handleChange: React.PropTypes.func,
+  id: React.PropTypes.string.isRequired,
+  textList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  handleChange: React.PropTypes.func.isRequired,
 };
 
 class Cell extends React.Component {
@@ -141,7 +142,7 @@ class Cell extends React.Component {
 }
 
 Cell.propTypes = {
-  id: React.PropTypes.string,
-  text: React.PropTypes.string,
-  handleChange: React.PropTypes.func,
+  id: React.PropTypes.string.isRequired,
+  text: React.PropTypes.string.isRequired,
+  handleChange: React.PropTypes.func.isRequired,
 };

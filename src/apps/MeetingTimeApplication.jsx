@@ -112,7 +112,7 @@ export default class MeetingTimeApplication extends React.Component {
 }
 
 MeetingTimeApplication.propTypes = {
-  data: React.PropTypes.string,
-  onEdit: React.PropTypes.func,
-  appContext: React.PropTypes.shape({}),
+  data: React.PropTypes.string.isRequired,
+  onEdit: React.PropTypes.func.isRequired,
+  appContext: React.PropTypes.shape({}).isRequired,
 };

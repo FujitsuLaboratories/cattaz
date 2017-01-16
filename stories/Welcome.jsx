@@ -75,5 +75,5 @@ export default class Welcome extends React.Component {
   }
 }
 Welcome.propTypes = {
-  showApp: React.PropTypes.func,
+  showApp: React.PropTypes.func.isRequired,
 };

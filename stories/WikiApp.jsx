@@ -13,6 +13,6 @@ export default function WikiApp(props) {
 }
 
 WikiApp.propTypes = {
-  markdown: React.PropTypes.string,
-  preview: React.PropTypes.node,
+  markdown: React.PropTypes.string.isRequired,
+  preview: React.PropTypes.node.isRequired,
 };
