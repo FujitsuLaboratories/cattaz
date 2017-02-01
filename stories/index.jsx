@@ -80,5 +80,7 @@ storiesOf('DATE', module)
 ;
 
 storiesOf('Ace', module)
-  .add('real app', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```'} />)
+  .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```'} />)
+  .add('sync in room1', () => <AppEnabledWikiEditorAce defaultValue={'syncing with room1'} roomName="room1" />)
+  .add('sync in room2', () => <AppEnabledWikiEditorAce defaultValue={'syncing with room2'} roomName="room2" />)
 ;
