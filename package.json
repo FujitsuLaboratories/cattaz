@@ -12,6 +12,8 @@
     "react-dom":  "15.4.2",
     "react-tap-event-plugin": "2.0.1",
     "react-markdown": "2.4.4",
+    "brace": "0.9.1",
+    "react-ace": "4.1.1",
     "react-monaco-editor": "0.7.3"
   },
   "devDependencies": {
