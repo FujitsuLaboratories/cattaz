@@ -37,6 +37,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
         },
         connector: {
           name: 'websockets-client',
+          url: `http://${window.location.hostname}:1234`,
           room: this.props.roomName,
         },
         share: {
