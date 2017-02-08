@@ -1,4 +1,5 @@
 import React from 'react';
+import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -45,19 +46,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
         },
       }).then((y) => {
         this.y = y;
-        window.ace = {};
-        window.ace.require = () => ({
-          Range: (startRow, startColumn, endRow, endColumn) => ({
-            start: {
-              column: startColumn,
-              row: startRow,
-            },
-            end: {
-              column: endColumn,
-              row: endRow,
-            },
-          }),
-        });
+        this.editor.editor.require = brace.acequire;
         y.share.textarea.bindAce(this.editor.editor);
       });
     }
