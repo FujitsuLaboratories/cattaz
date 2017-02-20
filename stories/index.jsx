@@ -4,6 +4,7 @@ import Button from './Button';
 import Welcome from './Welcome';
 import NormalWikiEditor from '../src/NormalWikiEditor';
 import AppEnabledWikiEditor from '../src/AppEnabledWikiEditor';
+import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 import WikiApp from './WikiApp';
 import KPT from './KPT';
 import Mandala from './Mandala';
@@ -76,4 +77,10 @@ storiesOf('Mandala', module)
 storiesOf('DATE', module)
   .add('real app', () => <AppEnabledWikiEditor defaultValue={'```date\n```'} />)
   .add('real app2', () => <AppEnabledWikiEditor defaultValue={'```meetingtime\n```'} />)
+;
+
+storiesOf('Ace', module)
+  .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```'} />)
+  .add('sync in room1', () => <AppEnabledWikiEditorAce defaultValue={'syncing with room1'} roomName="room1" />)
+  .add('sync in room2', () => <AppEnabledWikiEditorAce defaultValue={'syncing with room2'} roomName="room2" />)
 ;
