@@ -20,7 +20,7 @@ const js = {
     contentBase: 'build',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json'],
   },
   devtool: 'source-map',
   plugins: [
@@ -39,42 +39,44 @@ const js = {
         },
       }),
       new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false,
-        },
+        sourceMap: true,
       }),
-      new webpack.optimize.OccurrenceOrderPlugin(),
-      new webpack.optimize.DedupePlugin(),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+      }),
     ] : []),
   ],
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         include: path.resolve('src'),
-        loader: 'eslint',
+        loader: 'eslint-loader',
+        enforce: 'pre',
       },
-    ],
-    loaders: [
       {
         test: /\.js$/,
         include: path.resolve('src'),
-        loader: 'babel',
-        query: {
-          presets: ['es2015'],
+        use: {
+          loader: 'babel-loader',
+          query: {
+            presets: ['es2015'],
+          },
         },
       },
       {
         test: /\.jsx$/,
         include: path.resolve('src'),
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015'],
+        use: {
+          loader: 'babel-loader',
+          query: {
+            presets: ['react', 'es2015'],
+          },
         },
       },
       {
         test: /\.json$/,
-        loader: 'json',
+        loader: 'json-loader',
       },
     ],
   },
