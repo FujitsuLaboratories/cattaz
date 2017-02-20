@@ -1,8 +1,8 @@
-# ActiveW
+# cattaz
 
 TODO add badges of Travis, etc.
 
-ActiveW is an interactive Wiki platform. You can implement an application which runs in a Wiki page.
+Cattaz is an interactive Wiki platform. You can implement an application which runs in a Wiki page.
 
 ## Usage
 
@@ -37,7 +37,7 @@ In [CommonMark](http://commonmark.org/), you can specify language in fenced code
 
 ### Application-enabled fenced code block
 
-ActiveW allows you to set an application name by info-string. If you want to run an application of [KPT method](http://code-artisan.io/retrospective-method-kpt/), just set `kpt` as info-string.
+Cattaz allows you to set an application name by info-string. If you want to run an application of [KPT method](http://code-artisan.io/retrospective-method-kpt/), just set `kpt` as info-string.
 
 * Input
 
@@ -63,10 +63,6 @@ In the preview pane, you can view a KPT application. If you edit KPT via the app
 ### WYSIWYG editor
 
 Partially true. In traditional WYSISYG editors, you can edit predefined components in WYSIWYG. In this project, you can implement WYSISYG components.
-
-### Name
-
-You know ActiveX, which enables applications to run on web browsers. ActiveW is named after ActiveX. It enables application to run on Wiki pages.
 
 ## Related works
 
