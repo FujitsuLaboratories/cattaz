@@ -20,7 +20,7 @@ Now you can visit `http://localhost:6006/` to view the application.
 ### Docker
 
 ```bash
-docker build . -t cattaz # --build-arg HTTP_PROXY=http://user:pass@proxy.example.com:8080
+docker build . -t cattaz # --build-arg http_proxy=http://user:pass@proxy.example.com:8080 --build-arg https_proxy=http://user:pass@proxy.example.com:8080
 docker run -p 8080:8080 -p 1234:1234 cattaz
 ```
 
