@@ -48,15 +48,17 @@ export default class MandalaApplication extends React.Component {
   }
   render() {
     const blockStyle = {
+      display: 'inline-block',
+      lineHeight: 0,
       margin: 2,
-      backgroundColor: '#777777',
-      borderRadius: 5,
+      // backgroundColor: '#777777',
+      // borderRadius: 5,
     };
     const cellStyle = {
       width: 80,
       height: 80,
-      margin: 3,
-      borderRadius: 5,
+      // margin: 3,
+      // borderRadius: 5,
       resize: 'none',
     };
     const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
@@ -64,9 +66,9 @@ export default class MandalaApplication extends React.Component {
         <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />,
       ),
     );
-    return (<div style={blockStyle}>
+    return (<div><div style={blockStyle}>
       {rows.map(row => [row, <br />])}
-    </div>
+    </div></div>
     );
   }
 }
