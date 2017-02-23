@@ -1,0 +1,267 @@
+---
+# 1. Create an ECS cluster via AWS console, to create IAM profiles, and delete the cluster
+# 1. Create an ECR
+# 1. Convert this yaml to json. You can use https://www.json2yaml.com/
+# 1. Create a new stack in CloudFormation at ap-northeast-1 region
+# 1. Launch AWS CloudFormation Designer and paste json to it
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create an ECS cluster with a new VPC
+Mappings:
+  VpcCidrs:
+    ap-northeast-1:
+      vpc: 10.123.0.0/16
+      pubsubnet1: 10.123.0.0/24
+      pubsubnet2: 10.123.1.0/24
+Parameters:
+  EcsRepository:
+    Type: String
+    Description: Image to use for containers. repository-url/image:tag.
+  EcsAmiId:
+    Type: String
+    Description: ECS AMI Id. Find AMIs whose name contains 'ecs-optimized'.
+  EcsInstanceType:
+    Type: String
+    Description: ECS EC2 instance type
+    Default: t2.micro
+    ConstraintDescription: must be a valid EC2 instance type.
+  AsgMaxSize:
+    Type: Number
+    Description: Maximum size and initial Desired Capacity of ECS Auto Scaling Group
+    Default: '2'
+  IamRoleInstanceProfile:
+    Type: String
+    Description: Name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance. The profile can be automatically created if you create an ECS cluster via AWS console.
+    Default: ecsInstanceRole
+  IamRoleServiceProfile:
+    Type: String
+    Description: Name or the Amazon Resource Name (ARN) of the service profile associated with the IAM role for the instance. The profile can be automatically created if you create an ECS cluster via AWS console.
+    Default: ecsServiceRole
+  EcsClusterName:
+    Type: String
+    Description: ECS Cluster Name
+    Default: default
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock:
+        Fn::FindInMap:
+        - VpcCidrs
+        - Ref: AWS::Region
+        - vpc
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+  PubSubnetAz1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Vpc
+      CidrBlock:
+        Fn::FindInMap:
+        - VpcCidrs
+        - Ref: AWS::Region
+        - pubsubnet1
+      AvailabilityZone:
+        Fn::Select:
+        - '0'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+  PubSubnetAz2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: Vpc
+      CidrBlock:
+        Fn::FindInMap:
+        - VpcCidrs
+        - Ref: AWS::Region
+        - pubsubnet2
+      AvailabilityZone:
+        Fn::Select:
+        - '1'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: Vpc
+      InternetGatewayId:
+        Ref: InternetGateway
+  RouteViaIgw:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: Vpc
+  PublicRouteViaIgw:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId:
+        Ref: RouteViaIgw
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+  PubSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PubSubnetAz1
+      RouteTableId:
+        Ref: RouteViaIgw
+  PubSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PubSubnetAz2
+      RouteTableId:
+        Ref: RouteViaIgw
+  ElbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ELB Allowed Ports
+      VpcId:
+        Ref: Vpc
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 1234
+        ToPort: 1234
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+  EcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS Allowed Ports
+      VpcId:
+        Ref: Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 1234
+          ToPort: 1234
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '1'
+          ToPort: '65535'
+          SourceSecurityGroupId:
+            Ref: ElbSecurityGroup
+  EcsElasticLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      SecurityGroups:
+      - Ref: ElbSecurityGroup
+      Subnets:
+      - Ref: PubSubnetAz1
+      - Ref: PubSubnetAz2
+      CrossZone: true
+      Listeners:
+      - LoadBalancerPort: 8080
+        InstancePort: 8080
+        Protocol: HTTP
+      - LoadBalancerPort: 1234
+        InstancePort: 1234
+        Protocol: TCP
+      HealthCheck:
+        Target: HTTP:8080/
+        HealthyThreshold: '2'
+        UnhealthyThreshold: '10'
+        Interval: '30'
+        Timeout: '5'
+  EcsInstanceLcWithoutKeyPair:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId:
+        Ref: EcsAmiId
+      InstanceType:
+        Ref: EcsInstanceType
+      AssociatePublicIpAddress: true
+      IamInstanceProfile:
+        Ref: IamRoleInstanceProfile
+      SecurityGroups:
+      - Ref: EcsSecurityGroup
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - ''
+          - - "#!/bin/bash\n"
+            - echo ECS_CLUSTER=
+            - Ref: EcsClusterName
+            - " >> /etc/ecs/ecs.config"
+  EcsInstanceAsg:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+      - Ref: PubSubnetAz1
+      - Ref: PubSubnetAz2
+      LaunchConfigurationName:
+        Ref: EcsInstanceLcWithoutKeyPair
+      MinSize: '1'
+      MaxSize:
+        Ref: AsgMaxSize
+      DesiredCapacity:
+        Ref: AsgMaxSize
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - ''
+          - - 'ECS Instance - '
+            - Ref: AWS::StackName
+        PropagateAtLaunch: true
+  EcsCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName:
+        Ref: EcsClusterName
+  EcsTaskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+      - Image:
+          Ref: EcsRepository
+        Memory: 256
+        Name: cattaz-container
+        PortMappings:
+        - ContainerPort: 1234
+          HostPort: 1234
+          Protocol: tcp
+        - ContainerPort: 8080
+          HostPort: 8080
+          Protocol: tcp
+  EcsService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster:
+        Ref: EcsCluster
+      Role:
+        Ref: IamRoleServiceProfile
+      TaskDefinition:
+        Ref: EcsTaskDef
+      DesiredCount: 1
+      LoadBalancers:
+      ## Due to the limitation of CloudFormation and ECS, cannot add two load balancers. But it works.
+      # - ContainerName: cattaz-container
+      #   ContainerPort: 1234
+      #   LoadBalancerName:
+      #     Ref: EcsElasticLoadBalancer
+      - ContainerName: cattaz-container
+        ContainerPort: 8080
+        LoadBalancerName:
+          Ref: EcsElasticLoadBalancer
+Outputs:
+  EcsInstanceAsgName:
+    Description: Auto Scaling Group Name for ECS Instances
+    Value:
+      Ref: EcsInstanceAsg
+  EcsElbName:
+    Description: Load Balancer for ECS Service
+    Value:
+      Ref: EcsElasticLoadBalancer
