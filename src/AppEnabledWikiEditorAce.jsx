@@ -46,8 +46,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
         },
       }).then((y) => {
         this.y = y;
-        this.editor.editor.require = brace.acequire;
-        y.share.textarea.bindAce(this.editor.editor);
+        y.share.textarea.bindAce(this.editor.editor, { aceRequire: brace.acequire });
       });
     }
   }
