@@ -8,11 +8,11 @@ Cattaz is an interactive Wiki platform. You can implement an application which r
 
 ### Node
 
-Install [Node 6 and npm](https://nodejs.org/en/download/).
+Install [Node 6 and npm](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/en/docs/install).
 
 ```bash
-npm install
-npm run storybook
+yarn
+yarn run storybook
 ```
 
 Now you can visit `http://localhost:6006/` to view the application.
