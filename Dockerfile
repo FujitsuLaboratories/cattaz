@@ -15,4 +15,4 @@ COPY . /usr/src/app
 RUN yarn run cover
 RUN yarn run build
 
-CMD ["npm", "run", "server"]
+CMD ["yarn", "run", "server"]

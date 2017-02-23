@@ -66,8 +66,8 @@
     "server:static": "http-server",
     "test": "run-p -l test:*",
     "test:ava": "cross-env NODE_ENV=test ava test/**/*.ava.js",
-    "cover": "cross-env NODE_ENV=test nyc --extension .jsx --reporter lcov --reporter text npm test",
-    "watch:ava": "npm run test:ava -- --watch"
+    "cover": "cross-env NODE_ENV=test nyc --extension .jsx --reporter lcov --reporter text yarn test",
+    "watch:ava": "yarn run test:ava -- --watch"
   },
   "ava": {
     "require": [
