@@ -51,11 +51,12 @@
     "webpack-dev-server": "^2.4.1"
   },
   "scripts": {
-    "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
+    "clean": "rimraf build storybook-static .nyc_output coverage esdoc licenses.txt",
     "lint": "eslint --color src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.js stories/**/*.jsx *.js",
     "build": "run-p -l build:*",
     "build:app": "cross-env NODE_ENV=production webpack --progress --colors --config webpack.config.babel.js",
     "build:esdoc": "esdoc -c esdoc.json",
+    "build:licenses": "yarn licenses generate-disclaimer --prod > licenses.txt",
     "build:storybook": "cross-env NODE_ENV=production build-storybook",
     "storybook": "cross-env NODE_ENV=development run-p -l server:storybook server:websocket",
     "start": "cross-env NODE_ENV=development run-p -l server:devserver server:websocket",
