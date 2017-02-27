@@ -4,8 +4,6 @@ import path from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-import WebpackUtil from './webpack.util';
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
@@ -81,7 +79,5 @@ const js = {
     ],
   },
 };
-
-WebpackUtil.enableVSCode(js);
 
 export default js;
