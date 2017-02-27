@@ -63,6 +63,16 @@ const js = {
         },
       },
       {
+        // For yjs
+        test: /\.es6$/,
+        use: {
+          loader: 'babel-loader',
+          query: {
+            presets: ['es2015'],
+          },
+        },
+      },
+      {
         test: /\.jsx$/,
         include: path.resolve('src'),
         use: {
