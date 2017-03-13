@@ -8,6 +8,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
   entry: [
+    'babel-polyfill',
     './src/index.jsx',
   ],
   output: {
