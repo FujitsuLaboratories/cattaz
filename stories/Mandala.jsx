@@ -2,8 +2,9 @@
 /* eslint react/no-array-index-key: off */
 
 import React from 'react';
-import MonacoEditor from 'react-monaco-editor/lib';
-import monacoRequireConfig from '../src/monacoRequireConfig';
+import AceEditor from 'react-ace';
+import 'brace/mode/markdown';
+import 'brace/theme/github';
 
 export default class Mandala extends React.Component {
   constructor(props) {
@@ -62,7 +63,7 @@ Here is Mandala application:
       <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />,
     );
     return (<div style={{ display: 'flex' }}>
-      <MonacoEditor language="markdown" value={this.state.mandala} style={style} height={500} requireConfig={monacoRequireConfig} />
+      <AceEditor mode="markdown" theme="" value={this.state.mandala} style={style} />
       <div style={style}>
         <div style={board}>
           {dispBlocks}

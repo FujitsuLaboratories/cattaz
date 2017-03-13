@@ -1,12 +1,12 @@
 import React from 'react';
-import MonacoEditor from 'react-monaco-editor/lib';
-
-import monacoRequireConfig from '../src/monacoRequireConfig';
+import AceEditor from 'react-ace';
+import 'brace/mode/markdown';
+import 'brace/theme/github';
 
 export default function WikiApp(props) {
-  return (<div style={{ display: 'flex' }}>
-    <MonacoEditor language="markdown" defaultValue={props.markdown} width="50%" height={500} requireConfig={monacoRequireConfig} />
-    <div>
+  return (<div style={{ display: 'flex', height: window.innerHeight - 16 }}>
+    <AceEditor mode="markdown" theme="" value={props.markdown} style={{ height: '100%' }} />
+    <div style={{ overflowY: 'scroll', height: '100%', width: '100%' }}>
       {props.preview}
     </div>
   </div>);

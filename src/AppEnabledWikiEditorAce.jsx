@@ -5,10 +5,10 @@ import 'brace/mode/markdown';
 import 'brace/theme/github';
 
 import Y from 'yjs/dist/y.es6';
-import yArray from 'y-array';
-import yWebsocketsClient from 'y-websockets-client';
-import yMemory from 'y-memory';
-import yText from 'y-text';
+import yArray from 'y-array/dist/y-array.es6';
+import yWebsocketsClient from 'y-websockets-client/dist/y-websockets-client.es6';
+import yMemory from 'y-memory/dist/y-memory.es6';
+import yText from 'y-text/dist/y-text.es6';
 
 import WikiParser from './WikiParser';
 

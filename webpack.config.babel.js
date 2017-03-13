@@ -4,8 +4,6 @@ import path from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-import WebpackUtil from './webpack.util';
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
@@ -65,6 +63,16 @@ const js = {
         },
       },
       {
+        // For yjs
+        test: /\.es6$/,
+        use: {
+          loader: 'babel-loader',
+          query: {
+            presets: ['es2015'],
+          },
+        },
+      },
+      {
         test: /\.jsx$/,
         include: path.resolve('src'),
         use: {
@@ -81,7 +89,5 @@ const js = {
     ],
   },
 };
-
-WebpackUtil.enableVSCode(js);
 
 export default js;

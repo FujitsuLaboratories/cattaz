@@ -2,8 +2,6 @@ import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import Button from './Button';
 import Welcome from './Welcome';
-import NormalWikiEditor from '../src/NormalWikiEditor';
-import AppEnabledWikiEditor from '../src/AppEnabledWikiEditor';
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 import WikiApp from './WikiApp';
 import KPT from './KPT';
@@ -20,11 +18,6 @@ storiesOf('Button', module)
   ))
   .add('with some emoji', () => (
     <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
-
-storiesOf('Normal Wiki', module)
-  .add('with preview', () => (
-    <NormalWikiEditor />
   ));
 
 storiesOf('Wiki KPT app', module)
@@ -64,19 +57,19 @@ Here is KPT application:
       </div>}
     />
   ))
-  .add('real app', () => <AppEnabledWikiEditor defaultValue={'```kpt\n```'} />)
+  .add('real app', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```'} />)
 ;
 
 storiesOf('Mandala', module)
   .add('with text', () => (
     <Mandala />
   ))
-  .add('real app', () => <AppEnabledWikiEditor defaultValue={'```mandala\n```'} />)
+  .add('real app', () => <AppEnabledWikiEditorAce defaultValue={'```mandala\n```'} />)
 ;
 
 storiesOf('DATE', module)
-  .add('real app', () => <AppEnabledWikiEditor defaultValue={'```date\n```'} />)
-  .add('real app2', () => <AppEnabledWikiEditor defaultValue={'```meetingtime\n```'} />)
+  .add('real app', () => <AppEnabledWikiEditorAce defaultValue={'```date\n```'} />)
+  .add('real app2', () => <AppEnabledWikiEditorAce defaultValue={'```meetingtime\n```'} />)
 ;
 
 storiesOf('Ace', module)
