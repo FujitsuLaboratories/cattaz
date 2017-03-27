@@ -12,7 +12,7 @@ const js = {
     './src/index.jsx',
   ],
   output: {
-    path: 'build',
+    path: path.resolve('build'),
     filename: 'bundle.js',
   },
   devServer: {
