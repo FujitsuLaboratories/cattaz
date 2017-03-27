@@ -1,9 +1,9 @@
 import React from 'react';
 import clone from 'lodash/clone';
 
-import * as OM from './OthelloModel';
+import * as RM from './ReversiModel';
 
-const OthelloModel = OM.default;
+const ReversiModel = RM.default;
 
 const tableStyle = {
   borderCollapse: 'collapse',
@@ -17,12 +17,12 @@ const cellStyle = {
 const lastCellStyle = clone(cellStyle);
 lastCellStyle.backgroundColor = 'lightgray';
 
-export default class OthelloApplication extends React.Component {
+export default class ReversiApplication extends React.Component {
   static toStoneText(stoneValue) {
     switch (stoneValue) {
-      case OM.StoneBlack:
+      case RM.StoneBlack:
         return '●';
-      case OM.StoneWhite:
+      case RM.StoneWhite:
         return '〇';
       default:
         return '';
@@ -41,12 +41,12 @@ export default class OthelloApplication extends React.Component {
   }
   constructor(props) {
     super();
-    this.state = { model: OthelloModel.deserialize(props.data) };
+    this.state = { model: ReversiModel.deserialize(props.data) };
     this.handlePlaceStone = this.handlePlaceStone.bind(this);
     this.handlePass = this.handlePass.bind(this);
   }
   componentWillReceiveProps(newProps) {
-    const model = OthelloModel.deserialize(newProps.data);
+    const model = ReversiModel.deserialize(newProps.data);
     this.setState({ model });
   }
   handlePlaceStone(ev) {
@@ -78,14 +78,14 @@ export default class OthelloApplication extends React.Component {
       <p>
         Next turn: {OthelloApplication.toStoneText(this.state.model.nextTurn)}
         <button onClick={this.handlePass}>Pass</button>
-        {[OM.StoneBlack, OM.StoneWhite].map(c => <span>{OthelloApplication.toStoneText(c)}{OthelloApplication.countStones(cells, c)}</span>)}
+        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{OthelloApplication.toStoneText(c)}{OthelloApplication.countStones(cells, c)}</span>)}
       </p>
       <table style={tableStyle}><tbody>{rows}</tbody></table>
     </div>);
   }
 }
 
-OthelloApplication.propTypes = {
+ReversiApplication.propTypes = {
   data: React.PropTypes.string.isRequired,
   onEdit: React.PropTypes.func.isRequired,
   appContext: React.PropTypes.shape({}).isRequired,

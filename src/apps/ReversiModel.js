@@ -44,7 +44,7 @@ function findFlippables(cells, x, y, color) {
   );
 }
 
-export default class OthelloModel {
+export default class ReversiModel {
   constructor() {
     this.steps = clone(initialStones);
     this.nextTurn = StoneBlack;
@@ -99,12 +99,12 @@ export default class OthelloModel {
   static deserialize(str) {
     try {
       const obj = JSON.parse(str);
-      const model = new OthelloModel();
+      const model = new ReversiModel();
       model.steps = obj.steps;
       model.nextTurn = obj.nextTurn;
       return model;
     } catch (ex) {
-      return new OthelloModel();
+      return new ReversiModel();
     }
   }
 }

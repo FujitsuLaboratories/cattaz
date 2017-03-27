@@ -1,13 +1,13 @@
 import test from 'ava';
 
-import * as OM from '../src/apps/OthelloModel';
+import * as RM from '../src/apps/ReversiModel';
 
-const None = OM.StoneNone;
-const Black = OM.StoneBlack;
-const White = OM.StoneWhite;
-const Model = OM.default;
+const None = RM.StoneNone;
+const Black = RM.StoneBlack;
+const White = RM.StoneWhite;
+const Model = RM.default;
 
-/** @test {OthelloModel#getCells} */
+/** @test {ReversiModel#getCells} */
 test('initial cells should be filled', t => {
   const model = new Model();
   const cells = model.getCells();
@@ -27,8 +27,8 @@ test('initial cells should be filled', t => {
 });
 
 /**
- * @test {OthelloModel#getCells}
- * @test {OthelloModel#addStep}
+ * @test {ReversiModel#getCells}
+ * @test {ReversiModel#addStep}
  */
 test('placing several stones should reflect cells status', t => {
   const model = new Model();
@@ -62,7 +62,7 @@ test('placing several stones should reflect cells status', t => {
   );
 });
 
-/** @test {OthelloModel#addStep} */
+/** @test {ReversiModel#addStep} */
 test('addStep should reject invalid step', t => {
   const model = new Model();
   t.throws(() => {
