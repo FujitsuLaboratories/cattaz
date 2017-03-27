@@ -47,13 +47,33 @@ function findFlippables(cells, x, y, color) {
 export default class OthelloModel {
   constructor() {
     this.steps = clone(initialStones);
+    this.nextTurn = StoneBlack;
   }
   addStep(stone, x, y) {
+    if (this.nextTurn !== stone) {
+      throw new Error('Not your turn');
+    }
     const flippables = findFlippables(this.getCells(), x, y, stone);
     if (flippables.length === 0) {
       throw new Error(`You cannot place stone ${stone} at ${x},${y}`);
     }
     this.steps.push({ stone, x, y });
+    this.toggleTurn();
+  }
+  skipTurn() {
+    this.toggleTurn();
+  }
+  toggleTurn() {
+    switch (this.nextTurn) {
+      case StoneBlack:
+        this.nextTurn = StoneWhite;
+        break;
+      case StoneWhite:
+        this.nextTurn = StoneBlack;
+        break;
+      default:
+        throw new Error('should not reach here');
+    }
   }
   getCells() {
     const cells = range(Size).map(() => {
@@ -71,13 +91,17 @@ export default class OthelloModel {
     return cells;
   }
   serialize() {
-    return JSON.stringify(this.steps, null, 2);
+    return JSON.stringify({
+      steps: this.steps,
+      nextTurn: this.nextTurn,
+    }, null, 2);
   }
   static deserialize(str) {
     try {
-      const steps = JSON.parse(str);
+      const obj = JSON.parse(str);
       const model = new OthelloModel();
-      model.steps = steps;
+      model.steps = obj.steps;
+      model.nextTurn = obj.nextTurn;
       return model;
     } catch (ex) {
       return new OthelloModel();
