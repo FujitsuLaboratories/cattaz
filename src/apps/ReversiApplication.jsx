@@ -61,13 +61,13 @@ export default class ReversiApplication extends React.Component {
     this.props.onEdit(this.state.model.serialize(), this.props.appContext);
   }
   toCell(stoneValue, x, y) {
-    if (stoneValue === OM.StoneNone) {
+    if (stoneValue === RM.StoneNone) {
       return <td style={cellStyle}><button onClick={this.handlePlaceStone} data-x={x} data-y={y}>{String.fromCharCode(0x61 + x)}{y + 1}</button></td>;
     }
     const lastStep = this.state.model.steps[this.state.model.steps.length - 1];
     const isLastPos = lastStep.x === x && lastStep.y === y && this.state.model.steps.length > 4;
     const style = isLastPos ? lastCellStyle : cellStyle;
-    return <td style={style}>{OthelloApplication.toStoneText(stoneValue)}</td>;
+    return <td style={style}>{ReversiApplication.toStoneText(stoneValue)}</td>;
   }
   render() {
     const cells = this.state.model.getCells();
@@ -76,9 +76,9 @@ export default class ReversiApplication extends React.Component {
     </tr>);
     return (<div>
       <p>
-        Next turn: {OthelloApplication.toStoneText(this.state.model.nextTurn)}
+        Next turn: {ReversiApplication.toStoneText(this.state.model.nextTurn)}
         <button onClick={this.handlePass}>Pass</button>
-        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{OthelloApplication.toStoneText(c)}{OthelloApplication.countStones(cells, c)}</span>)}
+        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{ReversiApplication.toStoneText(c)}{ReversiApplication.countStones(cells, c)}</span>)}
       </p>
       <table style={tableStyle}><tbody>{rows}</tbody></table>
     </div>);
