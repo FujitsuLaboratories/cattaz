@@ -90,6 +90,20 @@ export default class ReversiModel {
     });
     return cells;
   }
+  getStoneCounts() {
+    const cells = this.getCells();
+    const counts = {
+      [StoneNone]: 0,
+      [StoneBlack]: 0,
+      [StoneWhite]: 0,
+    };
+    cells.forEach((r) => {
+      r.forEach((c) => {
+        counts[c] += 1;
+      });
+    });
+    return counts;
+  }
   serialize() {
     return JSON.stringify({
       steps: this.steps,

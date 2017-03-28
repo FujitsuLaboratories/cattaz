@@ -28,17 +28,6 @@ export default class ReversiApplication extends React.Component {
         return '';
     }
   }
-  static countStones(cells, stoneValue) {
-    let count = 0;
-    cells.forEach((r) => {
-      r.forEach((c) => {
-        if (c === stoneValue) {
-          count += 1;
-        }
-      });
-    });
-    return count;
-  }
   constructor(props) {
     super();
     this.state = { model: ReversiModel.deserialize(props.data) };
@@ -71,6 +60,7 @@ export default class ReversiApplication extends React.Component {
   }
   render() {
     const cells = this.state.model.getCells();
+    const counts = this.state.model.getStoneCounts();
     const rows = cells.map((r, x) => <tr>
       {r.map((c, y) => this.toCell(c, x, y))}
     </tr>);
@@ -78,7 +68,7 @@ export default class ReversiApplication extends React.Component {
       <p>
         Next turn: {ReversiApplication.toStoneText(this.state.model.nextTurn)}
         <button onClick={this.handlePass}>Pass</button>
-        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{ReversiApplication.toStoneText(c)}{ReversiApplication.countStones(cells, c)}</span>)}
+        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{ReversiApplication.toStoneText(c)}{counts[c]}</span>)}
       </p>
       <table style={tableStyle}><tbody>{rows}</tbody></table>
     </div>);
