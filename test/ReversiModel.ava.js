@@ -22,7 +22,7 @@ test('initial cells should be filled', t => {
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-    ]
+    ],
   );
 });
 
@@ -44,7 +44,7 @@ test('placing several stones should reflect cells status', t => {
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-    ]
+    ],
   );
   model.addStep(White, 2, 5);
   t.deepEqual(
@@ -58,7 +58,7 @@ test('placing several stones should reflect cells status', t => {
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-    ]
+    ],
   );
 });
 
