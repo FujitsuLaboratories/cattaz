@@ -7,15 +7,17 @@ const ReversiModel = RM.default;
 
 const tableStyle = {
   borderCollapse: 'collapse',
+  backgroundColor: 'MediumSeaGreen',
+  border: '4px ridge DarkRed',
 };
 const cellStyle = {
-  border: '1px solid gray',
+  border: '1px solid Black',
   width: '2em',
   height: '2em',
   textAlign: 'center',
 };
 const lastCellStyle = clone(cellStyle);
-lastCellStyle.backgroundColor = 'lightgray';
+lastCellStyle.backgroundColor = 'MediumSlateBlue';
 
 export default class ReversiApplication extends React.Component {
   static toStoneText(stoneValue) {
@@ -51,7 +53,8 @@ export default class ReversiApplication extends React.Component {
   }
   toCell(stoneValue, x, y) {
     if (stoneValue === RM.StoneNone) {
-      return <td style={cellStyle}><button onClick={this.handlePlaceStone} data-x={x} data-y={y}>{String.fromCharCode(0x61 + x)}{y + 1}</button></td>;
+      const label = `${String.fromCharCode(0x61 + x)}${y + 1}`;
+      return <td style={cellStyle}><button onClick={this.handlePlaceStone} data-x={x} data-y={y}>{label}</button></td>;
     }
     const lastStep = this.state.model.steps[this.state.model.steps.length - 1];
     const isLastPos = lastStep.x === x && lastStep.y === y && this.state.model.steps.length > 4;
@@ -66,9 +69,16 @@ export default class ReversiApplication extends React.Component {
     </tr>);
     return (<div>
       <p>
-        Next turn: {ReversiApplication.toStoneText(this.state.model.nextTurn)}
+        {[RM.StoneBlack, RM.StoneWhite].map((c) => {
+          const style = {
+            padding: '0 0.4em',
+          };
+          if (c === this.state.model.nextTurn) {
+            style.borderBottom = '4px solid MediumSlateBlue';
+          }
+          return <span style={style}>{ReversiApplication.toStoneText(c)}{counts[c]}</span>;
+        })}
         <button onClick={this.handlePass}>Pass</button>
-        {[RM.StoneBlack, RM.StoneWhite].map(c => <span>{ReversiApplication.toStoneText(c)}{counts[c]}</span>)}
       </p>
       <table style={tableStyle}><tbody>{rows}</tbody></table>
     </div>);
