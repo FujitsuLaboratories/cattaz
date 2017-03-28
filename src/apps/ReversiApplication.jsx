@@ -23,9 +23,9 @@ export default class ReversiApplication extends React.Component {
   static toStoneText(stoneValue) {
     switch (stoneValue) {
       case RM.StoneBlack:
-        return '●';
+        return '\u26AB';
       case RM.StoneWhite:
-        return '〇';
+        return '\u26AA';
       default:
         return '';
     }
