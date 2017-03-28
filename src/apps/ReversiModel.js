@@ -10,10 +10,10 @@ export const StoneBlack = 1;
 export const StoneWhite = 2;
 
 const initialStones = [
-  { stone: StoneBlack, x: 3, y: 3 },
-  { stone: StoneWhite, x: 4, y: 3 },
-  { stone: StoneWhite, x: 3, y: 4 },
-  { stone: StoneBlack, x: 4, y: 4 },
+  { stone: StoneBlack, x: 4, y: 3 },
+  { stone: StoneWhite, x: 3, y: 3 },
+  { stone: StoneWhite, x: 4, y: 4 },
+  { stone: StoneBlack, x: 3, y: 4 },
 ];
 
 function isValidPos(x, y) {
