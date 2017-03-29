@@ -61,7 +61,7 @@ export default class VoteApplication extends React.Component {
   }
   render() {
     return (<div style={{ marginBottom: '50px' }}>
-      <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder={'Add Candidates'} />
+      <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
       <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
       <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
       <ul>
