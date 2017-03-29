@@ -5,7 +5,7 @@ import 'brace/theme/github';
 
 export default function WikiApp(props) {
   return (<div style={{ display: 'flex', height: window.innerHeight - 16 }}>
-    <AceEditor mode="markdown" theme="" value={props.markdown} style={{ height: '100%' }} />
+    <AceEditor mode="markdown" theme="github" value={props.markdown} style={{ height: '100%' }} />
     <div style={{ overflowY: 'scroll', height: '100%', width: '100%' }}>
       {props.preview}
     </div>

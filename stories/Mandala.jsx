@@ -63,7 +63,7 @@ Here is Mandala application:
       <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />,
     );
     return (<div style={{ display: 'flex' }}>
-      <AceEditor mode="markdown" theme="" value={this.state.mandala} style={style} />
+      <AceEditor mode="markdown" theme="github" value={this.state.mandala} style={style} />
       <div style={style}>
         <div style={board}>
           {dispBlocks}
