@@ -66,7 +66,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   handleAppEdit(newText, appContext) {
     const session = this.editor.editor.getSession();
     const lastLine = session.getLine(appContext.position.end.line - 2);
-    const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
+    const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length + 1);
     session.replace(range, newText);
   }
   render() {
