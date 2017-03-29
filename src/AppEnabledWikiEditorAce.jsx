@@ -65,9 +65,16 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   }
   handleAppEdit(newText, appContext) {
     const session = this.editor.editor.getSession();
-    const lastLine = session.getLine(appContext.position.end.line - 2);
-    const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length + 1);
-    session.replace(range, newText);
+    const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
+    if (!isOldTextEmpty) {
+      const lastLine = session.getLine(appContext.position.end.line - 2);
+      const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
+      session.replace(range, newText);
+    } else {
+      const position = { row: appContext.position.end.line - 1, column: 0 };
+      session.insert(position, '\n');
+      session.insert(position, newText);
+    }
   }
   render() {
     return (<div style={{ height: window.innerHeight - 16 }} >
