@@ -1,4 +1,5 @@
 import React from 'react';
+import throttle from 'lodash/throttle';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
@@ -29,7 +30,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   constructor(props) {
     super();
     this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)) };
-    this.handleEdit = this.handleEdit.bind(this);
+    this.handleEdit = throttle(this.handleEdit.bind(this), 100, { leading: false, trailing: true });
     this.handleAppEdit = this.handleAppEdit.bind(this);
     this.AceRange = aceRequire('ace/range').Range;
   }
