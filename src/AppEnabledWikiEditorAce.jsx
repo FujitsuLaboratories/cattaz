@@ -14,6 +14,8 @@ import WikiParser from './WikiParser';
 
 Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
+const aceRequire = brace.acequire;
+
 const defaultValue = `# Apps
 
 \`\`\`kpt
@@ -29,6 +31,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)) };
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
+    this.AceRange = aceRequire('ace/range').Range;
   }
   componentDidMount() {
     if (this.props.roomName) {
@@ -46,7 +49,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
         },
       }).then((y) => {
         this.y = y;
-        y.share.textarea.bindAce(this.editor.editor, { aceRequire: brace.acequire });
+        y.share.textarea.bindAce(this.editor.editor, { aceRequire });
       });
     }
   }
@@ -61,10 +64,10 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     this.setState({ text, hast });
   }
   handleAppEdit(newText, appContext) {
-    const text = WikiParser.replaceAppCode(this.state.text, appContext.position, appContext.language, newText);
-    const hastOriginal = WikiParser.parseToHast(text);
-    const hast = WikiParser.convertToCustomHast(hastOriginal);
-    this.setState({ text, hast });
+    const session = this.editor.editor.getSession();
+    const lastLine = session.getLine(appContext.position.end.line - 2);
+    const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
+    session.replace(range, newText);
   }
   render() {
     return (<div style={{ height: window.innerHeight - 16 }} >
