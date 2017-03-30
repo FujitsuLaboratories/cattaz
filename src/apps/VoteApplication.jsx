@@ -8,7 +8,7 @@ class VoteModel {
     if (name in this.candidates) {
       return false;
     }
-    this.candidates[name] = 1;
+    this.candidates[name] = 0;
     return true;
   }
   addVote(name) {
