@@ -18,8 +18,8 @@ test('initial cells should be filled', t => {
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-      [None, None, None, Black, White, None, None, None],
       [None, None, None, White, Black, None, None, None],
+      [None, None, None, Black, White, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
@@ -38,15 +38,15 @@ test('initial cells should be filled', t => {
  */
 test('placing several stones should reflect cells status', t => {
   const model = new Model();
-  model.addStep(Black, 3, 5);
+  model.addStep(Black, 3, 2);
   t.deepEqual(
     model.getCells(),
     [
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-      [None, None, None, Black, Black, Black, None, None],
-      [None, None, None, White, Black, None, None, None],
+      [None, None, Black, Black, Black, None, None, None],
+      [None, None, None, Black, White, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
@@ -56,15 +56,15 @@ test('placing several stones should reflect cells status', t => {
     model.getStoneCounts(),
     { [None]: 64 - 5, [Black]: 4, [White]: 1 },
   );
-  model.addStep(White, 2, 5);
+  model.addStep(White, 2, 2);
   t.deepEqual(
     model.getCells(),
     [
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
-      [None, None, None, None, None, White, None, None],
-      [None, None, None, Black, White, Black, None, None],
-      [None, None, None, White, Black, None, None, None],
+      [None, None, White, None, None, None, None, None],
+      [None, None, Black, White, Black, None, None, None],
+      [None, None, None, Black, White, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
       [None, None, None, None, None, None, None, None],
