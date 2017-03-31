@@ -4,7 +4,7 @@
 import React from 'react';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
-import 'brace/theme/github';
+import 'brace/theme/tomorrow_night';
 
 export default class Mandala extends React.Component {
   constructor(props) {
@@ -63,7 +63,7 @@ Here is Mandala application:
       <Block key={`block${key}`} id={`block${key}`} textList={block} handleChange={this.handleChange} />,
     );
     return (<div style={{ display: 'flex' }}>
-      <AceEditor mode="markdown" theme="github" value={this.state.mandala} style={style} />
+      <AceEditor mode="markdown" theme="tomorrow_night" value={this.state.mandala} style={style} />
       <div style={style}>
         <div style={board}>
           {dispBlocks}
