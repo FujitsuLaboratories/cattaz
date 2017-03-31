@@ -34,6 +34,10 @@ const js = {
           from: 'src/cattaz.css',
           to: '',
         },
+        {
+          from: 'node_modules/github-markdown-css/github-markdown.css',
+          to: '',
+        },
       ],
     ),
     ...(isProduction ? [

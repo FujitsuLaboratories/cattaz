@@ -7,6 +7,7 @@
     "babel-polyfill": "^6.23.0",
     "brace": "^0.10.0",
     "finalhandler": "^1.0.1",
+    "github-markdown-css": "^2.6.0",
     "hast-to-hyperscript": "^2.1.0",
     "lodash": "^4.17.4",
     "mdast-util-to-hast": "^2.4.0",
