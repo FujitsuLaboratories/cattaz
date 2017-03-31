@@ -11,6 +11,8 @@ import yWebsocketsClient from 'y-websockets-client/dist/y-websockets-client.es6'
 import yMemory from 'y-memory/dist/y-memory.es6';
 import yText from 'y-text/dist/y-text.es6';
 
+import verge from 'verge';
+
 import WikiParser from './WikiParser';
 
 Y.extend(yArray, yWebsocketsClient, yMemory, yText);
@@ -30,9 +32,14 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   constructor(props) {
     super();
     this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)) };
+    this.handleResize = this.updateHeight.bind(this);
     this.handleEdit = throttle(this.handleEdit.bind(this), 100, { leading: false, trailing: true });
     this.handleAppEdit = this.handleAppEdit.bind(this);
     this.AceRange = aceRequire('ace/range').Range;
+  }
+  componentWillMount() {
+    this.updateHeight();
+    window.addEventListener('resize', this.handleResize);
   }
   componentDidMount() {
     if (this.props.roomName) {
@@ -55,8 +62,18 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     }
   }
   componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize, false);
     if (this.y) {
       this.y.share.textarea.unbindAce(this.editor.editor);
+    }
+  }
+  updateHeight() {
+    const newHeight = verge.viewportH() - this.props.heightMargin;
+    if (newHeight !== this.state.height) {
+      this.setState({ height: newHeight });
+      if (this.editor) {
+        this.editor.editor.resize();
+      }
     }
   }
   handleEdit(text) {
@@ -78,21 +95,23 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     }
   }
   render() {
-    return (<div style={{ height: window.innerHeight - 16 }} >
-      <div style={{ display: 'flex', height: '100%' }} >
-        <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} style={{ height: '100%' }} />
-        <div style={{ overflowY: 'scroll', height: '100%', width: '100%' }} >
+    return (
+      <div style={{ display: 'flex' }} >
+        <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={this.state.height} width={500} />
+        <div style={{ height: `${this.state.height}px`, width: '100%' }} >
           {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
         </div>
       </div>
-    </div>);
+    );
   }
 }
 AppEnabledWikiEditorAce.propTypes = {
   defaultValue: React.PropTypes.string,
   roomName: React.PropTypes.string,
+  heightMargin: React.PropTypes.number,
 };
 AppEnabledWikiEditorAce.defaultProps = {
   defaultValue,
   roomName: null,
+  heightMargin: 0,
 };

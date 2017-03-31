@@ -86,7 +86,7 @@ function WikiNavigationPage(props) {
       <a href="#dummy" onClick={linkTo('Wiki navigation', 'index')}><img src={logo} alt="cattaz" width="100" height="33" /></a>
       <span style={{ margin: '0em 1em', verticalAlign: 'top', fontSize: '24px' }}>{props.name}</span>
     </div>
-    <AppEnabledWikiEditorAce defaultValue="syncing..." roomName={props.name} />
+    <AppEnabledWikiEditorAce defaultValue="syncing..." roomName={props.name} heightMargin={33 + 4} />
   </div>);
 }
 WikiNavigationPage.propTypes = {
