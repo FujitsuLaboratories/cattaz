@@ -98,7 +98,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     return (
       <div style={{ display: 'flex' }} >
         <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={this.state.height} width={500} />
-        <div style={{ height: `${this.state.height}px`, width: '100%' }} >
+        <div style={{ overflowY: 'auto', height: `${this.state.height}px`, width: '100%' }} >
           {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
         </div>
       </div>
