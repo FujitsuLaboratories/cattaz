@@ -2,6 +2,8 @@ import React from 'react';
 import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
+import logo from '../docs/assets/cattz-10-character.png';
+
 export default class Main extends React.Component {
   constructor() {
     super();
@@ -17,7 +19,7 @@ export default class Main extends React.Component {
   render() {
     return (
       <div>
-        <h1>cattaz</h1>
+        <h1><img src={logo} alt="cattaz" /></h1>
         <h2>pages</h2>
         <ul>
           {this.state.pages.map(p => <li><NavLink to={`/page/${encodeURIComponent(p)}`}>{p}</NavLink></li>)}
