@@ -29,6 +29,10 @@ const js = {
           from: 'src/index.html',
           to: '',
         },
+        {
+          from: 'src/cattaz.css',
+          to: '',
+        },
       ],
     ),
     ...(isProduction ? [

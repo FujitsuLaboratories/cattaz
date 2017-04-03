@@ -1,3 +1,5 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 const defaultConfigFunc = require('@kadira/storybook/dist/server/config/defaults/webpack.config');
 
 const environment = process.env.NODE_ENV;
@@ -7,6 +9,12 @@ function configure(base) {
   const config = defaultConfigFunc(base);
   config.devtool = isProduction ? 'source-map' : 'eval-source-map';
   config.resolve.extensions.push('.jsx');
+  config.plugins.push(new CopyWebpackPlugin([
+    {
+      from: 'src/cattaz.css',
+      to: '',
+    },
+  ]));
   return config;
 }
 
