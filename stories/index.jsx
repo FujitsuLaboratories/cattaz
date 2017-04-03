@@ -5,7 +5,7 @@ import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 import logo from '../docs/assets/cattz-10-character.png';
 
 storiesOf('Ace', module)
-  .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```\n\n```reversi\n```\n\n```vote\n```'} />)
+  .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```\n\n```reversi\n```\n\n```votecrypto\n```'} />)
   .add('sync in room1', () => <AppEnabledWikiEditorAce defaultValue="syncing with room1" roomName="room1" />)
   .add('sync in room2', () => <AppEnabledWikiEditorAce defaultValue="syncing with room2" roomName="room2" />)
 ;

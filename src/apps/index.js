@@ -4,6 +4,7 @@ import date from './DATEApplication';
 import meetingtime from './MeetingTimeApplication';
 import reversi from './ReversiApplication';
 import vote from './VoteApplication';
+import votecrypto from './VoteCryptoApplication';
 
 export default {
   kpt,
@@ -12,4 +13,5 @@ export default {
   meetingtime,
   reversi,
   vote,
+  votecrypto,
 };
