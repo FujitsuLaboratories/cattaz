@@ -84,10 +84,6 @@ const js = {
         },
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
-      {
         test: /\.png$/,
         use: {
           loader: 'file-loader',

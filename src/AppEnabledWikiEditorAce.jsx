@@ -19,15 +19,6 @@ Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
 const aceRequire = brace.acequire;
 
-const defaultValue = `# Apps
-
-\`\`\`kpt
-\`\`\`
-
-\`\`\`mandala
-\`\`\`
-`;
-
 export default class AppEnabledWikiEditorAce extends React.Component {
   constructor(props) {
     super();
@@ -111,7 +102,7 @@ AppEnabledWikiEditorAce.propTypes = {
   heightMargin: React.PropTypes.number,
 };
 AppEnabledWikiEditorAce.defaultProps = {
-  defaultValue,
+  defaultValue: '',
   roomName: null,
   heightMargin: 0,
 };
