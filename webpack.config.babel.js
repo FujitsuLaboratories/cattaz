@@ -87,6 +87,15 @@ const js = {
         test: /\.json$/,
         loader: 'json-loader',
       },
+      {
+        test: /\.png$/,
+        use: {
+          loader: 'file-loader',
+          query: {
+            name: '[name]-[hash:hex:8].[ext]',
+          },
+        },
+      },
     ],
   },
 };
