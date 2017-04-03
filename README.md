@@ -14,10 +14,10 @@ Install [Node 6](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com
 
 ```bash
 yarn install
-yarn run storybook
+yarn start
 ```
 
-Now you can visit `http://localhost:6006/` to view the application.
+Now you can visit `http://localhost:8080/` to view the application.
 
 ### Docker
 
