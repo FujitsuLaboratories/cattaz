@@ -8,6 +8,9 @@ import yMemory from 'y-memory';
 
 import minimist from 'minimist';
 import socketIo from 'socket.io';
+import http from 'http';
+import Router from 'router';
+import finalhandler from 'finalhandler';
 
 Y.extend(yWebsocketsServer, yMemory);
 
@@ -21,8 +24,11 @@ const options = minimist(process.argv.slice(2), {
 });
 
 const port = Number.parseInt(options.port, 10);
-const io = socketIo(port);
-console.log(`Running y-websockets-server on port ${port}`);
+const router = Router();
+const server = http.createServer((req, res) => {
+  router(req, res, finalhandler(req, res));
+});
+const io = socketIo.listen(server);
 
 const yInstances = {};
 
@@ -45,6 +51,13 @@ function getInstanceOfY(room) {
   }
   return yInstances[room];
 }
+
+router.get('/pages', (req, res) => {
+  // res.setHeader('Access-Control-Allow-Origin', '*');
+  // res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(Object.keys(yInstances).map(s => s)));
+});
 
 io.on('connection', (socket) => {
   const rooms = [];
@@ -86,4 +99,8 @@ io.on('connection', (socket) => {
       }
     });
   });
+});
+
+server.listen(port, () => {
+  console.log(`Running y-websockets-server on port ${port}`);
 });
