@@ -14,6 +14,7 @@
     "react-ace": "^4.2.0",
     "react-dom": "^15.4.2",
     "react-router-dom": "^4.0.0",
+    "react-split-pane": "^0.1.61",
     "react-tap-event-plugin": "^2.0.1",
     "remark": "^7.0.0",
     "socket.io": "^1.7.3",

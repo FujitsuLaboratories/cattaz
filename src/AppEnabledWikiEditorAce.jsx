@@ -4,6 +4,7 @@ import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/tomorrow_night';
+import SplitPane from 'react-split-pane';
 
 import Y from 'yjs/dist/y.es6';
 import yArray from 'y-array/dist/y-array.es6';
@@ -19,17 +20,21 @@ Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
 const aceRequire = brace.acequire;
 
+const resizerMargin = 12;
+
 export default class AppEnabledWikiEditorAce extends React.Component {
   constructor(props) {
     super();
-    this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)) };
-    this.handleResize = this.updateHeight.bind(this);
+    this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), editorPercentage: 50 };
+    this.handleResize = this.updateSize.bind(this);
+    this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = throttle(this.handleEdit.bind(this), 100, { leading: false, trailing: true });
     this.handleAppEdit = this.handleAppEdit.bind(this);
     this.AceRange = aceRequire('ace/range').Range;
   }
   componentWillMount() {
     this.updateHeight();
+    this.updateWidth();
     window.addEventListener('resize', this.handleResize);
   }
   componentDidMount() {
@@ -67,6 +72,32 @@ export default class AppEnabledWikiEditorAce extends React.Component {
       }
     }
   }
+  updateWidth() {
+    const vw = verge.viewportW();
+    let newWidth = (vw * (this.state.editorPercentage / 100)) - resizerMargin;
+    if (newWidth < 0) {
+      newWidth = 0;
+    }
+    const previewWidth = vw - newWidth - (2 * resizerMargin) - 1;
+    if (newWidth !== this.state.width) {
+      this.setState({ width: newWidth, previewWidth });
+      if (this.editor) {
+        this.editor.editor.resize();
+      }
+    }
+  }
+  updateSize() {
+    this.updateWidth();
+    this.updateHeight();
+  }
+  handleSplitResized(newSize) {
+    const viewportWidth = verge.viewportW();
+    const newPercentage = (100.0 * newSize) / viewportWidth;
+    if (newPercentage !== this.state.editorPercentage) {
+      this.setState({ editorPercentage: newPercentage });
+      this.updateWidth();
+    }
+  }
   handleEdit(text) {
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
@@ -87,12 +118,12 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   }
   render() {
     return (
-      <div style={{ display: 'flex' }} >
-        <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={this.state.height} width={500} />
-        <div style={{ overflowY: 'auto', height: `${this.state.height}px`, width: '100%', marginLeft: '0.5em' }} className="markdown-body">
+      <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
+        <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={this.state.height} width={this.state.width} />
+        <div style={{ overflow: 'auto', width: this.state.previewWidth, height: this.state.height, paddingLeft: resizerMargin }} className="markdown-body">
           {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
         </div>
-      </div>
+      </SplitPane>
     );
   }
 }
