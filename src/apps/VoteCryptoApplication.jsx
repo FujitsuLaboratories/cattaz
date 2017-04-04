@@ -1,7 +1,4 @@
 import React from 'react';
-import CryptoJS from 'crypto-js';
-
-const SECRETKEY = '4c8a8e23fc360219950af8becbeff58cfe7a41553e662f05ca138f71ee1a30cb73d7ee49f54e48dd17325f5f0d6a69e420b756a99cc533b4fb3630f077a7498d';
 
 class VoteCryptoModel {
   constructor() {
@@ -22,14 +19,23 @@ class VoteCryptoModel {
     this.openResult.opened = true;
   }
   serialize() {
-    const encrypt = { ciphertext: CryptoJS.AES.encrypt(JSON.stringify(this.candidates), SECRETKEY).toString(), openResult: this.openResult };
-    return JSON.stringify(encrypt, null, 2);
+    function encrypt(plaintext) {
+      // plaintext to base64
+      // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa#Unicode_strings
+      return window.btoa(unescape(encodeURIComponent(plaintext)));
+    }
+    const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), openResult: this.openResult };
+    return JSON.stringify(obj, null, 2);
   }
   static deserialize(str) {
+    function decrypt(ciphertext) {
+      // base64 to plaintext
+      return decodeURIComponent(escape(window.atob(ciphertext)));
+    }
     try {
       const obj = JSON.parse(str);
       const model = new VoteCryptoModel();
-      model.candidates = JSON.parse(CryptoJS.AES.decrypt(obj.ciphertext, SECRETKEY).toString(CryptoJS.enc.Utf8));
+      model.candidates = JSON.parse(decrypt(obj.ciphertext));
       model.openResult = obj.openResult;
       return model;
     } catch (ex) {
