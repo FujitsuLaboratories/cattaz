@@ -9,6 +9,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const js = {
   entry: [
     'babel-polyfill',
+    'whatwg-fetch',
     './src/index.jsx',
   ],
   output: {

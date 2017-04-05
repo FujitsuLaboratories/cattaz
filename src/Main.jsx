@@ -2,8 +2,6 @@ import React from 'react';
 import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
-import http from 'http';
-
 import logo from '../docs/assets/cattz-10-character.png';
 
 const url = `http://${window.location.hostname}:1234`;
@@ -15,16 +13,11 @@ export default class Main extends React.Component {
     this.state = { pages: [], getPagesError: '' };
   }
   componentDidMount() {
-    http.get(`${url}/pages`, (res) => {
-      let data = '';
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        this.setState({ pages: JSON.parse(data), getPagesError: '' });
-      });
-    }).on('error', (e) => {
+    window.fetch(`${url}/pages`)
+    .then(response => response.json())
+    .then((data) => {
+      this.setState({ pages: data, getPagesError: '' });
+    }).catch((e) => {
       this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
     });
   }

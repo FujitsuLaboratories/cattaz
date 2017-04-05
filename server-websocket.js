@@ -53,10 +53,9 @@ function getInstanceOfY(room) {
 }
 
 router.get('/pages', (req, res) => {
-  // res.setHeader('Access-Control-Allow-Origin', '*');
-  // res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(Object.keys(yInstances).map(s => s)));
+  res.end(JSON.stringify(Object.keys(yInstances)));
 });
 
 io.on('connection', (socket) => {
