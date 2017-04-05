@@ -4,11 +4,22 @@ import NavLink from 'react-router-dom/NavLink';
 
 import logo from '../docs/assets/cattz-10-character.png';
 
+const url = `http://${window.location.hostname}:1234`;
+
 export default class Main extends React.Component {
   constructor() {
     super();
     this.handleNew = this.handleNew.bind(this);
-    this.state = { pages: ['page1', 'page2'] }; // TODO
+    this.state = { pages: [], getPagesError: '' };
+  }
+  componentDidMount() {
+    window.fetch(`${url}/pages`)
+    .then(response => response.json())
+    .then((data) => {
+      this.setState({ pages: data, getPagesError: '' });
+    }).catch((e) => {
+      this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
+    });
   }
   handleNew() {
     const pageName = this.newPageName.value;
@@ -21,6 +32,7 @@ export default class Main extends React.Component {
       <div>
         <h1><img src={logo} alt="cattaz" /></h1>
         <h2>pages</h2>
+        {this.state.getPagesError}
         <ul>
           {this.state.pages.map(p => <li><NavLink to={`/page/${encodeURIComponent(p)}`}>{p}</NavLink></li>)}
         </ul>
