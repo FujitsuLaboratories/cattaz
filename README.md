@@ -34,34 +34,30 @@ Now you can visit `http://localhost:8080/` to view the application.
 
 In [CommonMark](http://commonmark.org/), you can specify language in fenced code block by [info-string](http://spec.commonmark.org/0.26/#info-string). For instance, specifying `js` language makes Markdown parser to highlight the code in JS syntax.
 
-* Input:
+Input:
 
-  ~~~md
-  ```js
-  function f() {}
-  ```
-  ~~~
+    ```js
+    function f() {}
+    ```
 
-* Output
+Output:
 
-  ```js
-  function f() {}
-  ```
+```js
+function f() {}
+```
 
 ### Application-enabled fenced code block
 
 Cattaz allows you to set an application name by info-string. If you want to run an application of [KPT method](http://code-artisan.io/retrospective-method-kpt/), just set `kpt` as info-string.
 
-* Input
+Input:
 
-  ~~~md
-  ```kpt
-  ```
-  ~~~
+    ```kpt
+    ```
 
-* Demo
+Demo:
 
-  TODO link to gh-pages
+TODO link to gh-pages
 
 In the preview pane, you can view a KPT application. If you edit KPT via the application, the text in the fenced code block will be modified based on your input. If you edit the text in the fenced code block, KPT items in the application will be modified.
 
