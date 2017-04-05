@@ -5,6 +5,7 @@ import meetingtime from './MeetingTimeApplication';
 import reversi from './ReversiApplication';
 import vote from './VoteApplication';
 import votecrypto from './VoteCryptoApplication';
+import helpful from './VoteHelpfulApplication';
 
 export default {
   kpt,
@@ -14,4 +15,5 @@ export default {
   reversi,
   vote,
   votecrypto,
+  helpful,
 };
