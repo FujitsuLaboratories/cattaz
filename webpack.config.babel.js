@@ -97,6 +97,15 @@ const js = {
           },
         },
       },
+      {
+        test: /\.cattaz.md$/,
+        use: {
+          loader: 'file-loader',
+          query: {
+            name: 'docs/[name]-[hash:hex:8].[ext]',
+          },
+        },
+      },
     ],
   },
 };
