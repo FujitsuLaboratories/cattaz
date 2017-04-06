@@ -6,6 +6,7 @@ import reversi from './ReversiApplication';
 import vote from './VoteApplication';
 import votecrypto from './VoteCryptoApplication';
 import helpful from './VoteHelpfulApplication';
+import weather from './WeatherApplication';
 
 export default {
   kpt,
@@ -16,4 +17,5 @@ export default {
   vote,
   votecrypto,
   helpful,
+  weather,
 };
