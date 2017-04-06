@@ -1,10 +1,13 @@
+const files = [
+  'sample-kpt',
+];
+
 const docs = {
 };
 
-docs['sample-kpt'] = `# KPT application
-
-\`\`\`kpt
-\`\`\`
-`;
+files.forEach((f) => {
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  docs[f] = require(`../docs/${f}.cattaz.md`);
+});
 
 export default docs;

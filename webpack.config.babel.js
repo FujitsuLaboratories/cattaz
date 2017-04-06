@@ -97,6 +97,12 @@ const js = {
           },
         },
       },
+      {
+        test: /\.cattaz.md$/,
+        use: {
+          loader: 'raw-loader',
+        },
+      },
     ],
   },
 };
