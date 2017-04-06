@@ -58,8 +58,13 @@ export default class VoteApplication extends React.Component {
         height: '150px',
         borderRadius: '10px',
       },
+      barLabel: {
+        display: 'inline-block',
+        textAlign: 'center',
+        width: '3em',
+      },
       bar: {
-        float: 'left',
+        display: 'inline-block',
         textAlign: 'center',
         color: 'white',
         height: '20px',
@@ -84,17 +89,17 @@ export default class VoteApplication extends React.Component {
     );
 
     /* eslint-disable camelcase, dot-notation, no-mixed-operators */
-    const W = 350;
+    const W = 320;
     const n_y = this.state.vote.candidates['Yes'];
     const n_n = this.state.vote.candidates['No'];
     const w_y = n_y / (n_y + n_n);
     const w_n = n_n / (n_y + n_n);
 
-    const barElems = (<div style={{ marginTop: '10px' }}>
-      <div style={{ float: 'left' }}>{Math.round(w_y * 100)}%</div>
-      <div style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: n_y / (n_y + n_n) * W })}>{n_y}</div>
-      <div style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: n_n / (n_y + n_n) * W })}>{n_n}</div>
-      <div>{Math.round(w_n * 100)}%</div>
+    const barElems = (<div style={{ marginTop: '10px', textAlign: 'center', width: `${(2 * 200) + (4 * 10)}px` }}>
+      <span style={styles.barLabel}>{Math.round(w_y * 100)}%</span>
+      <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: n_y / (n_y + n_n) * W })}>{n_y}</span>
+      <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: n_n / (n_y + n_n) * W })}>{n_n}</span>
+      <span style={styles.barLabel}>{Math.round(w_n * 100)}%</span>
     </div>);
     /* eslint-enable */
 
