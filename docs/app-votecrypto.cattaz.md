@@ -1,0 +1,4 @@
+# Vote-crypto application
+
+```votecrypto
+```

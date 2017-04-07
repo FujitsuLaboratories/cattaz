@@ -1,6 +1,14 @@
 const files = [
   'apps',
-  'sample-kpt',
+  'app-date',
+  'app-helpful',
+  'app-kpt',
+  'app-mandala',
+  'app-meetingtime',
+  'app-reversi',
+  'app-vote',
+  'app-votecrypto',
+  'app-weather',
 ];
 
 const docs = {

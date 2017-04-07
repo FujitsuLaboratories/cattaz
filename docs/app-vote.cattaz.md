@@ -1,0 +1,4 @@
+# Vote application
+
+```vote
+```
