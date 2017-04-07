@@ -91,10 +91,23 @@ export default class WikiParser {
       if (name === 'a' && internalLink.test(props.href)) {
         const propsForLink = clone(props);
         propsForLink.to = propsForLink.href;
+        if (propsForLink.className) {
+          propsForLink.className += ',md';
+        } else {
+          propsForLink.className = 'md';
+        }
         delete propsForLink.href;
         return React.createElement(Link, propsForLink, children);
       }
-      return React.createElement(name, props, children);
+      const propsForElem = clone(props);
+      if (propsForElem) {
+        if (propsForElem.className) {
+          propsForElem.className += ',md';
+        } else {
+          propsForElem.className = 'md';
+        }
+      }
+      return React.createElement(name, propsForElem, children);
     }
 
     let rootNode = customHast;

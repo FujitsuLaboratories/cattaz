@@ -6,6 +6,9 @@ import Switch from 'react-router-dom/Switch';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
+// To be converted by postcss via webpack
+import 'github-markdown-css/github-markdown.css';
+
 import Main from './Main';
 import Page from './Page';
 

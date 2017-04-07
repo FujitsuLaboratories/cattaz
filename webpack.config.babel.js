@@ -34,10 +34,6 @@ const js = {
           from: 'src/cattaz.css',
           to: '',
         },
-        {
-          from: 'node_modules/github-markdown-css/github-markdown.css',
-          to: '',
-        },
       ],
     ),
     ...(isProduction ? [
@@ -109,6 +105,23 @@ const js = {
             name: 'docs/[name]-[hash:hex:8].[ext]',
           },
         },
+      },
+      {
+        test: /github-markdown.css$/,
+        use: [
+          {
+            loader: 'file-loader',
+            query: {
+              name: 'github-markdown-md-only.css',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            query: {
+              importLoaders: 1,
+            },
+          },
+        ],
       },
     ],
   },
