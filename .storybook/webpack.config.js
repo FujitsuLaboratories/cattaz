@@ -14,10 +14,6 @@ function configure(base) {
       from: 'src/cattaz.css',
       to: '',
     },
-    {
-      from: 'node_modules/github-markdown-css/github-markdown.css',
-      to: '',
-    },
   ]));
   return config;
 }
