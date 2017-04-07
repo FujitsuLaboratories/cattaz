@@ -1,4 +1,5 @@
 const files = [
+  'apps',
   'sample-kpt',
 ];
 

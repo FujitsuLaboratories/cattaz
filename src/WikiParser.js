@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'react-router-dom/Link';
+
 import remark from 'remark';
 import toHast from 'mdast-util-to-hast';
 import toH from 'hast-to-hyperscript';
@@ -8,6 +10,8 @@ import isEqual from 'lodash/isEqual';
 import repeat from 'lodash/repeat';
 
 import Apps from './apps';
+
+const internalLink = /^[./]/;
 
 export default class WikiParser {
   /**
@@ -82,6 +86,13 @@ export default class WikiParser {
           });
         }
         throw new Error('unknown app');
+      }
+      // eslint-disable-next-line react/prop-types
+      if (name === 'a' && internalLink.test(props.href)) {
+        const propsForLink = clone(props);
+        propsForLink.to = propsForLink.href;
+        delete propsForLink.href;
+        return React.createElement(Link, propsForLink, children);
       }
       return React.createElement(name, props, children);
     }
