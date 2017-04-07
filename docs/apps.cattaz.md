@@ -4,12 +4,12 @@ Cattaz has sevral applications installed.
 
 |Name|Description|
 |----|-----------|
-|[`date`](./app-date)||
-|[`helpful`](./app-helpful)||
-|[`kpt`](./app-kpt)||
-|[`mandala`](./app-mandala)||
-|[`meetingtime`](./app-meetingtime)||
-|[`reversi`](./app-reversi)||
-|[`vote`](./app-vote)||
-|[`votecrypto`](./app-votecrypto)||
+|[`date`](./app-date)|Timestamp application. It records the current time on Wiki.|
+|[`helpful`](./app-helpful)|An application to get feedbacks via "Was this page helpful?"|
+|[`kpt`](./app-kpt)|[KPT method](http://code-artisan.io/retrospective-method-kpt/) application for retrospective. A team can itemize keeps, problems, and tries in collaborative way.|
+|[`mandala`](./app-mandala)|An application for brainstorming.|
+|[`meetingtime`](./app-meetingtime)|It tracks duration of a meeting.|
+|[`reversi`](./app-reversi)|Play a Reversi game in Wiki.|
+|[`vote`](./app-vote)|Poll application. You can create custom choises.|
+|[`votecrypto`](./app-votecrypto)|Similar to [`vote`](./app-vote) but number of votes cannot be read easily.|
 |[`weather`](./app-weather)||
