@@ -57,6 +57,7 @@ export default class VoteApplication extends React.Component {
         width: '200px',
         height: '150px',
         borderRadius: '10px',
+        cursor: 'pointer',
       },
       barLabel: {
         display: 'inline-block',
