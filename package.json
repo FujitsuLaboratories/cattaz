@@ -7,6 +7,7 @@
     "babel-polyfill": "^6.23.0",
     "brace": "^0.10.0",
     "finalhandler": "^1.0.1",
+    "github-markdown-css": "^2.6.0",
     "hast-to-hyperscript": "^2.1.0",
     "lodash": "^4.17.4",
     "mdast-util-to-hast": "^2.4.0",
@@ -52,6 +53,8 @@
     "json-loader": "^0.5.4",
     "npm-run-all": "^4.0.2",
     "nyc": "^10.2.0",
+    "postcss": "^5.2.16",
+    "postcss-loader": "^1.3.3",
     "rimraf": "^2.6.1",
     "webpack": "^2.3.2",
     "webpack-dev-server": "^2.4.2"

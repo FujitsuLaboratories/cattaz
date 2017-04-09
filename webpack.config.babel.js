@@ -106,6 +106,23 @@ const js = {
           },
         },
       },
+      {
+        test: /github-markdown.css$/,
+        use: [
+          {
+            loader: 'file-loader',
+            query: {
+              name: 'github-markdown-md-only.css',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            query: {
+              importLoaders: 1,
+            },
+          },
+        ],
+      },
     ],
   },
 };
