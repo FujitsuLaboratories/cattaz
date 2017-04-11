@@ -14,8 +14,8 @@ function getNowTime() {
   nowTime.year = String(date.getFullYear());
   nowTime.month = fillZero((date.getMonth() + 1));
   const week = date.getDay();
-  const jpWeek = ['日', '月', '火', '水', '木', '金', '土'];
-  nowTime.week = jpWeek[week];
+  const enWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  nowTime.week = enWeek[week];
   nowTime.day = fillZero(date.getDate());
   nowTime.hour = fillZero(date.getHours());
   nowTime.minute = fillZero(date.getMinutes());
@@ -100,13 +100,13 @@ export default class MeetingTimeApplication extends React.Component {
   }
   render() {
     return (<div>
-      開始日時：&nbsp;{this.state.time.startTime.year}年{this.state.time.startTime.month}月{this.state.time.startTime.day}日（{this.state.time.startTime.week}）&nbsp;{this.state.time.startTime.hour}時{this.state.time.startTime.minute}分&nbsp;
-      <input type="button" value="開始日時更新" onClick={this.handleUpdateStartTime} />
+      Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
+      <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
       <br />
-      終了日時：&nbsp;{this.state.time.endTime.year}年{this.state.time.endTime.month}月{this.state.time.endTime.day}日（{this.state.time.endTime.week}）&nbsp;{this.state.time.endTime.hour}時{this.state.time.endTime.minute}分&nbsp;
-      <input type="button" value="終了日時更新" onClick={this.handleUpdateEndTime} />
+      End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
+      <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
       <br />
-      会議時間：&nbsp;{this.state.lengthTime}
+      Duration of a meeting: {this.state.lengthTime}
     </div>);
   }
 }
