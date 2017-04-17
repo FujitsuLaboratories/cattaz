@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import clone from 'lodash/clone';
 
 import * as RM from './ReversiModel';
@@ -86,7 +88,7 @@ export default class ReversiApplication extends React.Component {
 }
 
 ReversiApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class DATEModel {
   constructor() {
@@ -58,7 +59,7 @@ export default class DATEApplication extends React.Component {
 }
 
 DATEApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };

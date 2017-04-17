@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import NavLink from 'react-router-dom/NavLink';
 
 import AppEnabledWikiEditorAce from './AppEnabledWikiEditorAce';
@@ -52,12 +53,12 @@ export default class Page extends React.Component {
 }
 
 Page.propTypes = {
-  match: React.PropTypes.shape({
-    params: React.PropTypes.shape({
-      page: React.PropTypes.string.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      page: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  doc: React.PropTypes.bool,
+  doc: PropTypes.bool,
 };
 Page.defaultProps = {
   doc: false,

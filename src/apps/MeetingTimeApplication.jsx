@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function fillZero(num) {
   let numStr = String(num);
@@ -112,7 +113,7 @@ export default class MeetingTimeApplication extends React.Component {
 }
 
 MeetingTimeApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };

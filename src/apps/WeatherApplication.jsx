@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // OpenWeatherMap [https://openweathermap.org/]
 const apiKey = 'Your API Key';
@@ -89,7 +90,7 @@ export default class WeatherApplication extends React.Component {
 }
 
 WeatherApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };

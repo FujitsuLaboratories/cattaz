@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
@@ -50,5 +51,5 @@ export default class Main extends React.Component {
   }
 }
 Main.contextTypes = {
-  router: React.PropTypes.shape(HashRouter.propTypes).isRequired,
+  router: PropTypes.shape(HashRouter.propTypes).isRequired,
 };

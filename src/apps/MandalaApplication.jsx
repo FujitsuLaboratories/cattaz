@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import chunk from 'lodash/chunk';
 import fill from 'lodash/fill';
 
@@ -74,7 +75,7 @@ export default class MandalaApplication extends React.Component {
 }
 
 MandalaApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };

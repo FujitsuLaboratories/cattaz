@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import throttle from 'lodash/throttle';
 import brace from 'brace';
 import AceEditor from 'react-ace';
@@ -128,9 +129,9 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   }
 }
 AppEnabledWikiEditorAce.propTypes = {
-  defaultValue: React.PropTypes.string,
-  roomName: React.PropTypes.string,
-  heightMargin: React.PropTypes.number,
+  defaultValue: PropTypes.string,
+  roomName: PropTypes.string,
+  heightMargin: PropTypes.number,
 };
 AppEnabledWikiEditorAce.defaultProps = {
   defaultValue: '',

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { storiesOf, linkTo } from '@kadira/storybook';
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 
@@ -20,7 +21,7 @@ function WikiNavigationPage(props) {
   </div>);
 }
 WikiNavigationPage.propTypes = {
-  name: React.PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 storiesOf('Wiki navigation', module)
