@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { storiesOf, linkTo } from '@kadira/storybook';
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 
-import logo from '../docs/assets/cattz-10-character.png';
+import logo from '../docs/assets/cattz.svg';
 
 storiesOf('Ace', module)
   .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={'```kpt\n```\n\n```mandala\n```\n\n```reversi\n```\n\n```votecrypto\n```'} />)
@@ -26,7 +26,7 @@ WikiNavigationPage.propTypes = {
 
 storiesOf('Wiki navigation', module)
   .add('index', () => (<div>
-    <h1><img src={logo} alt="cattaz" /></h1>
+    <h1><img src={logo} alt="cattaz" width="640" /></h1>
     <h2>List of pages</h2>
     <ul>
       <li><a href="#dummy" onClick={linkTo('Wiki navigation', 'page1')}>page1</a></li>

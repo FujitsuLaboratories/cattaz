@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
-import logo from '../docs/assets/cattz-10-character.png';
+import logo from '../docs/assets/cattz.svg';
 import docs from './docs';
 
 const url = `http://${window.location.hostname}:1234`;
@@ -32,7 +32,7 @@ export default class Main extends React.Component {
   render() {
     return (
       <div>
-        <h1><img src={logo} alt="cattaz" /></h1>
+        <h1><img src={logo} alt="cattaz" width="640" /></h1>
         <h2>pages</h2>
         {this.state.getPagesError}
         <ul>

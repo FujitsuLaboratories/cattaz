@@ -4,7 +4,7 @@ import NavLink from 'react-router-dom/NavLink';
 
 import AppEnabledWikiEditorAce from './AppEnabledWikiEditorAce';
 import docs from './docs';
-import logo from '../docs/assets/cattz-10-character.png';
+import logo from '../docs/assets/cattz.svg';
 
 export default class Page extends React.Component {
   constructor() {
@@ -44,7 +44,7 @@ export default class Page extends React.Component {
     }
     return (<div>
       <div style={{ height: 33 + 4 }}>
-        <NavLink to="/"><img src={logo} alt="cattaz" width="100" height="33" /></NavLink>
+        <NavLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></NavLink>
         <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
       </div>
       <AppEnabledWikiEditorAce key={docText ? `doc/${pageName}` : pageName} roomName={roomName} defaultValue={defaultValue} heightMargin={33 + 4} />
