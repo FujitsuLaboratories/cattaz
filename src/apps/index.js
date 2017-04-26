@@ -1,6 +1,7 @@
 import kpt from './KPTApplication';
 import mandala from './MandalaApplication';
 import date from './DATEApplication';
+import datematcher from './DateMatcherApplication';
 import meetingtime from './MeetingTimeApplication';
 import reversi from './ReversiApplication';
 import vote from './VoteApplication';
@@ -12,6 +13,7 @@ export default {
   kpt,
   mandala,
   date,
+  datematcher,
   meetingtime,
   reversi,
   vote,
