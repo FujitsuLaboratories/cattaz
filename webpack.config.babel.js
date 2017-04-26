@@ -85,6 +85,11 @@ const js = {
           loader: 'babel-loader',
           query: {
             presets: ['react', 'es2015'],
+            plugins: [
+              ...(isProduction ? [
+                'transform-react-remove-prop-types',
+              ] : []),
+            ],
           },
         },
       },
