@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { diffChars } from 'diff';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
@@ -109,7 +110,39 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     if (!isOldTextEmpty) {
       const lastLine = session.getLine(appContext.position.end.line - 2);
       const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
-      session.replace(range, newText);
+      const oldText = session.getTextRange(range);
+      const changes = diffChars(oldText, newText);
+      let cursorY = range.start.row;
+      let cursorX = range.start.column;
+      const moveCursor = (lines) => {
+        if (lines.length >= 2) {
+          cursorY += lines.length - 1;
+          cursorX = lines[lines.length - 1].length;
+        } else {
+          cursorX += lines[0].length;
+        }
+      };
+      changes.forEach((c) => {
+        const lines = c.value.split('\n');
+        if (c.removed) {
+          let endY;
+          let endX;
+          if (lines.length >= 2) {
+            endY = cursorY + (lines.length - 1);
+            endX = lines[lines.length - 1].length;
+          } else {
+            endY = cursorY;
+            endX = cursorX + lines[0].length;
+          }
+          const r = new this.AceRange(cursorY, cursorX, endY, endX);
+          session.remove(r);
+        } else if (c.added) {
+          session.insert({ row: cursorY, column: cursorX }, c.value);
+          moveCursor(lines);
+        } else {
+          moveCursor(lines);
+        }
+      });
     } else {
       const position = { row: appContext.position.end.line - 1, column: 0 };
       session.insert(position, '\n');
