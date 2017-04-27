@@ -112,35 +112,29 @@ export default class AppEnabledWikiEditorAce extends React.Component {
       const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
       const oldText = session.getTextRange(range);
       const changes = diffChars(oldText, newText);
-      let cursorY = range.start.row;
-      let cursorX = range.start.column;
-      const moveCursor = (lines) => {
+      let cursor = { row: range.start.row, column: range.start.column };
+      const nextPosition = (p, str) => {
+        const lines = str.split('\n');
         if (lines.length >= 2) {
-          cursorY += lines.length - 1;
-          cursorX = lines[lines.length - 1].length;
-        } else {
-          cursorX += lines[0].length;
+          return {
+            row: p.row + (lines.length - 1),
+            column: lines[lines.length - 1].length,
+          };
         }
+        return {
+          row: p.row,
+          column: p.column + lines[0].length,
+        };
       };
       changes.forEach((c) => {
-        const lines = c.value.split('\n');
         if (c.removed) {
-          let endY;
-          let endX;
-          if (lines.length >= 2) {
-            endY = cursorY + (lines.length - 1);
-            endX = lines[lines.length - 1].length;
-          } else {
-            endY = cursorY;
-            endX = cursorX + lines[0].length;
-          }
-          const r = new this.AceRange(cursorY, cursorX, endY, endX);
-          session.remove(r);
+          const end = nextPosition(cursor, c.value);
+          session.remove(new this.AceRange(cursor.row, cursor.column, end.row, end.column));
         } else if (c.added) {
-          session.insert({ row: cursorY, column: cursorX }, c.value);
-          moveCursor(lines);
+          session.insert(cursor, c.value);
+          cursor = nextPosition(cursor, c.value);
         } else {
-          moveCursor(lines);
+          cursor = nextPosition(cursor, c.value);
         }
       });
     } else {
