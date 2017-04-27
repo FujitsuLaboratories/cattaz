@@ -43,17 +43,17 @@ export default class DATEApplication extends React.Component {
     const month = date.getMonth() + 1;
     const week = date.getDay();
     const day = date.getDate();
-    const jpWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    const enWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const hour = date.getHours();
     const minutes = date.getMinutes();
-    const value = `${year}年${month}月${day}日（${jpWeek[week]}） ${hour}時${minutes}分 `;
+    const value = `${year}-${month}-${day} (${enWeek[week]}) ${hour}:${minutes}`;
     this.state.date.updateDate(value);
     this.props.onEdit(this.state.date.serialize(), this.props.appContext);
   }
   render() {
     return (<div>
-      日時： {this.state.date.date}
-      <input type="button" value="現在日時" onClick={this.handleUpdateDate} />
+      Date and time: {this.state.date.date}
+      <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
     </div>);
   }
 }
