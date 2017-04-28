@@ -48,9 +48,11 @@ export default class MapApplication extends React.Component {
         <meta charset="utf-8">
         <style>
           #map {
-            height: 100%;
+            width: 400px;
+            height: 400px;
           }
           html, body {
+            width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
@@ -64,36 +66,39 @@ export default class MapApplication extends React.Component {
         <script>
           var map;
           var marker;
+          var geocoder;
           var latlng = { lat: ${this.state.map.lat}, lng: ${this.state.map.lng}};
           var oldLatlng = { lat: ${this.state.map.lat}, lng: ${this.state.map.lng}}; 
           function initMap() {
+            var googleLatLng = new google.maps.LatLng(latlng);
+            geocoder = new google.maps.Geocoder();
             map = new google.maps.Map(document.getElementById('map'), {
-              center: new google.maps.LatLng(latlng),
+              center: googleLatLng,
               zoom: 16
             });
             marker = new google.maps.Marker({
               map: map,
-              position: new google.maps.LatLng(latlng)
+              position: googleLatLng
             });
             google.maps.event.addListener(map, 'click', clickMap);
             function clickMap(event){
-              marker.position = event.latLng;
-              marker.setMap(map);
               latlng.lat = event.latLng.lat();
               latlng.lng = event.latLng.lng();
               if(latlng.lat !== oldLatlng.lat || latlng.lng !== oldLatlng.lng){
+                marker.position = event.latLng;
+                marker.setMap(map);
                 document.getElementById('disp').innerHTML = "Marker Changed";
               }
             }
             function receiveMessage(event) {
               if(event.origin === window.location.origin) {
                 if (event.data.type === 'setCoordinate') {
-                  map.panTo(new google.maps.LatLng(event.data.value));
-                  marker.position = new google.maps.LatLng(event.data.value);
+                  var googleLatLng = new google.maps.LatLng(event.data.value);
+                  map.panTo(googleLatLng);
+                  marker.position = googleLatLng;
                   marker.setMap(map);
                   document.getElementById('disp').innerHTML = "";
-                } else if(event.data.type === 'searchPlace') {
-                  var geocoder = new google.maps.Geocoder();
+                } else if(event.data.type === 'searchPlace') {    
                   geocoder.geocode({ 'address': event.data.value }, function(results, status) {                    
                     if (status === google.maps.GeocoderStatus.OK) {
                       document.getElementById('error').innerHTML = '';
@@ -156,7 +161,7 @@ export default class MapApplication extends React.Component {
         <input type="button" value="Search" onClick={this.handleSearchPlace} />
         <input type="button" value="Get Marker" onClick={this.handleGetMap} />
       </div>
-      <iframe ref={(input) => { this.iframe = input; }} width="400" height="400" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no">
+      <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no">
         <p>Your browser does not support iframes.</p>
       </iframe>
       <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
