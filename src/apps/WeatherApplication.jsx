@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 // OpenWeatherMap [https://openweathermap.org/]
-const apiKey = 'Your API Key';
+// Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js]
+import { openWeatherMapApiKey } from '../apikey/apikey';
+
 const baseURL = 'http://api.openweathermap.org/data/2.5/weather';
 const units = 'metric';
 const iconURL = 'http://openweathermap.org/img/w/';
@@ -58,7 +59,7 @@ export default class WeatherApplication extends React.Component {
   handleGetWeather() {
     const city = this.inputCity.value;
     if (!city) return;
-    window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${apiKey}`)
+    window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`)
     .then(response => response.json())
     .then((data) => {
       if (data.cod === 200) {
@@ -66,7 +67,7 @@ export default class WeatherApplication extends React.Component {
         this.setState({ errorMessage: '' });
         this.props.onEdit(this.state.weather.serialize(), this.props.appContext);
       } else if (data.cod === 401) {
-        this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change the code of "WeatherApplication.jsx".]` });
+        this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
       } else {
         this.setState({ errorMessage: `Get Weather Error [ ${data.message} ]` });
       }

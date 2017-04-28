@@ -13,5 +13,5 @@ Cattaz has sevral applications installed.
 |[`reversi`](./app-reversi)|Play a Reversi game in Wiki.|
 |[`vote`](./app-vote)|Poll application. You can create custom choises.|
 |[`votecrypto`](./app-votecrypto)|Similar to [`vote`](./app-vote) but number of votes cannot be read easily.|
-|[`weather`](./app-weather)|
+|[`weather`](./app-weather)|Get current weather forecast.|
 |[`map`](./app-map)|Google Maps application.|
