@@ -10,6 +10,7 @@ const files = [
   'app-vote',
   'app-votecrypto',
   'app-weather',
+  'app-map',
 ];
 
 const docs = {
