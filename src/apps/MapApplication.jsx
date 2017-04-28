@@ -1,5 +1,5 @@
 import React from 'react';
-// Please change to your own Google Maps API KEY in ../apikey/apikey.js
+// Please change to your own Google Maps API KEY in [../apikey/apikey.js]
 import { googlemapsApiKey } from '../apikey/apikey';
 
 const initCoordinate = { lat: 35.698601, lng: 139.773139 };
@@ -34,11 +34,9 @@ export default class MapApplication extends React.Component {
     super();
     this.handleSearchPlace = this.handleSearchPlace.bind(this);
     this.handleGetMap = this.handleGetMap.bind(this);
-    // this.msgHandler = this.msgHandler.bind(this);
     this.state = { map: MapModel.deserialize(props.data) };
   }
   componentDidMount() {
-    // window.addEventListener('message', this.msgHandler);
     const doc = this.iframe.contentWindow.document;
     doc.open();
     doc.write(`
@@ -77,17 +75,8 @@ export default class MapApplication extends React.Component {
               map: map,
               position: new google.maps.LatLng(latlng)
             });
-            /*
-            google.maps.event.addListener(map, 'drag', dragMap);
-            function dragMap(){
-              var latlngFunc = map.getCenter();
-              latlng.lat = latlngFunc.lat();
-              latlng.lng = latlngFunc.lng();
-            }
-            */
             google.maps.event.addListener(map, 'click', clickMap);
             function clickMap(event){
-              map.panTo(event.latLng);
               marker.position = event.latLng;
               marker.setMap(map);
               latlng.lat = event.latLng.lat();
@@ -102,6 +91,7 @@ export default class MapApplication extends React.Component {
                   map.panTo(new google.maps.LatLng(event.data.value));
                   marker.position = new google.maps.LatLng(event.data.value);
                   marker.setMap(map);
+                  document.getElementById('disp').innerHTML = "";
                 } else if(event.data.type === 'searchPlace') {
                   var geocoder = new google.maps.Geocoder();
                   geocoder.geocode({ 'address': event.data.value }, function(results, status) {                    
@@ -115,10 +105,8 @@ export default class MapApplication extends React.Component {
                       if(latlng.lat !== oldLatlng.lat || latlng.lng !== oldLatlng.lng){
                         document.getElementById('disp').innerHTML = "Marker Changed";
                       }
-                      // event.source.postMessage({ type: 'getCoordinate', value: latlng, status: true }, event.origin);
                     } else {
                       document.getElementById('error').innerHTML = 'Google Maps Error: ' + status;
-                      // event.source.postMessage({ type: 'getCoordinate', value: 0, status: false }, event.origin);
                     } 
                   });
                 } else if(event.data.type === 'getMapNotification') {
@@ -146,20 +134,6 @@ export default class MapApplication extends React.Component {
     // TODO
     return true;
   }
-  /*
-  msgHandler(event) {
-    if (event.origin === window.location.origin) {
-      if (event.data.type === 'getCoordinate') {
-        if (event.data.status) {
-          this.state.map.setCoordinate(event.data.value);
-          this.props.onEdit(this.state.map.serialize(), this.props.appContext);
-        } else {
-          console.log('search place error');
-        }
-      }
-    }
-  }
-  */
   handleSearchPlace() {
     const address = this.inputPlace.value;
     if (!address) return;
