@@ -9,6 +9,7 @@ import votecrypto from './VoteCryptoApplication';
 import helpful from './VoteHelpfulApplication';
 import weather from './WeatherApplication';
 import map from './MapApplication';
+import draw from './Draw';
 
 export default {
   kpt,
@@ -22,4 +23,5 @@ export default {
   helpful,
   weather,
   map,
+  draw,
 };
