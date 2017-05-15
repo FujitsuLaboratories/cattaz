@@ -77,7 +77,7 @@ export default class VoteApplication extends React.Component {
     };
 
     const buttonElems = ['Yes', 'No'].map(key =>
-      <input
+      (<input
         type="button"
         style={Object.assign(
           {},
@@ -87,7 +87,7 @@ export default class VoteApplication extends React.Component {
         data-index={key}
         onClick={this.handleAddVote}
         value={key}
-      />,
+      />),
     );
 
     /* eslint-disable camelcase, dot-notation, no-mixed-operators */

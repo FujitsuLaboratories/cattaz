@@ -66,9 +66,9 @@ export default class ReversiApplication extends React.Component {
   render() {
     const cells = this.state.model.getCells();
     const counts = this.state.model.getStoneCounts();
-    const rows = cells.map((r, x) => <tr>
+    const rows = cells.map((r, x) => (<tr>
       {r.map((c, y) => this.toCell(c, x, y))}
-    </tr>);
+    </tr>));
     return (<div>
       <p>
         {[RM.StoneBlack, RM.StoneWhite].map((c) => {

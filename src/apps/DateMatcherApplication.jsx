@@ -125,11 +125,11 @@ export default class DateMatcherApplication extends React.Component {
             <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
           ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
         </th>
-        {this.state.model.candidates.map(s => <td key={s} style={cellStyle}>
+        {this.state.model.candidates.map(s => (<td key={s} style={cellStyle}>
           {isEditingRow ?
             <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
             : ans[s]}
-        </td>)}
+        </td>))}
       </tr>);
     });
     return (<div>

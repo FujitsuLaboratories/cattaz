@@ -161,7 +161,7 @@ export default class MapApplication extends React.Component {
         <input type="button" value="Search" onClick={this.handleSearchPlace} />
         <input type="button" value="Get Marker" onClick={this.handleGetMap} />
       </div>
-      <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no">
+      <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
         <p>Your browser does not support iframes.</p>
       </iframe>
       <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
