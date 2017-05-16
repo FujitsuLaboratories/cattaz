@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { storiesOf, linkTo } from '@kadira/storybook';
+
+// To be converted by postcss via webpack
+import 'github-markdown-css/github-markdown.css';
+
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 
 import logo from '../docs/assets/cattz.svg';

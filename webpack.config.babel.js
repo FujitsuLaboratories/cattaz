@@ -122,9 +122,6 @@ const js = {
           },
           {
             loader: 'postcss-loader',
-            query: {
-              importLoaders: 1,
-            },
           },
         ],
       },

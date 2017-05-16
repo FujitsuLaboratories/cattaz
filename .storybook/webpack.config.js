@@ -15,6 +15,19 @@ function configure(base) {
       to: '',
     },
   ]));
+  // Disable default loaders for css defnied by storybook.
+  config.module.loaders.forEach((l) => {
+    if (l.test.source === '\\.css?$') {
+      l.exclude = /github-markdown-css/;
+    }
+  });
+  config.module.loaders.push({
+    test: /github-markdown.css$/,
+    loaders: [
+      'file-loader?name=github-markdown-md-only.css',
+      'postcss-loader',
+    ],
+  });
   return config;
 }
 

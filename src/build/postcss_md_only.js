@@ -1,6 +1,7 @@
 /* eslint import/no-extraneous-dependencies: [error, {devDependencies: true}] */
 
-import postcss from 'postcss';
+// Storybook's webpack loads this file too. Use require instead of import.
+const postcss = require('postcss');
 
 /**
  * md-only postcss plugin will convert CSS file for markdown into CSS which is not applied to wiki applicatins.
