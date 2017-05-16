@@ -18,6 +18,7 @@ function configure(base) {
   // Disable default loaders for css defnied by storybook.
   config.module.loaders.forEach((l) => {
     if (l.test.source === '\\.css?$') {
+      // eslint-disable-next-line no-param-reassign
       l.exclude = /github-markdown-css/;
     }
   });
