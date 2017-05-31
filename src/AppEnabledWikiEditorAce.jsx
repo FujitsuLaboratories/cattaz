@@ -82,9 +82,6 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     const previewWidth = vw - newWidth - (2 * resizerMargin) - 1;
     if (newWidth !== this.state.width) {
       this.setState({ width: newWidth, previewWidth });
-      if (this.editor) {
-        this.editor.editor.resize();
-      }
     }
   }
   updateSize() {
