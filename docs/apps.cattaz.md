@@ -15,3 +15,4 @@ Cattaz has sevral applications installed.
 |[`votecrypto`](./app-votecrypto)|Similar to [`vote`](./app-vote) but number of votes cannot be read easily.|
 |[`weather`](./app-weather)|Get current weather forecast.|
 |[`map`](./app-map)|Google Maps application.|
+|[`draw`](./app-draw)|Draw lots application.|
