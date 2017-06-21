@@ -48,6 +48,7 @@ const js = {
       new webpack.LoaderOptionsPlugin({
         minimize: true,
       }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
     ] : []),
   ],
   module: {
