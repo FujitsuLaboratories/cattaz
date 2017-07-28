@@ -16,12 +16,12 @@ export default class Main extends React.Component {
   }
   componentDidMount() {
     window.fetch(`${url}/pages`)
-    .then(response => response.json())
-    .then((data) => {
-      this.setState({ pages: data, getPagesError: '' });
-    }).catch((e) => {
-      this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
-    });
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ pages: data, getPagesError: '' });
+      }).catch((e) => {
+        this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
+      });
   }
   handleNew() {
     const pageName = this.newPageName.value;

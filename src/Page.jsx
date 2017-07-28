@@ -29,10 +29,10 @@ export default class Page extends React.Component {
     }
     this.setState({ docText: null });
     window.fetch(mdFileName)
-    .then(res => res.text())
-    .then((text) => {
-      this.setState({ docText: text });
-    });
+      .then(res => res.text())
+      .then((text) => {
+        this.setState({ docText: text });
+      });
   }
   render() {
     const pageName = this.props.match.params.page;

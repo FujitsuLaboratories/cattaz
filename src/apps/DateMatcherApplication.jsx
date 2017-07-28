@@ -120,10 +120,10 @@ export default class DateMatcherApplication extends React.Component {
         <th style={cellStyle}>
           {attendeeName}
           {isEditingRow ?
-          [
-            <button data-attendee={attendeeName} onClick={this.handleEndEdit}>End edit</button>,
-            <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
-          ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
+            [
+              <button data-attendee={attendeeName} onClick={this.handleEndEdit}>End edit</button>,
+              <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
+            ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
         </th>
         {this.state.model.candidates.map(s => (<td key={s} style={cellStyle}>
           {isEditingRow ?
