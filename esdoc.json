@@ -2,10 +2,17 @@
   "source": "./src",
   "includes": ["\\.(js|jsx)$"],
   "destination": "./esdoc",
-  "test": {
-    "__comment": "AVA is not mocha, but it works",
-    "type": "mocha",
-    "source": "./test",
-    "includes": ["\\.ava\\.js$"]
-  }
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "test": {
+          "source": "./test",
+          "includes": ["\\.ava\\.js$"],
+          "interfaces": ["test"]
+        }
+      }
+    },
+    {"name": "esdoc-jsx-plugin"}
+  ]
  }
