@@ -2,9 +2,9 @@
   "presets": [
     "env", "react"
   ],
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
-    }
-  }
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
 }
