@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { storiesOf, linkTo } from '@kadira/storybook';
+import { storiesOf, linkTo } from '@storybook/react';
 
 // To be converted by postcss via webpack
 import 'github-markdown-css/github-markdown.css';

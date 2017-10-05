@@ -1,6 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const defaultConfigFunc = require('@kadira/storybook/dist/server/config/defaults/webpack.config');
+const defaultConfigFunc = require('@storybook/react/dist/server/config/defaults/webpack.config');
 
 const environment = process.env.NODE_ENV;
 const isProduction = environment === 'production';
@@ -16,17 +16,24 @@ function configure(base) {
     },
   ]));
   // Disable default loaders for css defnied by storybook.
-  config.module.loaders.forEach((l) => {
-    if (l.test.source === '\\.css?$') {
+  config.module.rules.forEach((l) => {
+    if (l.test.source === '\\.css\$') {
       // eslint-disable-next-line no-param-reassign
-      l.exclude = /github-markdown-css/;
+      l.exclude = /github-markdown\.css/;
     }
   });
-  config.module.loaders.push({
+  config.module.rules.push({
     test: /github-markdown.css$/,
-    loaders: [
-      'file-loader?name=github-markdown-md-only.css',
-      'postcss-loader',
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: 'github-markdown-md-only.css',
+        },
+      },
+      {
+        loader: 'postcss-loader',
+      },
     ],
   });
   return config;
