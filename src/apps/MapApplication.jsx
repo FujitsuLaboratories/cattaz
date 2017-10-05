@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 // Please change to your own Google Maps API KEY in [../apikey/apikey.js]
 import { googlemapsApiKey } from '../apikey/apikey';
 
@@ -171,7 +172,7 @@ export default class MapApplication extends React.Component {
 }
 
 MapApplication.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onEdit: React.PropTypes.func.isRequired,
-  appContext: React.PropTypes.shape({}).isRequired,
+  data: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  appContext: PropTypes.shape({}).isRequired,
 };
