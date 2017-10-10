@@ -46,7 +46,7 @@ export default class VoteApplication extends React.Component {
     return true;
   }
   handleAddCandidates() {
-    const value = this.inputCandidates.value;
+    const { value } = this.inputCandidates;
     if (!value) return;
     if (this.state.vote.addCandidates(value)) {
       this.setState({ errorMessage: '' });
@@ -61,15 +61,15 @@ export default class VoteApplication extends React.Component {
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
   }
   render() {
-    return (<div style={{ marginBottom: '50px' }}>
-      <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-      <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
-      <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
-      <ul>
-        {Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s}: {this.state.vote.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
-      </ul>
-    </div>
-    );
+    return (
+      <div style={{ marginBottom: '50px' }}>
+        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
+        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
+        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <ul>
+          {Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s}: {this.state.vote.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
+        </ul>
+      </div>);
   }
 }
 

@@ -10,12 +10,13 @@ import 'github-markdown-css/github-markdown.css';
 import Main from './Main';
 import Page from './Page';
 
-ReactDOM.render((
+ReactDOM.render(
   <HashRouter>
     <Switch>
       <Route exact path="/" component={Main} />
       <Route path="/page/:page" component={Page} />
       <Route path="/doc/:page" render={props => <Page {...props} doc />} />
     </Switch>
-  </HashRouter>
-), document.getElementById('app'));
+  </HashRouter>,
+  document.getElementById('app'),
+);

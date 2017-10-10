@@ -66,24 +66,26 @@ export default class ReversiApplication extends React.Component {
   render() {
     const cells = this.state.model.getCells();
     const counts = this.state.model.getStoneCounts();
-    const rows = cells.map((r, x) => (<tr>
-      {r.map((c, y) => this.toCell(c, x, y))}
-    </tr>));
-    return (<div>
-      <p>
-        {[RM.StoneBlack, RM.StoneWhite].map((c) => {
-          const style = {
-            padding: '0 0.4em',
-          };
-          if (c === this.state.model.nextTurn) {
-            style.borderBottom = '4px solid MediumSlateBlue';
-          }
-          return <span style={style}>{ReversiApplication.toStoneText(c)}{counts[c]}</span>;
-        })}
-        <button onClick={this.handlePass}>Pass</button>
-      </p>
-      <table style={tableStyle}><tbody>{rows}</tbody></table>
-    </div>);
+    const rows = cells.map((r, x) => (
+      <tr>
+        {r.map((c, y) => this.toCell(c, x, y))}
+      </tr>));
+    return (
+      <div>
+        <p>
+          {[RM.StoneBlack, RM.StoneWhite].map((c) => {
+            const style = {
+              padding: '0 0.4em',
+            };
+            if (c === this.state.model.nextTurn) {
+              style.borderBottom = '4px solid MediumSlateBlue';
+            }
+            return <span style={style}>{ReversiApplication.toStoneText(c)}{counts[c]}</span>;
+          })}
+          <button onClick={this.handlePass}>Pass</button>
+        </p>
+        <table style={tableStyle}><tbody>{rows}</tbody></table>
+      </div>);
   }
 }
 

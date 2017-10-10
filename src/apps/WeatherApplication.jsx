@@ -76,17 +76,17 @@ export default class WeatherApplication extends React.Component {
       });
   }
   render() {
-    return (<div>
-      <input ref={(input) => { this.inputCity = input; }} type="text" placeholder="Add City" />
-      <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
-      <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
-      {
-        this.state.weather.city
-          ? <div>City: {this.state.weather.city}, {this.state.weather.country}<br />Weather: {this.state.weather.weather}<img src={`${iconURL}${this.state.weather.icon}.png`} alt={this.state.weather.weather} width="24px" />, Temperature: {this.state.weather.temp}℃</div>
-          : null
-      }
-    </div>
-    );
+    return (
+      <div>
+        <input ref={(input) => { this.inputCity = input; }} type="text" placeholder="Add City" />
+        <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
+        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        {
+          this.state.weather.city
+            ? <div>City: {this.state.weather.city}, {this.state.weather.country}<br />Weather: {this.state.weather.weather}<img src={`${iconURL}${this.state.weather.icon}.png`} alt={this.state.weather.weather} width="24px" />, Temperature: {this.state.weather.temp}℃</div>
+            : null
+        }
+      </div>);
   }
 }
 

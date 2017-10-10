@@ -62,7 +62,7 @@ export default class VoteCryptoApplication extends React.Component {
     return true;
   }
   handleAddCandidates() {
-    const value = this.inputCandidates.value;
+    const { value } = this.inputCandidates;
     if (!value) return;
     if (this.state.vote.addCandidates(value)) {
       this.setState({ errorMessage: '' });
@@ -92,17 +92,17 @@ export default class VoteCryptoApplication extends React.Component {
     } else {
       votingResult = Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>));
     }
-    return (<div style={{ marginBottom: '50px' }}>
-      <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-      <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
-      <div style={{ color: '#00529B' }}>{this.state.voteMessage}</div>
-      <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
-      <ul>
-        {votingResult}
-      </ul>
-      <input type="button" value="Result" onClick={this.handleVotingResult} />
-    </div>
-    );
+    return (
+      <div style={{ marginBottom: '50px' }}>
+        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
+        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
+        <div style={{ color: '#00529B' }}>{this.state.voteMessage}</div>
+        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <ul>
+          {votingResult}
+        </ul>
+        <input type="button" value="Result" onClick={this.handleVotingResult} />
+      </div>);
   }
 }
 

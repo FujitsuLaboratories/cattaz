@@ -76,8 +76,8 @@ export default class VoteApplication extends React.Component {
       },
     };
 
-    const buttonElems = ['Yes', 'No'].map(key =>
-      (<input
+    const buttonElems = ['Yes', 'No'].map(key => (
+      <input
         type="button"
         style={Object.assign(
           {},
@@ -87,8 +87,7 @@ export default class VoteApplication extends React.Component {
         data-index={key}
         onClick={this.handleAddVote}
         value={key}
-      />),
-    );
+      />));
 
     /* eslint-disable camelcase, dot-notation, no-mixed-operators */
     const W = 320;
@@ -97,26 +96,28 @@ export default class VoteApplication extends React.Component {
     const w_y = n_y / (n_y + n_n);
     const w_n = n_n / (n_y + n_n);
 
-    const barElems = (<div style={{ marginTop: '10px', textAlign: 'center', width: `${(2 * 200) + (4 * 10)}px` }}>
-      <span style={styles.barLabel}>{Math.round(w_y * 100)}%</span>
-      <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: n_y / (n_y + n_n) * W })}>{n_y}</span>
-      <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: n_n / (n_y + n_n) * W })}>{n_n}</span>
-      <span style={styles.barLabel}>{Math.round(w_n * 100)}%</span>
-    </div>);
+    const barElems = (
+      <div style={{ marginTop: '10px', textAlign: 'center', width: `${(2 * 200) + (4 * 10)}px` }}>
+        <span style={styles.barLabel}>{Math.round(w_y * 100)}%</span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: n_y / (n_y + n_n) * W })}>{n_y}</span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: n_n / (n_y + n_n) * W })}>{n_n}</span>
+        <span style={styles.barLabel}>{Math.round(w_n * 100)}%</span>
+      </div>);
     /* eslint-enable */
 
-    return (<div>
-      {
-        this.state.voted
-          ? <p style={styles.message}>Thank you for contribution!</p>
-          : buttonElems
-      }
-      {
-        this.state.vote.candidates.Yes + this.state.vote.candidates.No > 0
-          ? barElems
-          : null
-      }
-    </div>);
+    return (
+      <div>
+        {
+          this.state.voted
+            ? <p style={styles.message}>Thank you for contribution!</p>
+            : buttonElems
+        }
+        {
+          this.state.vote.candidates.Yes + this.state.vote.candidates.No > 0
+            ? barElems
+            : null
+        }
+      </div>);
   }
 }
 

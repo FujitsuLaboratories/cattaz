@@ -36,7 +36,7 @@ function calculationDuration(startTime, endTime) {
   const msStartTime = `${startTime.year}-${startTime.month}-${startTime.day} ${startTime.hour}:${startTime.minute}`;
   const msEndTime = `${endTime.year}-${endTime.month}-${endTime.day} ${endTime.hour}:${endTime.minute}`;
   const tmpLengthTime = Date.parse(msEndTime) - Date.parse(msStartTime);
-  if (!isNaN(tmpLengthTime)) {
+  if (!Number.isNaN(tmpLengthTime)) {
     if (tmpLengthTime >= 0) {
       lengthTime = ms2hour(Date.parse(msEndTime) - Date.parse(msStartTime));
     } else {
@@ -48,8 +48,12 @@ function calculationDuration(startTime, endTime) {
 
 class MeetingTimeModel {
   constructor() {
-    this.startTime = { year: '????', month: '??', day: '??', week: '?', hour: '??', minute: '??' };
-    this.endTime = { year: '????', month: '??', day: '??', week: '?', hour: '??', minute: '??' };
+    this.startTime = {
+      year: '????', month: '??', day: '??', week: '?', hour: '??', minute: '??',
+    };
+    this.endTime = {
+      year: '????', month: '??', day: '??', week: '?', hour: '??', minute: '??',
+    };
   }
   updateStartTime(obj) {
     this.startTime = obj;
@@ -100,15 +104,16 @@ export default class MeetingTimeApplication extends React.Component {
     this.props.onEdit(this.state.time.serialize(), this.props.appContext);
   }
   render() {
-    return (<div>
-      Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
-      <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
-      <br />
-      End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
-      <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
-      <br />
-      Duration of a meeting: {this.state.lengthTime}
-    </div>);
+    return (
+      <div>
+        Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
+        <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
+        <br />
+        End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
+        <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
+        <br />
+        Duration of a meeting: {this.state.lengthTime}
+      </div>);
   }
 }
 

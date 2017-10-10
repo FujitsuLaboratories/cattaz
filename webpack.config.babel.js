@@ -24,18 +24,16 @@ const js = {
   },
   devtool: 'source-map',
   plugins: [
-    new CopyWebpackPlugin(
-      [
-        {
-          from: 'src/index.html',
-          to: '',
-        },
-        {
-          from: 'src/cattaz.css',
-          to: '',
-        },
-      ],
-    ),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/index.html',
+        to: '',
+      },
+      {
+        from: 'src/cattaz.css',
+        to: '',
+      },
+    ]),
     ...(isProduction ? [
       new webpack.DefinePlugin({
         'process.env': {

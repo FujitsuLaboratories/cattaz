@@ -43,7 +43,7 @@ export default class MandalaApplication extends React.Component {
   }
   handleCellChange(event) {
     const index = parseInt(event.target.getAttribute('data-index'), 10);
-    const value = event.target.value;
+    const { value } = event.target;
     this.state.mandala.changeCell(index, value);
     this.props.onEdit(this.state.mandala.serialize(), this.props.appContext);
   }
@@ -64,13 +64,8 @@ export default class MandalaApplication extends React.Component {
     };
     const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
       rowData.map((text, colIndex) =>
-        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />,
-      ),
-    );
-    return (<div><div style={blockStyle}>
-      {rows.map(row => [row, <br />])}
-    </div></div>
-    );
+        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />));
+    return <div><div style={blockStyle}>{rows.map(row => [row, <br />])}</div></div>;
   }
 }
 

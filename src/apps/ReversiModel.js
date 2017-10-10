@@ -40,8 +40,7 @@ function findFlippables(cells, x, y, color) {
     flatMap(directions, (directionY) => {
       if (directionX === 0 && directionY === 0) return [];
       return findFlippablesInDirection(cells, x, y, color, directionX, directionY);
-    }),
-  );
+    }));
 }
 
 export default class ReversiModel {

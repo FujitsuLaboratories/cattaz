@@ -155,19 +155,19 @@ export default class MapApplication extends React.Component {
     if (!googlemapsApiKey) {
       apiKeyErrorMessage = 'No API KEY. Please change to your own Google Maps API KEY in [../apikey/apikey.js].';
     }
-    return (<div>
+    return (
       <div>
-        <div style={{ color: '#ba000d' }}>{apiKeyErrorMessage}</div>
-        <input ref={(input) => { this.inputPlace = input; }} type="text" placeholder="Add Place" />
-        <input type="button" value="Search" onClick={this.handleSearchPlace} />
-        <input type="button" value="Get Marker" onClick={this.handleGetMap} />
-      </div>
-      <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
-        <p>Your browser does not support iframes.</p>
-      </iframe>
-      <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
-    </div>
-    );
+        <div>
+          <div style={{ color: '#ba000d' }}>{apiKeyErrorMessage}</div>
+          <input ref={(input) => { this.inputPlace = input; }} type="text" placeholder="Add Place" />
+          <input type="button" value="Search" onClick={this.handleSearchPlace} />
+          <input type="button" value="Get Marker" onClick={this.handleGetMap} />
+        </div>
+        <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
+          <p>Your browser does not support iframes.</p>
+        </iframe>
+        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+      </div>);
   }
 }
 

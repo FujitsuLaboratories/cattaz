@@ -51,10 +51,11 @@ export default class DATEApplication extends React.Component {
     this.props.onEdit(this.state.date.serialize(), this.props.appContext);
   }
   render() {
-    return (<div>
-      Date and time: {this.state.date.date}
-      <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
-    </div>);
+    return (
+      <div>
+        Date and time: {this.state.date.date}
+        <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
+      </div>);
   }
 }
 

@@ -144,7 +144,15 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
         <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={`${this.state.height}px`} width={`${this.state.width}px`} />
-        <div style={{ overflow: 'auto', width: this.state.previewWidth, height: this.state.height, paddingLeft: resizerMargin }} className="markdown-body">
+        <div
+          style={{
+            overflow: 'auto',
+            width: this.state.previewWidth,
+            height: this.state.height,
+            paddingLeft: resizerMargin,
+          }}
+          className="markdown-body"
+        >
           {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
         </div>
       </SplitPane>

@@ -59,7 +59,7 @@ export default class DateMatcherApplication extends React.Component {
     this.setState({ model });
   }
   handleSetCandidates() {
-    const value = this.inputCandidates.value;
+    const { value } = this.inputCandidates;
     if (!value) return;
     const candidates = uniq(value.split('\n').map(s => s.trim()).filter(s => s));
     if (candidates.length === 0) return;
@@ -67,7 +67,7 @@ export default class DateMatcherApplication extends React.Component {
     this.props.onEdit(this.state.model.serialize(), this.props.appContext);
   }
   handleAddAttendee() {
-    const value = this.inputNewAttendee.value;
+    const { value } = this.inputNewAttendee;
     if (!value) return;
     const attendeeName = value.trim();
     if (!attendeeName) return;
@@ -102,46 +102,51 @@ export default class DateMatcherApplication extends React.Component {
     this.setState({ editing: null });
   }
   renderAdmin() {
-    return (<div>
-      <textarea ref={(c) => { this.inputCandidates = c; }} />
-      <p>Fill meeting time candidates for each line.</p>
-      <button onClick={this.handleSetCandidates}>Start date matching</button>
-    </div>);
+    return (
+      <div>
+        <textarea ref={(c) => { this.inputCandidates = c; }} />
+        <p>Fill meeting time candidates for each line.</p>
+        <button onClick={this.handleSetCandidates}>Start date matching</button>
+      </div>);
   }
   renderAnswers() {
-    const header = (<tr>
-      <th />
-      {this.state.model.candidates.map(s => <th style={cellStyle}>{s}</th>)}
-    </tr>);
+    const header = (
+      <tr>
+        <th />
+        {this.state.model.candidates.map(s => <th style={cellStyle}>{s}</th>)}
+      </tr>);
     const attendees = Object.keys(this.state.model.attendees).map((attendeeName) => {
       const ans = this.state.model.attendees[attendeeName];
       const isEditingRow = attendeeName === this.state.editing;
-      return (<tr key={attendeeName}>
-        <th style={cellStyle}>
-          {attendeeName}
-          {isEditingRow ?
-            [
-              <button data-attendee={attendeeName} onClick={this.handleEndEdit}>End edit</button>,
-              <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
-            ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
-        </th>
-        {this.state.model.candidates.map(s => (<td key={s} style={cellStyle}>
-          {isEditingRow ?
-            <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
-            : ans[s]}
-        </td>))}
-      </tr>);
+      return (
+        <tr key={attendeeName}>
+          <th style={cellStyle}>
+            {attendeeName}
+            {isEditingRow ?
+              [
+                <button data-attendee={attendeeName} onClick={this.handleEndEdit}>End edit</button>,
+                <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
+              ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
+          </th>
+          {this.state.model.candidates.map(s => (
+            <td key={s} style={cellStyle}>
+              {isEditingRow ?
+                <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
+                : ans[s]}
+            </td>))}
+        </tr>);
     });
-    return (<div>
-      <table style={{ borderCollapse: 'collapse' }}>
-        <thead>{header}</thead>
-        <tbody>{attendees}</tbody>
-      </table>
-      <p>
-        <input ref={(c) => { this.inputNewAttendee = c; }} type="text" placeholder="attenndee name" />
-        <button onClick={this.handleAddAttendee}>Add attendee</button>
-      </p>
-    </div>);
+    return (
+      <div>
+        <table style={{ borderCollapse: 'collapse' }}>
+          <thead>{header}</thead>
+          <tbody>{attendees}</tbody>
+        </table>
+        <p>
+          <input ref={(c) => { this.inputNewAttendee = c; }} type="text" placeholder="attenndee name" />
+          <button onClick={this.handleAddAttendee}>Add attendee</button>
+        </p>
+      </div>);
   }
   render() {
     if (this.state.model.candidates.length === 0) {

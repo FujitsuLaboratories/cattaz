@@ -49,7 +49,7 @@ export default class DrawApplication extends React.Component {
     clearInterval(this.intervalId);
   }
   handleAddCandidates() {
-    const value = this.inputCandidates.value;
+    const { value } = this.inputCandidates;
     if (!value) return;
     this.state.draw.addCandidates(value);
     this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
@@ -79,15 +79,26 @@ export default class DrawApplication extends React.Component {
     if (this.state.elected && this.state.elected.length > 10) {
       dispElected = `${this.state.elected.substr(0, 10)}...`;
     }
-    return (<div style={{ marginBottom: '50px' }}>
-      <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-      <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
-      <div>Candidates {JSON.stringify(this.state.draw.candidates)}</div>
-      <div>Elected [{this.state.draw.elected}]</div>
-      <div style={{ border: '1px solid #000', backgroundColor: bgColor, width: '250px', height: '50px', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>{dispElected}</div>
-      <input type="button" value={startStopBtnValue} onClick={this.handleStartStop} />
-    </div>
-    );
+    return (
+      <div style={{ marginBottom: '50px' }}>
+        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
+        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
+        <div>Candidates {JSON.stringify(this.state.draw.candidates)}</div>
+        <div>Elected [{this.state.draw.elected}]</div>
+        <div style={{
+            border: '1px solid #000',
+            backgroundColor: bgColor,
+            width: '250px',
+            height: '50px',
+            textAlign: 'center',
+            display: 'table-cell',
+            verticalAlign: 'middle',
+          }}
+        >
+          {dispElected}
+        </div>
+        <input type="button" value={startStopBtnValue} onClick={this.handleStartStop} />
+      </div>);
   }
 }
 

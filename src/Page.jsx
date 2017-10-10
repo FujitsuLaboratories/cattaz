@@ -38,17 +38,18 @@ export default class Page extends React.Component {
     const pageName = this.props.match.params.page;
     const roomName = this.props.doc ? null : pageName;
     let defaultValue = this.props.doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
-    const docText = this.state.docText;
+    const { docText } = this.state;
     if (docText) {
       defaultValue = docText;
     }
-    return (<div>
-      <div style={{ height: 33 + 4 }}>
-        <NavLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></NavLink>
-        <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
-      </div>
-      <AppEnabledWikiEditorAce key={docText ? `doc/${pageName}` : pageName} roomName={roomName} defaultValue={defaultValue} heightMargin={33 + 4} />
-    </div>);
+    return (
+      <div>
+        <div style={{ height: 33 + 4 }}>
+          <NavLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></NavLink>
+          <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
+        </div>
+        <AppEnabledWikiEditorAce key={docText ? `doc/${pageName}` : pageName} roomName={roomName} defaultValue={defaultValue} heightMargin={33 + 4} />
+      </div>);
   }
 }
 

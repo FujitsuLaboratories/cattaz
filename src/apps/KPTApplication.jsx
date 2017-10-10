@@ -55,47 +55,49 @@ export default class KPTApplication extends React.Component {
     return true;
   }
   handleAddKeep() {
-    const value = this.inputKeep.value;
+    const { value } = this.inputKeep;
     if (!value) return;
     this.state.kpt.addKeep(value);
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddProblem() {
-    const value = this.inputProblem.value;
+    const { value } = this.inputProblem;
     if (!value) return;
     this.state.kpt.addProblem(value);
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddTry() {
-    const value = this.inputTry.value;
+    const { value } = this.inputTry;
     if (!value) return;
     this.state.kpt.addTry(value);
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
-    return (<td rowSpan={rowSpan} style={cellStyle}>
-      <h2>{title}</h2>
-      <ul>
-        {items.map(s => (<li>{s}</li>))}
-      </ul>
-      <input ref={(c) => { this[`input${title}`] = c; }} type="text" placeholder={`Add ${title}`} />
-      <input type="button" value="Add" onClick={handlerAdd} />
-    </td>);
+    return (
+      <td rowSpan={rowSpan} style={cellStyle}>
+        <h2>{title}</h2>
+        <ul>
+          {items.map(s => (<li>{s}</li>))}
+        </ul>
+        <input ref={(c) => { this[`input${title}`] = c; }} type="text" placeholder={`Add ${title}`} />
+        <input type="button" value="Add" onClick={handlerAdd} />
+      </td>);
   }
   render() {
-    return (<div>
-      <table>
-        <tbody>
-          <tr>
-            {this.renderCell('Keep', this.state.kpt.keeps, this.handleAddKeep)}
-            {this.renderCell('Try', this.state.kpt.tries, this.handleAddTry, 2)}
-          </tr>
-          <tr>
-            {this.renderCell('Problem', this.state.kpt.problems, this.handleAddProblem)}
-          </tr>
-        </tbody>
-      </table>
-    </div>);
+    return (
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              {this.renderCell('Keep', this.state.kpt.keeps, this.handleAddKeep)}
+              {this.renderCell('Try', this.state.kpt.tries, this.handleAddTry, 2)}
+            </tr>
+            <tr>
+              {this.renderCell('Problem', this.state.kpt.problems, this.handleAddProblem)}
+            </tr>
+          </tbody>
+        </table>
+      </div>);
   }
 }
 
