@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { diffChars } from 'diff';
+import { diffChars } from 'diff';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/markdown/markdown';
 import SplitPane from 'react-split-pane';
@@ -100,13 +100,43 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.setState({ text, hast });
   }
   handleAppEdit(newText, appContext) {
-    // TODO use diff
-    const text = WikiParser.replaceAppCode(this.state.text, appContext.position, appContext.language, newText);
-    const hastOriginal = WikiParser.parseToHast(text);
-    const hast = WikiParser.convertToCustomHast(hastOriginal);
-    this.setState({ text, hast });
-    if (this.editor) {
-      this.editor.getCodeMirror().setValue(text);
+    const cm = this.editor.getCodeMirror();
+    const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
+    if (!isOldTextEmpty) {
+      const lastLine = cm.getLine(appContext.position.end.line - 2);
+      const startPos = { line: appContext.position.start.line, ch: 0 };
+      const endPos = { line: appContext.position.end.line - 2, ch: lastLine.length };
+      const oldText = cm.getRange(startPos, endPos);
+      const changes = diffChars(oldText, newText);
+      let cursor = { line: startPos.line, ch: startPos.ch };
+      const nextPosition = (p, str) => {
+        const lines = str.split('\n');
+        if (lines.length >= 2) {
+          return {
+            line: p.line + (lines.length - 1),
+            ch: lines[lines.length - 1].length,
+          };
+        }
+        return {
+          line: p.line,
+          ch: p.ch + lines[0].length,
+        };
+      };
+      changes.forEach((c) => {
+        if (c.removed) {
+          const end = nextPosition(cursor, c.value);
+          cm.replaceRange('', cursor, end);
+        } else if (c.added) {
+          cm.replaceRange(c.value, cursor);
+          cursor = nextPosition(cursor, c.value);
+        } else {
+          cursor = nextPosition(cursor, c.value);
+        }
+      });
+    } else {
+      const position = { line: appContext.position.end.line - 1, ch: 0 };
+      cm.replaceRange('\n', position);
+      cm.replaceRange(newText, position);
     }
   }
   render() {
