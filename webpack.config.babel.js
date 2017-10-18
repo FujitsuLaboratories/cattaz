@@ -33,6 +33,15 @@ const js = {
         from: 'src/cattaz.css',
         to: '',
       },
+      {
+        from: 'node_modules/codemirror/lib/codemirror.css',
+        to: '',
+      },
+      {
+        from: 'node_modules/codemirror/theme/*.css',
+        to: 'codemirror-theme',
+        flatten: true,
+      },
     ]),
     ...(isProduction ? [
       new webpack.DefinePlugin({

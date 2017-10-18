@@ -14,6 +14,15 @@ function configure(base) {
       from: 'src/cattaz.css',
       to: '',
     },
+    {
+      from: 'node_modules/codemirror/lib/codemirror.css',
+      to: '',
+    },
+    {
+      from: 'node_modules/codemirror/theme/*.css',
+      to: 'codemirror-theme',
+      flatten: true,
+    },
   ]));
   // Disable default loaders for css defnied by storybook.
   config.module.rules.forEach((l) => {
