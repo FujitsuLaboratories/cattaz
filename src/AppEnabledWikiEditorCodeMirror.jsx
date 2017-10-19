@@ -122,21 +122,25 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           ch: p.ch + lines[0].length,
         };
       };
-      changes.forEach((c) => {
-        if (c.removed) {
-          const end = nextPosition(cursor, c.value);
-          cm.replaceRange('', cursor, end);
-        } else if (c.added) {
-          cm.replaceRange(c.value, cursor);
-          cursor = nextPosition(cursor, c.value);
-        } else {
-          cursor = nextPosition(cursor, c.value);
-        }
+      cm.operation(() => {
+        changes.forEach((c) => {
+          if (c.removed) {
+            const end = nextPosition(cursor, c.value);
+            cm.replaceRange('', cursor, end);
+          } else if (c.added) {
+            cm.replaceRange(c.value, cursor);
+            cursor = nextPosition(cursor, c.value);
+          } else {
+            cursor = nextPosition(cursor, c.value);
+          }
+        });
       });
     } else {
       const position = { line: appContext.position.end.line - 1, ch: 0 };
-      cm.replaceRange('\n', position);
-      cm.replaceRange(newText, position);
+      cm.operation(() => {
+        cm.replaceRange('\n', position);
+        cm.replaceRange(newText, position);
+      });
     }
   }
   render() {
