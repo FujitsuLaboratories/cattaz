@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import NavLink from 'react-router-dom/NavLink';
 
-import AppEnabledWikiEditorAce from './AppEnabledWikiEditorAce';
+import AppEnabledWikiEditor from './AppEnabledWikiEditorCodeMirror';
 import docs from './docs';
 import logo from '../docs/assets/cattz.svg';
 
@@ -45,7 +45,7 @@ export default class Page extends React.Component {
           <NavLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></NavLink>
           <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
         </div>
-        <AppEnabledWikiEditorAce key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} />
+        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} />
       </div>);
   }
 }
