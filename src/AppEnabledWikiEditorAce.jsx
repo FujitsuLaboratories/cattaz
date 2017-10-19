@@ -58,6 +58,11 @@ export default class AppEnabledWikiEditorAce extends React.Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      this.handleEdit(nextProps.value);
+    }
+  }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
     if (this.y) {
@@ -161,11 +166,13 @@ export default class AppEnabledWikiEditorAce extends React.Component {
 }
 AppEnabledWikiEditorAce.propTypes = {
   defaultValue: PropTypes.string,
+  value: PropTypes.string,
   roomName: PropTypes.string,
   heightMargin: PropTypes.number,
 };
 AppEnabledWikiEditorAce.defaultProps = {
   defaultValue: '',
+  value: null,
   roomName: null,
   heightMargin: 0,
 };

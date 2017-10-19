@@ -52,6 +52,12 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      this.setState({ text: nextProps.value });
+      this.editor.getCodeMirror().setValue(nextProps.value);
+    }
+  }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
     if (this.editor) {
@@ -170,11 +176,13 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
 }
 AppEnabledWikiEditorCodeMirror.propTypes = {
   defaultValue: PropTypes.string,
+  value: PropTypes.string,
   roomName: PropTypes.string,
   heightMargin: PropTypes.number,
 };
 AppEnabledWikiEditorCodeMirror.defaultProps = {
   defaultValue: '',
+  value: null,
   roomName: null,
   heightMargin: 0,
 };
