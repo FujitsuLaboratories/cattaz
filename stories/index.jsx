@@ -6,6 +6,7 @@ import { storiesOf, linkTo } from '@storybook/react';
 import 'github-markdown-css/github-markdown.css';
 
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
+import AppEnabledWikiEditorCodeMirror from '../src/AppEnabledWikiEditorCodeMirror';
 
 import logo from '../docs/assets/cattz.svg';
 
@@ -14,6 +15,11 @@ storiesOf('Ace', module)
   .add('sync in room1', () => <AppEnabledWikiEditorAce defaultValue="syncing with room1" roomName="room1" />)
   .add('sync in room2', () => <AppEnabledWikiEditorAce defaultValue="syncing with room2" roomName="room2" />);
 
+storiesOf('CodeMirror', module)
+  .add('no sync', () => <AppEnabledWikiEditorCodeMirror defaultValue={['kpt', 'mandala', 'votecrypto'].map(s => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
+  .add('sync in room1', () => <AppEnabledWikiEditorCodeMirror defaultValue="syncing with room1" roomName="room1" />)
+  .add('sync in room2', () => <AppEnabledWikiEditorCodeMirror defaultValue="syncing with room2" roomName="room2" />);
+
 function WikiNavigationPage(props) {
   return (
     <div>
@@ -21,7 +27,7 @@ function WikiNavigationPage(props) {
         <a href="#dummy" onClick={linkTo('Wiki navigation', 'index')}><img src={logo} alt="cattaz" width="100" height="33" /></a>
         <span style={{ margin: '0em 1em', verticalAlign: 'top', fontSize: '24px' }}>{props.name}</span>
       </div>
-      <AppEnabledWikiEditorAce defaultValue="syncing..." roomName={props.name} heightMargin={33 + 4} />
+      <AppEnabledWikiEditorCodeMirror defaultValue="syncing..." roomName={props.name} heightMargin={33 + 4} />
     </div>);
 }
 WikiNavigationPage.propTypes = {

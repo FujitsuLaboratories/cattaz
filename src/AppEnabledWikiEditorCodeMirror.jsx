@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { diffChars } from 'diff';
-import brace from 'brace';
-import AceEditor from 'react-ace';
-import 'brace/mode/markdown';
-import 'brace/theme/tomorrow_night';
+import CodeMirror from 'react-codemirror';
+import 'codemirror/mode/markdown/markdown';
 import SplitPane from 'react-split-pane';
 
 import Y from 'yjs/dist/y.es6';
@@ -19,11 +17,9 @@ import WikiParser from './WikiParser';
 
 Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
-const aceRequire = brace.acequire;
-
 const resizerMargin = 12;
 
-export default class AppEnabledWikiEditorAce extends React.Component {
+export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   constructor(props) {
     super();
     this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), editorPercentage: 50 };
@@ -31,14 +27,12 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
-    this.AceRange = aceRequire('ace/range').Range;
-  }
-  componentWillMount() {
-    this.updateHeight();
-    this.updateWidth();
-    window.addEventListener('resize', this.handleResize);
   }
   componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+    this.editor.getCodeMirror().on('changes', this.handleEdit);
+    this.updateHeight();
+    this.updateWidth();
     if (this.props.roomName) {
       Y({
         db: {
@@ -54,19 +48,23 @@ export default class AppEnabledWikiEditorAce extends React.Component {
         },
       }).then((y) => {
         this.y = y;
-        y.share.textarea.bindAce(this.editor.editor, { aceRequire });
+        y.share.textarea.bindCodeMirror(this.editor.getCodeMirror());
       });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      this.handleEdit(nextProps.value);
+      this.setState({ text: nextProps.value });
+      this.editor.getCodeMirror().setValue(nextProps.value);
     }
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
+    if (this.editor) {
+      this.editor.getCodeMirror().off('changes', this.handleEdit);
+    }
     if (this.y) {
-      this.y.share.textarea.unbindAce(this.editor.editor);
+      this.y.share.textarea.unbindCodeMirror(this.editor.getCodeMirror());
     }
   }
   updateHeight() {
@@ -74,7 +72,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     if (newHeight !== this.state.height) {
       this.setState({ height: newHeight });
       if (this.editor) {
-        this.editor.editor.resize();
+        this.editor.getCodeMirror().setSize(null, newHeight);
       }
     }
   }
@@ -101,54 +99,66 @@ export default class AppEnabledWikiEditorAce extends React.Component {
       this.updateWidth();
     }
   }
-  handleEdit(text) {
+  handleEdit() {
+    const text = this.editor.getCodeMirror().getValue();
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ text, hast });
   }
   handleAppEdit(newText, appContext) {
-    const session = this.editor.editor.getSession();
+    const cm = this.editor.getCodeMirror();
     const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
     if (!isOldTextEmpty) {
-      const lastLine = session.getLine(appContext.position.end.line - 2);
-      const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
-      const oldText = session.getTextRange(range);
+      const lastLine = cm.getLine(appContext.position.end.line - 2);
+      const startPos = { line: appContext.position.start.line, ch: 0 };
+      const endPos = { line: appContext.position.end.line - 2, ch: lastLine.length };
+      const oldText = cm.getRange(startPos, endPos);
       const changes = diffChars(oldText, newText);
-      let cursor = { row: range.start.row, column: range.start.column };
+      let cursor = { line: startPos.line, ch: startPos.ch };
       const nextPosition = (p, str) => {
         const lines = str.split('\n');
         if (lines.length >= 2) {
           return {
-            row: p.row + (lines.length - 1),
-            column: lines[lines.length - 1].length,
+            line: p.line + (lines.length - 1),
+            ch: lines[lines.length - 1].length,
           };
         }
         return {
-          row: p.row,
-          column: p.column + lines[0].length,
+          line: p.line,
+          ch: p.ch + lines[0].length,
         };
       };
-      changes.forEach((c) => {
-        if (c.removed) {
-          const end = nextPosition(cursor, c.value);
-          session.remove(new this.AceRange(cursor.row, cursor.column, end.row, end.column));
-        } else if (c.added) {
-          session.insert(cursor, c.value);
-          cursor = nextPosition(cursor, c.value);
-        } else {
-          cursor = nextPosition(cursor, c.value);
-        }
+      cm.operation(() => {
+        changes.forEach((c) => {
+          if (c.removed) {
+            const end = nextPosition(cursor, c.value);
+            cm.replaceRange('', cursor, end);
+          } else if (c.added) {
+            cm.replaceRange(c.value, cursor);
+            cursor = nextPosition(cursor, c.value);
+          } else {
+            cursor = nextPosition(cursor, c.value);
+          }
+        });
       });
     } else {
-      const position = { row: appContext.position.end.line - 1, column: 0 };
-      session.insert(position, '\n');
-      session.insert(position, newText);
+      const position = { line: appContext.position.end.line - 1, ch: 0 };
+      cm.operation(() => {
+        cm.replaceRange('\n', position);
+        cm.replaceRange(newText, position);
+      });
     }
   }
   render() {
+    const cmOptions = {
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      theme: '3024-night',
+    };
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <AceEditor ref={(c) => { this.editor = c; }} onChange={this.handleEdit} mode="markdown" theme="tomorrow_night" wrapEnabled value={this.state.text} height={`${this.state.height}px`} width={`${this.state.width}px`} />
+        <CodeMirror ref={(c) => { this.editor = c; }} value={this.state.text} options={cmOptions} />
         <div
           style={{
             overflow: 'auto',
@@ -164,13 +174,13 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     );
   }
 }
-AppEnabledWikiEditorAce.propTypes = {
+AppEnabledWikiEditorCodeMirror.propTypes = {
   defaultValue: PropTypes.string,
   value: PropTypes.string,
   roomName: PropTypes.string,
   heightMargin: PropTypes.number,
 };
-AppEnabledWikiEditorAce.defaultProps = {
+AppEnabledWikiEditorCodeMirror.defaultProps = {
   defaultValue: '',
   value: null,
   roomName: null,
