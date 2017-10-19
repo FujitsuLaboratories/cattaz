@@ -154,7 +154,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,
-      theme: 'seti',
+      theme: '3024-night',
     };
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
