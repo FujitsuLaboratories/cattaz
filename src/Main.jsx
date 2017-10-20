@@ -36,7 +36,7 @@ export default class Main extends React.Component {
         <h2>pages</h2>
         {this.state.getPagesError}
         <ul>
-          {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${encodeURIComponent(p)}`}>{p}</NavLink></li>)}
+          {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${p}`}>{decodeURIComponent(p)}</NavLink></li>)}
         </ul>
         <p>
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
