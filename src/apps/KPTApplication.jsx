@@ -34,7 +34,7 @@ class KPTModel {
 }
 
 const cellStyle = {
-  border: '1px solid silver',
+  border: '1px solid grey',
   verticalAlign: 'top',
 };
 
@@ -78,9 +78,11 @@ export default class KPTApplication extends React.Component {
         <h2>{title}</h2>
         <ul>
           {items.map(s => (<li>{s}</li>))}
+          <li key="input">
+            <input ref={(c) => { this[`input${title}`] = c; }} type="text" placeholder={`Add ${title}`} />
+            <input type="button" value="Add" onClick={handlerAdd} />
+          </li>
         </ul>
-        <input ref={(c) => { this[`input${title}`] = c; }} type="text" placeholder={`Add ${title}`} />
-        <input type="button" value="Add" onClick={handlerAdd} />
       </td>);
   }
   render() {
