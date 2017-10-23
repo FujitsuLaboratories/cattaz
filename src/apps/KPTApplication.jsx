@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 class KPTModel {
   constructor() {
@@ -15,6 +16,9 @@ class KPTModel {
   }
   addTry(str) {
     this.tries.push(str);
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -47,12 +51,13 @@ export default class KPTApplication extends React.Component {
     this.state = { kpt: KPTModel.deserialize(props.data) };
   }
   componentWillReceiveProps(newProps) {
-    const kpt = KPTModel.deserialize(newProps.data);
-    this.setState({ kpt });
+    if (this.props.data !== newProps.data) {
+      const kpt = KPTModel.deserialize(newProps.data);
+      this.setState({ kpt });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.kpt.equals(nextState.kpt);
   }
   handleAddKeep() {
     const { value } = this.inputKeep;

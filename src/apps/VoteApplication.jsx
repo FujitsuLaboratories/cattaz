@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 class VoteModel {
   constructor() {
@@ -14,6 +15,9 @@ class VoteModel {
   }
   addVote(name) {
     this.candidates[name] = this.candidates[name] + 1;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -38,17 +42,19 @@ export default class VoteApplication extends React.Component {
     this.state = { vote: VoteModel.deserialize(props.data), errorMessage: '' };
   }
   componentWillReceiveProps(newProps) {
-    const vote = VoteModel.deserialize(newProps.data);
-    this.setState({ vote });
+    if (this.props.data !== newProps.data) {
+      const vote = VoteModel.deserialize(newProps.data);
+      this.setState({ vote });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.vote.equals(nextState.vote) || this.state.errorMessage !== nextState.errorMessage;
   }
   handleAddCandidates() {
     const { value } = this.inputCandidates;
     if (!value) return;
     if (this.state.vote.addCandidates(value)) {
+      this.forceUpdate();
       this.setState({ errorMessage: '' });
       this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
     } else {
@@ -58,6 +64,7 @@ export default class VoteApplication extends React.Component {
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
     this.state.vote.addVote(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
   }
   render() {

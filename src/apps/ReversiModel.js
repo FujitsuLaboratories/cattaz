@@ -1,4 +1,5 @@
 import clone from 'lodash/clone';
+import isEqual from 'lodash/isEqual';
 import flatMap from 'lodash/flatMap';
 import fill from 'lodash/fill';
 import range from 'lodash/range';
@@ -102,6 +103,9 @@ export default class ReversiModel {
       });
     });
     return counts;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify({

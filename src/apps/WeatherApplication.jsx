@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 // OpenWeatherMap [https://openweathermap.org/]
 // Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js]
 import { openWeatherMapApiKey } from '../apikey/apikey';
@@ -16,12 +17,15 @@ class WeatherModel {
     this.icon = '';
     this.temp = 0;
   }
-  getWeather(data) {
+  setWeather(data) {
     this.country = data.sys.country;
     this.city = data.name;
     this.weather = data.weather[0].main;
     this.icon = data.weather[0].icon;
     this.temp = data.main.temp;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -49,12 +53,13 @@ export default class WeatherApplication extends React.Component {
     this.state = { weather: WeatherModel.deserialize(props.data), errorMessage: '' };
   }
   componentWillReceiveProps(newProps) {
-    const weather = WeatherModel.deserialize(newProps.data);
-    this.setState({ weather });
+    if (this.props.data !== newProps.data) {
+      const weather = WeatherModel.deserialize(newProps.data);
+      this.setState({ weather });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.weather.equals(nextState.weather) || this.state.errorMessage !== nextState.errorMessage;
   }
   handleGetWeather() {
     const city = this.inputCity.value;
@@ -63,7 +68,8 @@ export default class WeatherApplication extends React.Component {
       .then(response => response.json())
       .then((data) => {
         if (data.cod === 200) {
-          this.state.weather.getWeather(data);
+          this.state.weather.setWeather(data);
+          this.forceUpdate();
           this.setState({ errorMessage: '' });
           this.props.onEdit(this.state.weather.serialize(), this.props.appContext);
         } else if (data.cod === 401) {

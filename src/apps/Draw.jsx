@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 class DrawModel {
   constructor() {
@@ -9,8 +10,11 @@ class DrawModel {
   addCandidates(name) {
     this.candidates.push(name);
   }
-  addElected(name) {
+  setElected(name) {
     this.elected = name;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -38,12 +42,13 @@ export default class DrawApplication extends React.Component {
     this.state = { draw: tmpDrawModel, start: false, elected: tmpDrawModel.elected };
   }
   componentWillReceiveProps(newProps) {
-    const tmpDraw = DrawModel.deserialize(newProps.data);
-    this.setState({ draw: tmpDraw, elected: tmpDraw.elected });
+    if (this.props.data !== newProps.data) {
+      const tmpDraw = DrawModel.deserialize(newProps.data);
+      this.setState({ draw: tmpDraw, elected: tmpDraw.elected });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.draw.equals(nextState.draw) || this.state.elected !== nextState.elected || this.state.start !== nextState.start;
   }
   componentWillUnmount() {
     clearInterval(this.intervalId);
@@ -52,6 +57,7 @@ export default class DrawApplication extends React.Component {
     const { value } = this.inputCandidates;
     if (!value) return;
     this.state.draw.addCandidates(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
   }
   drawRun() {
@@ -63,18 +69,12 @@ export default class DrawApplication extends React.Component {
       this.setState({ start: true });
     } else {
       clearInterval(this.intervalId);
-      this.state.draw.addElected(this.state.elected);
+      this.state.draw.setElected(this.state.elected);
       this.setState({ start: false });
       this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
     }
   }
   render() {
-    let startStopBtnValue = 'Start';
-    let bgColor = '#fbc02d';
-    if (this.state.start) {
-      startStopBtnValue = 'Stop';
-      bgColor = '#fff';
-    }
     let dispElected = this.state.elected;
     if (this.state.elected && this.state.elected.length > 10) {
       dispElected = `${this.state.elected.substr(0, 10)}...`;
@@ -87,7 +87,7 @@ export default class DrawApplication extends React.Component {
         <div>Elected [{this.state.draw.elected}]</div>
         <div style={{
             border: '1px solid #000',
-            backgroundColor: bgColor,
+            backgroundColor: this.state.start ? '#fff' : '#fbc02d',
             width: '250px',
             height: '50px',
             textAlign: 'center',
@@ -97,7 +97,7 @@ export default class DrawApplication extends React.Component {
         >
           {dispElected}
         </div>
-        <input type="button" value={startStopBtnValue} onClick={this.handleStartStop} />
+        <input type="button" value={this.state.start ? 'Stop' : 'Start'} onClick={this.handleStartStop} />
       </div>);
   }
 }

@@ -39,18 +39,25 @@ export default class ReversiApplication extends React.Component {
     this.handlePass = this.handlePass.bind(this);
   }
   componentWillReceiveProps(newProps) {
-    const model = ReversiModel.deserialize(newProps.data);
-    this.setState({ model });
+    if (this.props.data !== newProps.data) {
+      const model = ReversiModel.deserialize(newProps.data);
+      this.setState({ model });
+    }
+  }
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.model.equals(nextState.model);
   }
   handlePlaceStone(ev) {
     const button = ev.target;
     const x = parseInt(button.getAttribute('data-x'), 10);
     const y = parseInt(button.getAttribute('data-y'), 10);
     this.state.model.addStep(this.state.model.nextTurn, x, y);
+    this.forceUpdate();
     this.props.onEdit(this.state.model.serialize(), this.props.appContext);
   }
   handlePass() {
     this.state.model.skipTurn();
+    this.forceUpdate();
     this.props.onEdit(this.state.model.serialize(), this.props.appContext);
   }
   toCell(stoneValue, x, y) {

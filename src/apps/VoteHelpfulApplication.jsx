@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 class VoteModel {
   constructor() {
@@ -10,6 +11,9 @@ class VoteModel {
   }
   addVote(name) {
     this.candidates[name] = this.candidates[name] + 1;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -33,12 +37,13 @@ export default class VoteApplication extends React.Component {
     this.state = { vote: VoteModel.deserialize(props.data), voted: false };
   }
   componentWillReceiveProps(newProps) {
-    const vote = VoteModel.deserialize(newProps.data);
-    this.setState({ vote });
+    if (this.props.data !== newProps.data) {
+      const vote = VoteModel.deserialize(newProps.data);
+      this.setState({ vote });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.vote.equals(nextState.vote.map);
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');

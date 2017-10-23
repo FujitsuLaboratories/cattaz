@@ -8,6 +8,9 @@ class DATEModel {
   updateDate(str) {
     this.date = str;
   }
+  equals(other) {
+    return this.date === other.date;
+  }
   serialize() {
     return JSON.stringify(this, null, 2);
   }
@@ -30,12 +33,13 @@ export default class DATEApplication extends React.Component {
     this.state = { date: DATEModel.deserialize(props.data) };
   }
   componentWillReceiveProps(newProps) {
-    const date = DATEModel.deserialize(newProps.data);
-    this.setState({ date });
+    if (this.props.data !== newProps.data) {
+      const date = DATEModel.deserialize(newProps.data);
+      this.setState({ date });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.date.equals(nextState.date);
   }
   handleUpdateDate() {
     const date = new Date();

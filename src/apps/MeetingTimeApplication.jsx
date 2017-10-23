@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 function fillZero(num) {
   let numStr = String(num);
@@ -61,6 +62,9 @@ class MeetingTimeModel {
   updateEndTime(str) {
     this.endTime = str;
   }
+  equals(other) {
+    return isEqual(this, other);
+  }
   serialize() {
     return JSON.stringify(this, null, 2);
   }
@@ -83,15 +87,16 @@ export default class MeetingTimeApplication extends React.Component {
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
     const setTime = MeetingTimeModel.deserialize(props.data);
-    this.state = { time: setTime, lengthTime: calculationDuration(setTime.startTime, setTime.endTime) };
+    this.state = { time: setTime };
   }
   componentWillReceiveProps(newProps) {
-    const setTime = MeetingTimeModel.deserialize(newProps.data);
-    this.setState({ time: setTime, lengthTime: calculationDuration(setTime.startTime, setTime.endTime) });
+    if (this.props.data !== newProps.data) {
+      const setTime = MeetingTimeModel.deserialize(newProps.data);
+      this.setState({ time: setTime });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.time.equals(nextState.time);
   }
   handleUpdateStartTime() {
     const value = getNowTime();
@@ -104,6 +109,7 @@ export default class MeetingTimeApplication extends React.Component {
     this.props.onEdit(this.state.time.serialize(), this.props.appContext);
   }
   render() {
+    const duration = calculationDuration(this.state.time.startTime, this.state.time.endTime);
     return (
       <div>
         Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
@@ -112,7 +118,7 @@ export default class MeetingTimeApplication extends React.Component {
         End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
         <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
         <br />
-        Duration of a meeting: {this.state.lengthTime}
+        Duration of a meeting: {duration}
       </div>);
   }
 }

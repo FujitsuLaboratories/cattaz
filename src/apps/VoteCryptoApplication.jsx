@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 class VoteCryptoModel {
   constructor() {
@@ -18,6 +19,9 @@ class VoteCryptoModel {
   }
   openVoted() {
     this.openResult.opened = true;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     function encrypt(plaintext) {
@@ -54,17 +58,19 @@ export default class VoteCryptoApplication extends React.Component {
     this.state = { vote: VoteCryptoModel.deserialize(props.data), voteMessage: '', errorMessage: '' };
   }
   componentWillReceiveProps(newProps) {
-    const vote = VoteCryptoModel.deserialize(newProps.data);
-    this.setState({ vote });
+    if (this.props.data !== newProps.data) {
+      const vote = VoteCryptoModel.deserialize(newProps.data);
+      this.setState({ vote });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.vote.equals(nextState.vote) || this.state.voteMessage !== nextState.voteMessage || this.state.errorMessage !== nextState.errorMessage;
   }
   handleAddCandidates() {
     const { value } = this.inputCandidates;
     if (!value) return;
     if (this.state.vote.addCandidates(value)) {
+      this.forceUpdate();
       this.setState({ errorMessage: '' });
       this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
     } else {
@@ -74,6 +80,7 @@ export default class VoteCryptoApplication extends React.Component {
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
     this.state.vote.addVote(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
     this.setState({ voteMessage: 'Voted' });
     const self = this;
@@ -83,6 +90,7 @@ export default class VoteCryptoApplication extends React.Component {
   }
   handleVotingResult() {
     this.state.vote.openVoted();
+    this.forceUpdate();
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
   }
   render() {

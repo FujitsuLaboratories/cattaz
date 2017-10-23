@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import isEqual from 'lodash/isEqual';
 import uniq from 'lodash/uniq';
 
 class DateMatcherModel {
@@ -21,6 +22,9 @@ class DateMatcherModel {
   }
   setAnswer(name, candidate, value) {
     this.attendees[name][candidate] = value;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -55,16 +59,23 @@ export default class DateMatcherApplication extends React.Component {
     this.state = { model: DateMatcherModel.deserialize(props.data), editing: null };
   }
   componentWillReceiveProps(newProps) {
-    const model = DateMatcherModel.deserialize(newProps.data);
-    this.setState({ model });
+    if (this.props.data !== newProps.data) {
+      const model = DateMatcherModel.deserialize(newProps.data);
+      this.setState({ model });
+    }
+  }
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.model.equals(nextState.model) || this.state.editing !== nextState.editing;
   }
   handleSetCandidates() {
     const { value } = this.inputCandidates;
     if (!value) return;
     const candidates = uniq(value.split('\n').map(s => s.trim()).filter(s => s));
     if (candidates.length === 0) return;
-    this.state.model.setCandidates(candidates);
-    this.props.onEdit(this.state.model.serialize(), this.props.appContext);
+    const model = new DateMatcherModel();
+    model.setCandidates(candidates);
+    this.setState({ model });
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   handleAddAttendee() {
     const { value } = this.inputNewAttendee;
@@ -82,6 +93,7 @@ export default class DateMatcherApplication extends React.Component {
     const candidate = input.getAttribute('data-candidate');
     const answer = input.value;
     this.state.model.setAnswer(attendee, candidate, answer);
+    this.forceUpdate();
     this.props.onEdit(this.state.model.serialize(), this.props.appContext);
   }
   handleStartEdit(ev) {

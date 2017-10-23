@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 // Please change to your own Google Maps API KEY in [../apikey/apikey.js]
 import { googlemapsApiKey } from '../apikey/apikey';
 
@@ -13,6 +14,9 @@ class MapModel {
   setCoordinate(latlng) {
     this.lat = latlng.lat;
     this.lng = latlng.lng;
+  }
+  equals(other) {
+    return isEqual(this, other);
   }
   serialize() {
     return JSON.stringify(this, null, 2);
@@ -132,13 +136,18 @@ export default class MapApplication extends React.Component {
     doc.close();
   }
   componentWillReceiveProps(newProps) {
-    const newMap = MapModel.deserialize(newProps.data);
-    this.setState({ map: newMap });
-    this.iframe.contentWindow.postMessage({ type: 'setCoordinate', value: newMap }, window.location.origin);
+    if (this.props.data !== newProps.data) {
+      const newMap = MapModel.deserialize(newProps.data);
+      this.setState({ map: newMap });
+    }
   }
-  shouldComponentUpdate(/* newProps, nextState */) {
-    // TODO
-    return true;
+  shouldComponentUpdate(newProps, nextState) {
+    return !this.state.map.equals(nextState.map);
+  }
+  componentDidUpdate(prevProps, prevState /* , prevContext */) {
+    if (!this.state.map.equals(prevState.map)) {
+      this.iframe.contentWindow.postMessage({ type: 'setCoordinate', value: this.state.map }, window.location.origin);
+    }
   }
   handleSearchPlace() {
     const address = this.inputPlace.value;
