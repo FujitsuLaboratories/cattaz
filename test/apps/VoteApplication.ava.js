@@ -36,7 +36,7 @@ test('VoteApplication should render initial state if no data is given', t => {
   t.deepEqual({}, getVotes(wrapper));
 });
 
-/** @test {VoteApplication#handleAddCandidates} */
+/** @test {VoteApplication#handleAddCandidate} */
 test('VoteApplication should reject duplicated candidates', t => {
   const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
   addCandidate(wrapper, '');
@@ -59,8 +59,7 @@ test('VoteApplication should count votes', t => {
   t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
 });
 
-/** @test {VoteApplication#componentWillReceiveProps */
-/** @test {VoteApplication#shouldComponentUpdate */
+/** @test {VoteApplication#componentWillReceiveProps} */
 test('VoteApplication should be updated by props', t => {
   const wrapper = shallow(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual({}, getVotes(wrapper));
