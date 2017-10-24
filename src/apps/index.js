@@ -1,6 +1,6 @@
 import kpt from './KPTApplication';
 import mandala from './MandalaApplication';
-import date from './DATEApplication';
+import date from './DateApplication';
 import datematcher from './DateMatcherApplication';
 import meetingtime from './MeetingTimeApplication';
 import reversi from './ReversiApplication';
