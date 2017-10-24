@@ -63,18 +63,21 @@ export default class KPTApplication extends React.Component {
     const { value } = this.inputKeep;
     if (!value) return;
     this.state.kpt.addKeep(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddProblem() {
     const { value } = this.inputProblem;
     if (!value) return;
     this.state.kpt.addProblem(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddTry() {
     const { value } = this.inputTry;
     if (!value) return;
     this.state.kpt.addTry(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
@@ -107,6 +110,8 @@ export default class KPTApplication extends React.Component {
       </div>);
   }
 }
+
+KPTApplication.Model = KPTModel;
 
 KPTApplication.propTypes = {
   data: PropTypes.string.isRequired,
