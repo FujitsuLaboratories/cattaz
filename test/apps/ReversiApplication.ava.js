@@ -3,8 +3,8 @@ import test from 'ava';
 
 import { shallow, mount } from 'enzyme';
 
-import * as RM from '../src/apps/ReversiModel';
-import ReversiApplication from '../src/apps/ReversiApplication';
+import * as RM from '../../src/apps/ReversiModel';
+import ReversiApplication from '../../src/apps/ReversiApplication';
 
 const Black = RM.StoneBlack;
 const White = RM.StoneWhite;

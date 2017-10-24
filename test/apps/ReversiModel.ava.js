@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import * as RM from '../src/apps/ReversiModel';
+import * as RM from '../../src/apps/ReversiModel';
 
 const None = RM.StoneNone;
 const Black = RM.StoneBlack;
