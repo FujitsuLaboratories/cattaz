@@ -101,27 +101,35 @@ export default class MeetingTimeApplication extends React.Component {
   handleUpdateStartTime() {
     const value = getNowTime();
     this.state.time.updateStartTime(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.time.serialize(), this.props.appContext);
   }
   handleUpdateEndTime() {
     const value = getNowTime();
     this.state.time.updateEndTime(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.time.serialize(), this.props.appContext);
   }
   render() {
     const duration = calculationDuration(this.state.time.startTime, this.state.time.endTime);
     return (
       <div>
-        Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
-        <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
-        <br />
-        End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
-        <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
-        <br />
-        Duration of a meeting: {duration}
+        <div key="start">
+          Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
+          <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
+        </div>
+        <div key="end">
+          End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
+          <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
+        </div>
+        <div key="duration">
+          Duration of a meeting: {duration}
+        </div>
       </div>);
   }
 }
+
+MeetingTimeApplication.Model = MeetingTimeModel;
 
 MeetingTimeApplication.propTypes = {
   data: PropTypes.string.isRequired,
