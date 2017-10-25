@@ -7,7 +7,7 @@ class VoteCryptoModel {
     this.candidates = {};
     this.openResult = { opened: false };
   }
-  addCandidates(name) {
+  addCandidate(name) {
     if (name in this.candidates) {
       return false;
     }
@@ -52,7 +52,7 @@ class VoteCryptoModel {
 export default class VoteCryptoApplication extends React.Component {
   constructor(props) {
     super();
-    this.handleAddCandidates = this.handleAddCandidates.bind(this);
+    this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
     this.handleVotingResult = this.handleVotingResult.bind(this);
     this.state = { vote: VoteCryptoModel.deserialize(props.data), voteMessage: '', errorMessage: '' };
@@ -66,15 +66,15 @@ export default class VoteCryptoApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.vote.equals(nextState.vote) || this.state.voteMessage !== nextState.voteMessage || this.state.errorMessage !== nextState.errorMessage;
   }
-  handleAddCandidates() {
-    const { value } = this.inputCandidates;
+  handleAddCandidate() {
+    const { value } = this.inputCandidate;
     if (!value) return;
-    if (this.state.vote.addCandidates(value)) {
+    if (this.state.vote.addCandidate(value)) {
       this.forceUpdate();
       this.setState({ errorMessage: '' });
       this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
     } else {
-      this.setState({ errorMessage: 'Duplicate Candidates' });
+      this.setState({ errorMessage: 'Duplicate Candidate' });
     }
   }
   handleAddVote(event) {
@@ -102,17 +102,19 @@ export default class VoteCryptoApplication extends React.Component {
     }
     return (
       <div style={{ marginBottom: '50px' }}>
-        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
+        <input ref={(input) => { this.inputCandidate = input; }} type="text" placeholder="Add Candidate" />
+        <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div style={{ color: '#00529B' }}>{this.state.voteMessage}</div>
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <ul>
           {votingResult}
         </ul>
-        <input type="button" value="Result" onClick={this.handleVotingResult} />
+        <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
       </div>);
   }
 }
+
+VoteCryptoApplication.Model = VoteCryptoModel;
 
 VoteCryptoApplication.propTypes = {
   data: PropTypes.string.isRequired,
