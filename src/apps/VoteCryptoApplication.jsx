@@ -109,7 +109,9 @@ export default class VoteCryptoApplication extends React.Component {
         <ul>
           {votingResult}
         </ul>
-        <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
+        { this.state.vote.openResult.opened ?
+          null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
+        }
       </div>);
   }
 }

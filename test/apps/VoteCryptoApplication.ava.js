@@ -22,6 +22,10 @@ function addVote(wrapper, candidateText) {
   input.simulate('click');
 }
 
+function hasResultButton(wrapper) {
+  return wrapper.find('input').filterWhere(i => i.key() === 'result').exists();
+}
+
 function makeOpen(wrapper) {
   wrapper.find('input').filterWhere(i => i.key() === 'result').simulate('click');
 }
@@ -30,40 +34,48 @@ function makeOpen(wrapper) {
 test('VoteCryptoApplication should render initial state if no data is given', t => {
   const wrapper = shallow(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
 });
 
 /** @test {VoteCryptoApplication#handleAddVote} */
 test('VoteCryptoApplication should not render result before open', t => {
   const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
   addCandidate(wrapper, 'c1'); // should be ignored
   t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   addVote(wrapper, 'c1');
   addVote(wrapper, 'c2');
   addVote(wrapper, 'c1');
   t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
 });
 
 /** @test {VoteCryptoApplication#handleVotingResult} */
 test('VoteCryptoApplication should render result after open', t => {
   const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
   addVote(wrapper, 'c1');
   addVote(wrapper, 'c2');
   addVote(wrapper, 'c1');
   t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   makeOpen(wrapper);
   t.deepEqual(['c1: 2 ', 'c2: 1 '], getVotes(wrapper));
+  t.false(hasResultButton(wrapper));
 });
 
 /** @test {VoteCryptoApplication#componentWillReceiveProps} */
 test('VoteCryptoApplication should be updated by props', t => {
   const wrapper = shallow(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   const model = new VoteCryptoApplication.Model();
   model.addCandidate('c1');
   model.addCandidate('c2');
@@ -72,9 +84,11 @@ test('VoteCryptoApplication should be updated by props', t => {
   model.addVote('c1');
   wrapper.setProps({ data: model.serialize() });
   t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.true(hasResultButton(wrapper));
   model.openVoted();
   wrapper.setProps({ data: model.serialize() });
   t.deepEqual(['c1: 2 ', 'c2: 1 '], getVotes(wrapper));
+  t.false(hasResultButton(wrapper));
 });
 
 /** @test {VoteCryptoModel#serialize} */
