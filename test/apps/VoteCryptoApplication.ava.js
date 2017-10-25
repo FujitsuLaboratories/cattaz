@@ -1,6 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
+import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
 
 import VoteCryptoApplication from '../../src/apps/VoteCryptoApplication';
@@ -39,19 +40,27 @@ test('VoteCryptoApplication should render initial state if no data is given', t 
 
 /** @test {VoteCryptoApplication#handleAddVote} */
 test('VoteCryptoApplication should not render result before open', t => {
-  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
-  t.deepEqual([], getVotes(wrapper));
-  t.true(hasResultButton(wrapper));
-  addCandidate(wrapper, 'c1');
-  addCandidate(wrapper, 'c2');
-  addCandidate(wrapper, 'c1'); // should be ignored
-  t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
-  t.true(hasResultButton(wrapper));
-  addVote(wrapper, 'c1');
-  addVote(wrapper, 'c2');
-  addVote(wrapper, 'c1');
-  t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
-  t.true(hasResultButton(wrapper));
+  const clock = sinon.useFakeTimers();
+  try {
+    const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+    t.deepEqual([], getVotes(wrapper));
+    t.true(hasResultButton(wrapper));
+    addCandidate(wrapper, 'c1');
+    addCandidate(wrapper, 'c2');
+    addCandidate(wrapper, 'c1'); // should be ignored
+    t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+    t.true(hasResultButton(wrapper));
+    addVote(wrapper, 'c1');
+    addVote(wrapper, 'c2');
+    addVote(wrapper, 'c1');
+    t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+    t.true(hasResultButton(wrapper));
+    t.truthy(wrapper.state('voteMessage'), 'should show message');
+    clock.tick(2 * 1000);
+    t.falsy(wrapper.state('voteMessage'), 'should dismiss message');
+  } finally {
+    clock.restore();
+  }
 });
 
 /** @test {VoteCryptoApplication#handleVotingResult} */
