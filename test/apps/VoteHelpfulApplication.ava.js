@@ -1,0 +1,70 @@
+import React from 'react';
+import test from 'ava';
+
+import { shallow, mount } from 'enzyme';
+
+import VoteHelpfulApplication from '../../src/apps/VoteHelpfulApplication';
+
+function hasVoteButtons(wrapper) {
+  return wrapper.find('input').length >= 2;
+}
+function hasBar(wrapper) {
+  return wrapper.find('div div span').exists();
+}
+
+function getBarTexts(wrapper) {
+  return wrapper.find('div div span').map(e => e.text());
+}
+
+function vote(wrapper, label) {
+  wrapper.find('input').filterWhere(i => i.instance().value === label).simulate('click');
+}
+function voteYes(wrapper) {
+  vote(wrapper, 'Yes');
+}
+function voteNo(wrapper) {
+  vote(wrapper, 'No');
+}
+
+/** @test {VoteHelpfulApplication} */
+test('VoteHelpfulApplication should render initial state if no data is given', t => {
+  const wrapper = shallow(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  t.true(hasVoteButtons(wrapper));
+  t.false(hasBar(wrapper));
+});
+
+/** @test {VoteHelpfulApplication#handleAddVote} */
+test('VoteHelpfulApplication should hide buttons and show bars after voting', t => {
+  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  t.true(hasVoteButtons(wrapper));
+  t.false(hasBar(wrapper));
+  voteYes(wrapper);
+  t.false(hasVoteButtons(wrapper));
+  t.true(hasBar(wrapper));
+  t.deepEqual(['100%', '1', '0', '0%'], getBarTexts(wrapper));
+
+  t.true(wrapper.state('voted'));
+  wrapper.setState({ voted: false });
+
+  t.true(hasVoteButtons(wrapper));
+  t.true(hasBar(wrapper));
+  voteNo(wrapper);
+  t.false(hasVoteButtons(wrapper));
+  t.true(hasBar(wrapper));
+  t.deepEqual(['50%', '1', '1', '50%'], getBarTexts(wrapper));
+});
+
+/** @test {VoteHelpfulApplication#componentWillReceiveProps} */
+test('VoteHelpfulApplication should be updated by props', t => {
+  const wrapper = shallow(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  t.true(hasVoteButtons(wrapper));
+  t.false(hasBar(wrapper));
+  const model = new VoteHelpfulApplication.Model();
+  model.addVote('Yes');
+  model.addVote('No');
+  model.addVote('Yes');
+  wrapper.setProps({ data: model.serialize() });
+  t.true(hasVoteButtons(wrapper));
+  t.true(hasBar(wrapper));
+  t.deepEqual(['67%', '2', '1', '33%'], getBarTexts(wrapper));
+});
