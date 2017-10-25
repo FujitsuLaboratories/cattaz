@@ -86,15 +86,22 @@ export default class WeatherApplication extends React.Component {
       <div>
         <input ref={(input) => { this.inputCity = input; }} type="text" placeholder="Add City" />
         <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
-        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
-        {
-          this.state.weather.city
-            ? <div>City: {this.state.weather.city}, {this.state.weather.country}<br />Weather: {this.state.weather.weather}<img src={`${iconURL}${this.state.weather.icon}.png`} alt={this.state.weather.weather} width="24px" />, Temperature: {this.state.weather.temp}℃</div>
-            : null
-        }
+        <div key="error" style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <div key="result">
+          { this.state.weather.city ? [
+            `City: ${this.state.weather.city}, ${this.state.weather.country}`,
+            <br />,
+            `Weather: ${this.state.weather.weather}`,
+            <img src={`${iconURL}${this.state.weather.icon}.png`} alt={this.state.weather.weather} width="24px" />,
+            `Temperature: ${this.state.weather.temp}℃`,
+          ] : null
+          }
+        </div>
       </div>);
   }
 }
+
+WeatherApplication.Model = WeatherModel;
 
 WeatherApplication.propTypes = {
   data: PropTypes.string.isRequired,
