@@ -6,7 +6,7 @@ class VoteModel {
   constructor() {
     this.candidates = {};
   }
-  addCandidates(name) {
+  addCandidate(name) {
     if (name in this.candidates) {
       return false;
     }
@@ -37,7 +37,7 @@ class VoteModel {
 export default class VoteApplication extends React.Component {
   constructor(props) {
     super();
-    this.handleAddCandidates = this.handleAddCandidates.bind(this);
+    this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
     this.state = { vote: VoteModel.deserialize(props.data), errorMessage: '' };
   }
@@ -50,10 +50,10 @@ export default class VoteApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.vote.equals(nextState.vote) || this.state.errorMessage !== nextState.errorMessage;
   }
-  handleAddCandidates() {
+  handleAddCandidate() {
     const { value } = this.inputCandidates;
     if (!value) return;
-    if (this.state.vote.addCandidates(value)) {
+    if (this.state.vote.addCandidate(value)) {
       this.forceUpdate();
       this.setState({ errorMessage: '' });
       this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
@@ -71,7 +71,7 @@ export default class VoteApplication extends React.Component {
     return (
       <div style={{ marginBottom: '50px' }}>
         <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
+        <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <ul>
           {Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s}: {this.state.vote.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
@@ -79,6 +79,8 @@ export default class VoteApplication extends React.Component {
       </div>);
   }
 }
+
+VoteApplication.Model = VoteModel;
 
 VoteApplication.propTypes = {
   data: PropTypes.string.isRequired,

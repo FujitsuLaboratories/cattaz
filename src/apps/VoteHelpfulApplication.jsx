@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
-class VoteModel {
+class VoteHelpfulModel {
   constructor() {
     this.candidates = {
       Yes: 0,
@@ -21,29 +21,29 @@ class VoteModel {
   static deserialize(str) {
     try {
       const obj = JSON.parse(str);
-      const model = new VoteModel();
+      const model = new VoteHelpfulModel();
       model.candidates = obj.candidates;
       return model;
     } catch (ex) {
-      return new VoteModel();
+      return new VoteHelpfulModel();
     }
   }
 }
 
-export default class VoteApplication extends React.Component {
+export default class VoteHelpfulApplication extends React.Component {
   constructor(props) {
     super();
     this.handleAddVote = this.handleAddVote.bind(this);
-    this.state = { vote: VoteModel.deserialize(props.data), voted: false };
+    this.state = { vote: VoteHelpfulModel.deserialize(props.data), voted: false };
   }
   componentWillReceiveProps(newProps) {
     if (this.props.data !== newProps.data) {
-      const vote = VoteModel.deserialize(newProps.data);
+      const vote = VoteHelpfulModel.deserialize(newProps.data);
       this.setState({ vote });
     }
   }
   shouldComponentUpdate(newProps, nextState) {
-    return !this.state.vote.equals(nextState.vote.map);
+    return !this.state.vote.equals(nextState.vote.map) || this.state.voted !== nextState.voted;
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
@@ -126,7 +126,9 @@ export default class VoteApplication extends React.Component {
   }
 }
 
-VoteApplication.propTypes = {
+VoteHelpfulApplication.Model = VoteHelpfulModel;
+
+VoteHelpfulApplication.propTypes = {
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

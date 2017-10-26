@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import * as RM from '../src/apps/ReversiModel';
+import * as RM from '../../src/apps/ReversiModel';
 
 const None = RM.StoneNone;
 const Black = RM.StoneBlack;
@@ -82,4 +82,30 @@ test('addStep should reject invalid step', t => {
   t.throws(() => {
     model.addStep(Black, 0, 0);
   });
+});
+
+/** @test {ReversiModel#serialize} */
+/** @test {ReversiModel.deserialize} */
+test('ReversiModel should correctly serialize and deserialize', t => {
+  const model = new Model();
+  model.addStep(Black, 3, 2);
+  t.deepEqual(
+    model.getStoneCounts(),
+    { [None]: 64 - 5, [Black]: 4, [White]: 1 },
+  );
+  const serialized = model.serialize();
+  t.is(typeof serialized, 'string');
+  const model2 = Model.deserialize(serialized);
+  t.true(model.equals(model2));
+  const serialized2 = model2.serialize();
+  t.is(serialized, serialized2);
+});
+
+/** @test {ReversiModel.deserialize} */
+test('deserilize should create a new instance when invalid serialized content is given', t => {
+  const model = Model.deserialize('INVALID');
+  t.deepEqual(
+    model.getStoneCounts(),
+    { [None]: 64 - 4, [Black]: 2, [White]: 2 },
+  );
 });

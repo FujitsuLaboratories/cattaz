@@ -44,6 +44,8 @@
     "babel-preset-react": "^6.24.1",
     "copy-webpack-plugin": "^4.2.0",
     "cross-env": "^5.1.0",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-16": "^1.0.2",
     "esdoc": "^1.0.3",
     "esdoc-jsx-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
@@ -61,7 +63,9 @@
     "nyc": "^11.2.1",
     "postcss": "^6.0.13",
     "postcss-loader": "^2.0.8",
+    "react-test-renderer": "^16.0.0",
     "rimraf": "^2.6.2",
+    "sinon": "^4.0.1",
     "source-map-explorer": "^1.5.0",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3"
@@ -89,7 +93,8 @@
   },
   "ava": {
     "require": [
-      "babel-register"
+      "babel-register",
+      "./test/setup-enzyme.js"
     ],
     "babel": "inherit"
   },

@@ -7,7 +7,7 @@ class DrawModel {
     this.candidates = [];
     this.elected = '';
   }
-  addCandidates(name) {
+  addCandidate(name) {
     this.candidates.push(name);
   }
   setElected(name) {
@@ -35,7 +35,7 @@ class DrawModel {
 export default class DrawApplication extends React.Component {
   constructor(props) {
     super();
-    this.handleAddCandidates = this.handleAddCandidates.bind(this);
+    this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleStartStop = this.handleStartStop.bind(this);
     this.drawRun = this.drawRun.bind(this);
     const tmpDrawModel = DrawModel.deserialize(props.data);
@@ -53,10 +53,10 @@ export default class DrawApplication extends React.Component {
   componentWillUnmount() {
     clearInterval(this.intervalId);
   }
-  handleAddCandidates() {
-    const { value } = this.inputCandidates;
+  handleAddCandidate() {
+    const { value } = this.inputCandidate;
     if (!value) return;
-    this.state.draw.addCandidates(value);
+    this.state.draw.addCandidate(value);
     this.forceUpdate();
     this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
   }
@@ -65,6 +65,7 @@ export default class DrawApplication extends React.Component {
   }
   handleStartStop() {
     if (!this.state.start) {
+      this.drawRun(); // Some people may stop within the interval
       this.intervalId = setInterval(this.drawRun, 85);
       this.setState({ start: true });
     } else {
@@ -81,11 +82,13 @@ export default class DrawApplication extends React.Component {
     }
     return (
       <div style={{ marginBottom: '50px' }}>
-        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
-        <input type="button" value="Add Candidates" onClick={this.handleAddCandidates} />
-        <div>Candidates {JSON.stringify(this.state.draw.candidates)}</div>
-        <div>Elected [{this.state.draw.elected}]</div>
-        <div style={{
+        <input ref={(input) => { this.inputCandidate = input; }} type="text" placeholder="Add Candidate" />
+        <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
+        <div key="candidates">Candidates {JSON.stringify(this.state.draw.candidates)}</div>
+        <div key="elected">Elected [{this.state.draw.elected}]</div>
+        <div
+          key="display"
+          style={{
             border: '1px solid #000',
             backgroundColor: this.state.start ? '#fff' : '#fbc02d',
             width: '250px',
@@ -101,6 +104,8 @@ export default class DrawApplication extends React.Component {
       </div>);
   }
 }
+
+DrawApplication.Model = DrawModel;
 
 DrawApplication.propTypes = {
   data: PropTypes.string.isRequired,

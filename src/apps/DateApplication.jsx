@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class DATEModel {
+class DateModel {
   constructor() {
     this.date = '';
   }
@@ -17,24 +17,24 @@ class DATEModel {
   static deserialize(str) {
     try {
       const obj = JSON.parse(str);
-      const model = new DATEModel();
+      const model = new DateModel();
       model.date = obj.date;
       return model;
     } catch (ex) {
-      return new DATEModel();
+      return new DateModel();
     }
   }
 }
 
-export default class DATEApplication extends React.Component {
+export default class DateApplication extends React.Component {
   constructor(props) {
     super();
     this.handleUpdateDate = this.handleUpdateDate.bind(this);
-    this.state = { date: DATEModel.deserialize(props.data) };
+    this.state = { date: DateModel.deserialize(props.data) };
   }
   componentWillReceiveProps(newProps) {
     if (this.props.data !== newProps.data) {
-      const date = DATEModel.deserialize(newProps.data);
+      const date = DateModel.deserialize(newProps.data);
       this.setState({ date });
     }
   }
@@ -52,6 +52,7 @@ export default class DATEApplication extends React.Component {
     const minutes = date.getMinutes();
     const value = `${year}-${month}-${day} (${enWeek[week]}) ${hour}:${minutes}`;
     this.state.date.updateDate(value);
+    this.forceUpdate();
     this.props.onEdit(this.state.date.serialize(), this.props.appContext);
   }
   render() {
@@ -63,7 +64,9 @@ export default class DATEApplication extends React.Component {
   }
 }
 
-DATEApplication.propTypes = {
+DateApplication.Model = DateModel;
+
+DateApplication.propTypes = {
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

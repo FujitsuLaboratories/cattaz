@@ -168,6 +168,8 @@ export default class DateMatcherApplication extends React.Component {
   }
 }
 
+DateMatcherApplication.Model = DateMatcherModel;
+
 DateMatcherApplication.propTypes = {
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,

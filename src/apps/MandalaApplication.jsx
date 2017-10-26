@@ -75,6 +75,8 @@ export default class MandalaApplication extends React.Component {
   }
 }
 
+MandalaApplication.Model = MandalaModel;
+
 MandalaApplication.propTypes = {
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
