@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 // Please change to your own Google Maps API KEY in [../apikey/apikey.js]
 import { googlemapsApiKey } from '../apikey/apikey';
@@ -19,14 +20,14 @@ class MapModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new MapModel();
-      model.lat = obj.lat;
-      model.lng = obj.lng;
+      if (typeof obj.lat === 'number') model.lat = obj.lat;
+      if (typeof obj.lng === 'number') model.lng = obj.lng;
       return model;
     } catch (ex) {
       return new MapModel();

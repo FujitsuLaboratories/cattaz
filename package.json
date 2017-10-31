@@ -12,6 +12,7 @@
     "finalhandler": "^1.1.0",
     "github-markdown-css": "^2.9.0",
     "hast-to-hyperscript": "^3.0.2",
+    "js-yaml": "^3.10.0",
     "lodash": "^4.17.4",
     "mdast-util-to-hast": "^2.5.0",
     "minimist": "^1.2.0",

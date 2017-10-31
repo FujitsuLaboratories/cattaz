@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import chunk from 'lodash/chunk';
 import fill from 'lodash/fill';
 import isEqual from 'lodash/isEqual';
@@ -17,13 +18,13 @@ class MandalaModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new MandalaModel();
-      model.block = obj.block;
+      if (obj.block) model.block = obj.block;
       return model;
     } catch (ex) {
       return new MandalaModel();

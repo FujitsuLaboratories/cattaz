@@ -10,10 +10,7 @@ If there is no votes, it shows 'yes' and 'no' buttons only.
 If there is any votes, it shows buttons and percentage bars.
 
 ```helpful
-{
-  "candidates": {
-    "Yes": 2,
-    "No": 2
-  }
-}
+candidates:
+  'Yes': 2
+  'No': 2
 ```

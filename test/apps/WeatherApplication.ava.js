@@ -28,6 +28,12 @@ test('WeatherApplication should render initial state if no data is given', t => 
   t.falsy(getResult(wrapper));
 });
 
+/** @test {WeatherApplication} */
+test('WeatherApplication should render initial state if an empty yaml object is given', t => {
+  const wrapper = shallow(<WeatherApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  t.falsy(getResult(wrapper));
+});
+
 /** @test {WeatherApplication#handleGetWeather} */
 test('WeatherApplication should not get weather if city is not given', t => {
   /* eslint-disable no-undef */

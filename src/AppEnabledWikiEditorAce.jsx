@@ -108,12 +108,13 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   }
   handleAppEdit(newText, appContext) {
     const session = this.editor.editor.getSession();
+    const indentedNewText = WikiParser.indentAppCode(appContext.position, WikiParser.removeLastNewLine(newText));
     const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
     if (!isOldTextEmpty) {
       const lastLine = session.getLine(appContext.position.end.line - 2);
       const range = new this.AceRange(appContext.position.start.line, 0, appContext.position.end.line - 2, lastLine.length);
       const oldText = session.getTextRange(range);
-      const changes = diffChars(oldText, newText);
+      const changes = diffChars(oldText, indentedNewText);
       let cursor = { row: range.start.row, column: range.start.column };
       const nextPosition = (p, str) => {
         const lines = str.split('\n');
@@ -142,7 +143,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
     } else {
       const position = { row: appContext.position.end.line - 1, column: 0 };
       session.insert(position, '\n');
-      session.insert(position, newText);
+      session.insert(position, indentedNewText);
     }
   }
   render() {

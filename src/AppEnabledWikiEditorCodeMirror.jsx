@@ -107,13 +107,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   }
   handleAppEdit(newText, appContext) {
     const cm = this.editor.getCodeMirror();
+    const indentedNewText = WikiParser.indentAppCode(appContext.position, WikiParser.removeLastNewLine(newText));
     const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
     if (!isOldTextEmpty) {
       const lastLine = cm.getLine(appContext.position.end.line - 2);
       const startPos = { line: appContext.position.start.line, ch: 0 };
       const endPos = { line: appContext.position.end.line - 2, ch: lastLine.length };
       const oldText = cm.getRange(startPos, endPos);
-      const changes = diffChars(oldText, newText);
+      const changes = diffChars(oldText, indentedNewText);
       let cursor = { line: startPos.line, ch: startPos.ch };
       const nextPosition = (p, str) => {
         const lines = str.split('\n');
@@ -145,7 +146,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       const position = { line: appContext.position.end.line - 1, ch: 0 };
       cm.operation(() => {
         cm.replaceRange('\n', position);
-        cm.replaceRange(newText, position);
+        cm.replaceRange(indentedNewText, position);
       });
     }
   }

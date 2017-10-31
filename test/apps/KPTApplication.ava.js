@@ -48,6 +48,14 @@ test('KPTApplication should render initial state if no data is given', t => {
   t.deepEqual([], getTries(wrapper));
 });
 
+/** @test {KPTApplication} */
+test('KPTApplication should render initial state if an empty yaml object is given', t => {
+  const wrapper = shallow(<KPTApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  t.deepEqual([], getKeeps(wrapper));
+  t.deepEqual([], getProblems(wrapper));
+  t.deepEqual([], getTries(wrapper));
+});
+
 /** @test {KPTApplication#handleAddKeep} */
 test('KPTApplication should add keep', t => {
   const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);

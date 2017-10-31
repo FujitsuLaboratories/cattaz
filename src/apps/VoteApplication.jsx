@@ -26,7 +26,7 @@ class VoteModel {
     try {
       const obj = JSON.parse(str);
       const model = new VoteModel();
-      model.candidates = obj.candidates;
+      if (obj.candidates) model.candidates = obj.candidates;
       return model;
     } catch (ex) {
       return new VoteModel();

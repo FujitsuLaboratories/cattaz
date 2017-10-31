@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 
 class DrawModel {
@@ -17,14 +18,14 @@ class DrawModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new DrawModel();
-      model.candidates = obj.candidates;
-      model.elected = obj.elected;
+      if (obj.candidates) model.candidates = obj.candidates;
+      if (obj.elected) model.elected = obj.elected;
       return model;
     } catch (ex) {
       return new DrawModel();

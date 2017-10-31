@@ -119,6 +119,25 @@ export default class WikiParser {
     return toH(h, rootNode);
   }
   /**
+   * @param {!string} appText
+   * @returns {string}
+   */
+  static removeLastNewLine(appText) {
+    if (appText.length === 0) return appText;
+    if (appText[appText.length - 1] !== '\n') return appText;
+    return appText.substring(0, appText.length - 1);
+  }
+  /**
+   * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
+   * @param {!string} appText
+   * @returns {string}
+   */
+  static indentAppCode(originalAppLocation, appText) {
+    if (originalAppLocation.start.column <= 1) return appText;
+    const indent = repeat(' ', originalAppLocation.start.column - 1);
+    return appText.split('\n').map(l => `${indent}${l}`).join('\n');
+  }
+  /**
    * @param {!string} originalText
    * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
    * @param {!string} appLanguage
@@ -130,7 +149,7 @@ export default class WikiParser {
     const textAfter = originalText.substring(originalAppLocation.end.offset);
     const endMarkIndentation = originalAppLocation.end.column - (1 + 3);
     const text = `${textBefore}\`\`\`${appLanguage}
-${newAppText}
+${WikiParser.indentAppCode(originalAppLocation, newAppText)}
 ${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
     return text;
   }
