@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 
 function fillZero(num) {
@@ -66,14 +67,14 @@ class MeetingTimeModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new MeetingTimeModel();
-      model.startTime = obj.startTime;
-      model.endTime = obj.endTime;
+      if (obj.startTime) model.startTime = obj.startTime;
+      if (obj.endTime) model.endTime = obj.endTime;
       return model;
     } catch (ex) {
       return new MeetingTimeModel();

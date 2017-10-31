@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 
 import isEqual from 'lodash/isEqual';
 import uniq from 'lodash/uniq';
@@ -27,14 +28,14 @@ class DateMatcherModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new DateMatcherModel();
-      model.candidates = obj.candidates;
-      model.attendees = obj.attendees;
+      if (obj.candidates) model.candidates = obj.candidates;
+      if (obj.attendees) model.attendees = obj.attendees;
       return model;
     } catch (ex) {
       return new DateMatcherModel();

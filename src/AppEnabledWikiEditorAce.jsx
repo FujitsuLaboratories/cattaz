@@ -108,7 +108,7 @@ export default class AppEnabledWikiEditorAce extends React.Component {
   }
   handleAppEdit(newText, appContext) {
     const session = this.editor.editor.getSession();
-    const indentedNewText = WikiParser.indentAppCode(appContext.position, newText);
+    const indentedNewText = WikiParser.indentAppCode(appContext.position, WikiParser.removeLastNewLine(newText));
     const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
     if (!isOldTextEmpty) {
       const lastLine = session.getLine(appContext.position.end.line - 2);

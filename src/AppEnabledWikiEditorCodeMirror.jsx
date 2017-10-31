@@ -107,7 +107,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   }
   handleAppEdit(newText, appContext) {
     const cm = this.editor.getCodeMirror();
-    const indentedNewText = WikiParser.indentAppCode(appContext.position, newText);
+    const indentedNewText = WikiParser.indentAppCode(appContext.position, WikiParser.removeLastNewLine(newText));
     const isOldTextEmpty = appContext.position.start.line === appContext.position.end.line - 1;
     if (!isOldTextEmpty) {
       const lastLine = cm.getLine(appContext.position.end.line - 2);

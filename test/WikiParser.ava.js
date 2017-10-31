@@ -77,6 +77,16 @@ test('renderCustomHast should handle app:kpt node', t => {
   t.is(codeBlockNode.type, 'pre');
 });
 
+/** @test {WikiParser.removeLastNewLine} */
+test('removeLastNewLine', t => {
+  t.is('', WikiParser.removeLastNewLine(''));
+  t.is('aaa', WikiParser.removeLastNewLine('aaa'));
+  t.is('aaa', WikiParser.removeLastNewLine('aaa\n'));
+  t.is('aaa\n', WikiParser.removeLastNewLine('aaa\n\n'));
+  t.is('aaa\nbbb', WikiParser.removeLastNewLine('aaa\nbbb'));
+  t.is('aaa\nbbb', WikiParser.removeLastNewLine('aaa\nbbb\n'));
+});
+
 /** @test {WikiParser.indentAppCode} */
 test('indentAppCode', t => {
   const posWithoutIndent = WikiParser.convertToCustomHast(WikiParser.parseToHast('~~~kpt\n~~~')).children[0].position;

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 
 class DateModel {
   constructor() {
@@ -12,13 +13,13 @@ class DateModel {
     return this.date === other.date;
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new DateModel();
-      model.date = obj.date;
+      if (obj.date) model.date = obj.date;
       return model;
     } catch (ex) {
       return new DateModel();

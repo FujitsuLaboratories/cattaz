@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 
 class VoteCryptoModel {
@@ -30,7 +31,7 @@ class VoteCryptoModel {
       return window.btoa(unescape(encodeURIComponent(plaintext)));
     }
     const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), openResult: this.openResult };
-    return JSON.stringify(obj, null, 2);
+    return Yaml.safeDump(obj);
   }
   static deserialize(str) {
     function decrypt(ciphertext) {
@@ -38,10 +39,10 @@ class VoteCryptoModel {
       return decodeURIComponent(escape(window.atob(ciphertext)));
     }
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new VoteCryptoModel();
-      model.candidates = JSON.parse(decrypt(obj.ciphertext));
-      model.openResult = obj.openResult;
+      if (obj.ciphertext) model.candidates = JSON.parse(decrypt(obj.ciphertext));
+      if (obj.openResult) model.openResult = obj.openResult;
       return model;
     } catch (ex) {
       return new VoteCryptoModel();

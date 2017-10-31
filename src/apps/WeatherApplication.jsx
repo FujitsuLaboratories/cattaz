@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 // OpenWeatherMap [https://openweathermap.org/]
 // Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js]
@@ -28,17 +29,17 @@ class WeatherModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify(this, null, 2);
+    return Yaml.safeDump(this);
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new WeatherModel();
-      model.country = obj.country;
-      model.city = obj.city;
-      model.weather = obj.weather;
-      model.icon = obj.icon;
-      model.temp = obj.temp;
+      if (obj.country) model.country = obj.country;
+      if (obj.city) model.city = obj.city;
+      if (obj.weather) model.weather = obj.weather;
+      if (obj.icon) model.icon = obj.icon;
+      if (obj.temp) model.temp = obj.temp;
       return model;
     } catch (ex) {
       return new WeatherModel();

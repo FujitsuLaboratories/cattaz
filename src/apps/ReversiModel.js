@@ -3,6 +3,7 @@ import isEqual from 'lodash/isEqual';
 import flatMap from 'lodash/flatMap';
 import fill from 'lodash/fill';
 import range from 'lodash/range';
+import Yaml from 'js-yaml';
 
 const Size = 8;
 
@@ -108,17 +109,17 @@ export default class ReversiModel {
     return isEqual(this, other);
   }
   serialize() {
-    return JSON.stringify({
+    return Yaml.safeDump({
       steps: this.steps,
       nextTurn: this.nextTurn,
-    }, null, 2);
+    });
   }
   static deserialize(str) {
     try {
-      const obj = JSON.parse(str);
+      const obj = Yaml.safeLoad(str);
       const model = new ReversiModel();
-      model.steps = obj.steps;
-      model.nextTurn = obj.nextTurn;
+      if (obj.steps) model.steps = obj.steps;
+      if (obj.nextTurn) model.nextTurn = obj.nextTurn;
       return model;
     } catch (ex) {
       return new ReversiModel();
