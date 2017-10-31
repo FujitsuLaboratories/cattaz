@@ -76,3 +76,34 @@ test('renderCustomHast should handle app:kpt node', t => {
   const codeBlockNode = reactNode.props.children[4];
   t.is(codeBlockNode.type, 'pre');
 });
+
+/** @test {WikiParser.indentAppCode} */
+test('indentAppCode', t => {
+  const posWithoutIndent = WikiParser.convertToCustomHast(WikiParser.parseToHast('~~~kpt\n~~~')).children[0].position;
+  const posWithIndent = WikiParser.convertToCustomHast(WikiParser.parseToHast('1. a\n\n   ~~~kpt\n~~~')).children[0].children[1].children[3].position;
+  t.is('{\n}', WikiParser.indentAppCode(posWithoutIndent, '{\n}'));
+  t.is('   {\n   }', WikiParser.indentAppCode(posWithIndent, '{\n}'));
+});
+
+/** @test {WikiParser.replaceAppCode} */
+test('replaceAppCode should not modify text outside', t => {
+  const md = `
+# h1
+
+\`\`\`kpt
+\`\`\`
+
+para
+`;
+  const pos = WikiParser.convertToCustomHast(WikiParser.parseToHast(md)).children[2].position;
+  const replaced = WikiParser.replaceAppCode(md, pos, 'kpt', 'keeps: []');
+  t.is(replaced, `
+# h1
+
+\`\`\`kpt
+keeps: []
+\`\`\`
+
+para
+`);
+});
