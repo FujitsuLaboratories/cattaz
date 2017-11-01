@@ -6,6 +6,7 @@ Cattaz has sevral applications installed.
 |----|-----------|
 |[`date`](./app-date)|Timestamp application. It records the current time on Wiki.|
 |[`datematcher`](./app-datematcher)|Date matcher helps an organizer to coodinate meeting time.|
+|[`hello`](./app-hello)|"Hello World" application in cattaz.|
 |[`helpful`](./app-helpful)|An application to get feedbacks via "Was this page helpful?"|
 |[`kpt`](./app-kpt)|[KPT method](http://code-artisan.io/retrospective-method-kpt/) application for retrospective. A team can itemize keeps, problems, and tries in collaborative way.|
 |[`mandala`](./app-mandala)|An application for brainstorming.|

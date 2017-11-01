@@ -2,6 +2,7 @@ const files = [
   'apps',
   'app-date',
   'app-datematcher',
+  'app-hello',
   'app-helpful',
   'app-kpt',
   'app-mandala',

@@ -1,3 +1,4 @@
+import hello from './HelloApplication';
 import kpt from './KPTApplication';
 import mandala from './MandalaApplication';
 import date from './DateApplication';
@@ -12,6 +13,7 @@ import map from './MapApplication';
 import draw from './DrawApplication';
 
 export default {
+  hello,
   kpt,
   mandala,
   date,
