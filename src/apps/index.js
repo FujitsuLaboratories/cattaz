@@ -11,6 +11,7 @@ import helpful from './VoteHelpfulApplication';
 import weather from './WeatherApplication';
 import map from './MapApplication';
 import draw from './DrawApplication';
+import kanban from './KanbanApplication';
 
 export default {
   hello,
@@ -26,4 +27,5 @@ export default {
   weather,
   map,
   draw,
+  kanban,
 };
