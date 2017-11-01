@@ -4,7 +4,7 @@ TODO add badges of Travis, etc.
 
 Cattaz is an interactive Wiki platform. You can implement an application which runs in a Wiki page.
 
-![Cattaz](docs/assets/cattz.png "Cattaz")
+![Cattaz](docs/assets/cattaz.png "Cattaz")
 
 ## Usage
 

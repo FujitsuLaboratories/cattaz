@@ -4,7 +4,7 @@ import NavLink from 'react-router-dom/NavLink';
 
 import AppEnabledWikiEditor from './AppEnabledWikiEditorCodeMirror';
 import docs from './docs';
-import logo from '../docs/assets/cattz.svg';
+import logo from '../docs/assets/cattaz.svg';
 
 export default class Page extends React.Component {
   constructor() {

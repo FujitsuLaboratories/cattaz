@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
-import logo from '../docs/assets/cattz.svg';
+import logo from '../docs/assets/cattaz.svg';
 import docs from './docs';
 
 const url = `http://${window.location.hostname}:1234`;

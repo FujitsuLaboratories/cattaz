@@ -8,7 +8,7 @@ import 'github-markdown-css/github-markdown.css';
 import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 import AppEnabledWikiEditorCodeMirror from '../src/AppEnabledWikiEditorCodeMirror';
 
-import logo from '../docs/assets/cattz.svg';
+import logo from '../docs/assets/cattaz.svg';
 
 storiesOf('Ace', module)
   .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={['kpt', 'mandala', 'votecrypto'].map(s => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
