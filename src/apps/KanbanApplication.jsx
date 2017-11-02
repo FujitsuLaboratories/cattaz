@@ -143,7 +143,6 @@ const KanbanCard = props => (
   props.connectDragSource(props.connectDropTarget((
     <span style={props.isDragging ? cardDraggingStyle : cardStyle}>
       {props.title}
-      <input type="button" style={{ float: 'right' }} value="x" onClick={props.callbacks.removeItem} data-listIndex={props.itemId.list} data-itemIndex={props.itemId.item} />
     </span>))));
 KanbanCard.propTypes = {
   title: PropTypes.string.isRequired,
@@ -152,7 +151,6 @@ KanbanCard.propTypes = {
     item: PropTypes.number,
   }).isRequired,
   callbacks: PropTypes.shape({
-    removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
   }).isRequired,
   // DND
@@ -201,15 +199,13 @@ const listTarget = {
 const KanbanList = props => (
   props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
     <td style={props.isDragging ? listDraggingStyle : listStyle}>
-      <h2>{props.model.name} <input type="button" style={{ float: 'right' }} data-index={props.listIndex} value="x" onClick={props.callbacks.removeList} /></h2>
+      <h2>{props.model.name}</h2>
       {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} callbacks={props.callbacks} />)}
     </td>)))));
 KanbanList.propTypes = {
   model: PropTypes.instanceOf(KanbanModelList).isRequired,
   listIndex: PropTypes.number.isRequired,
   callbacks: PropTypes.shape({
-    removeList: PropTypes.func.isRequired,
-    removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
     moveList: PropTypes.func.isRequired,
   }).isRequired,
@@ -228,6 +224,46 @@ const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, conn
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }))(KanbanList)));
+
+const trashInactiveStyle = {
+  backgroundColor: 'LightGrey',
+};
+const trashActiveStyle = {
+  backgroundColor: 'OrangeRed',
+};
+const trashCardTarget = {
+  drop(props, monitor /* , component */) {
+    const dragItemId = monitor.getItem().itemId;
+    props.callbacks.removeItem(dragItemId);
+  },
+};
+const trashListTarget = {
+  drop(props, monitor /* , component */) {
+    const dragListIndex = monitor.getItem().listIndex;
+    props.callbacks.removeList(dragListIndex);
+  },
+};
+const KanbanTrash = props => props.connectDropTargetC(props.connectDropTargetL((
+  <span style={props.isOverC || props.isOverL ? trashActiveStyle : trashInactiveStyle}>Drop here to remove</span>
+)));
+KanbanTrash.propTypes = {
+  callbacks: PropTypes.shape({
+    removeList: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+  }).isRequired,
+  // DND
+  connectDropTargetC: PropTypes.func.isRequired,
+  connectDropTargetL: PropTypes.func.isRequired,
+  isOverC: PropTypes.bool.isRequired,
+  isOverL: PropTypes.bool.isRequired,
+};
+const KanbanTrashDraggable = DropTarget(dndTypes.kanbanCard, trashCardTarget, (connect, monitor) => ({
+  connectDropTargetC: connect.dropTarget(),
+  isOverC: monitor.isOver(),
+}))(DropTarget(dndTypes.kanbanList, trashListTarget, (connect, monitor) => ({
+  connectDropTargetL: connect.dropTarget(),
+  isOverL: monitor.isOver(),
+}))(KanbanTrash));
 
 class KanbanApplication extends React.Component {
   constructor(props) {
@@ -276,16 +312,13 @@ class KanbanApplication extends React.Component {
       this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
     }
   }
-  handleRemoveList(ev) {
-    const index = parseInt(ev.target.getAttribute('data-index'), 10);
-    this.state.kanban.removeListAt(index);
+  handleRemoveList(listIndex) {
+    this.state.kanban.removeListAt(listIndex);
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
-  handleRemoveItem(ev) {
-    const listIndex = parseInt(ev.target.getAttribute('data-listIndex'), 10);
-    const itemIndex = parseInt(ev.target.getAttribute('data-itemIndex'), 10);
-    this.state.kanban.getListAt(listIndex).removeItemAt(itemIndex);
+  handleRemoveItem(itemId) {
+    this.state.kanban.getListAt(itemId.list).removeItemAt(itemId.item);
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
@@ -315,6 +348,7 @@ class KanbanApplication extends React.Component {
       <div>
         <input ref={(c) => { this.inputList = c; }} type="text" placeholder="Add list" />
         <input type="button" value="Add list" onClick={this.handleAddList} />
+        <KanbanTrashDraggable callbacks={this.callbacks} />
         <table>
           <tbody>
             <tr>
