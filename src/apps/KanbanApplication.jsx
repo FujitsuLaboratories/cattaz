@@ -113,13 +113,21 @@ const cardSource = {
   },
 };
 const cardTarget = {
-  hover(props, monitor /* , component */) {
+  drop(props, monitor /* , component */) {
     const dragItemId = monitor.getItem().itemId;
     const hoverItemId = props.itemId;
     if (isEqual(dragItemId, hoverItemId)) {
       return;
     }
     props.callbacks.moveItem(dragItemId, hoverItemId);
+  },
+  hover(props, monitor /* , component */) {
+    const dragItemId = monitor.getItem().itemId;
+    const hoverItemId = props.itemId;
+    if (isEqual(dragItemId, hoverItemId)) {
+      return;
+    }
+    props.callbacks.previewMoveItem(dragItemId, hoverItemId);
   },
 };
 
@@ -146,6 +154,7 @@ KanbanCard.propTypes = {
   callbacks: PropTypes.shape({
     removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
+    previewMoveItem: PropTypes.func.isRequired,
   }).isRequired,
   // DND
   connectDragSource: PropTypes.func.isRequired,
@@ -169,10 +178,12 @@ class KanbanApplication extends React.Component {
     this.handleRemoveList = this.handleRemoveList.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.handleMoveItem = this.handleMoveItem.bind(this);
+    this.handlePreviewMoveItem = this.handlePreviewMoveItem.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
     this.callbacksFromItems = {
       removeItem: this.handleRemoveItem,
       moveItem: this.handleMoveItem,
+      previewMoveItem: this.handlePreviewMoveItem,
     };
   }
   componentWillReceiveProps(newProps) {
@@ -182,7 +193,7 @@ class KanbanApplication extends React.Component {
     }
   }
   shouldComponentUpdate(newProps, nextState) {
-    return !this.state.kanban.equals(nextState.kanban);
+    return !this.state.kanban.equals(nextState.kanban) || !isEqual(this.state.dragging, nextState.dragging);
   }
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
@@ -218,8 +229,12 @@ class KanbanApplication extends React.Component {
   }
   handleMoveItem(sourceId, targetId) {
     this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetId.item);
+    this.setState({ dragging: null });
     this.forceUpdate();
-    // this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  }
+  handlePreviewMoveItem(sourceId, targetId) {
+    this.setState({ dragging: { sourceId, targetId } });
   }
   renderRow(index, title, items) {
     return (
