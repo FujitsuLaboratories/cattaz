@@ -7,7 +7,7 @@ import clone from 'lodash/clone';
 import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-class KanbanList {
+class KanbanModelList {
   constructor(name) {
     this.name = name;
     this.items = [];
@@ -40,7 +40,7 @@ class KanbanModel {
     this.lists = [];
   }
   addList(str) {
-    this.lists.push(new KanbanList(str));
+    this.lists.push(new KanbanModelList(str));
   }
   getLength() {
     return this.lists.length;
@@ -169,6 +169,22 @@ const KanbanCardDraggable = DropTarget(dndType, cardTarget, connect => ({
   isDragging: monitor.isDragging(),
 }))(KanbanCard));
 
+const KanbanList = props => (
+  <td style={cellStyle}>
+    <h2>{props.model.name} <input type="button" style={{ float: 'right' }} data-index={props.listIndex} value="x" onClick={props.callbacks.removeList} /></h2>
+    {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} callbacks={props.callbacks} />)}
+  </td>);
+KanbanList.propTypes = {
+  model: PropTypes.instanceOf(KanbanModelList).isRequired,
+  listIndex: PropTypes.number.isRequired,
+  callbacks: PropTypes.shape({
+    removeList: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    moveItem: PropTypes.func.isRequired,
+    previewMoveItem: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 // eslint-disable-next-line react/no-multi-comp
 class KanbanApplication extends React.Component {
   constructor(props) {
@@ -180,7 +196,8 @@ class KanbanApplication extends React.Component {
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handlePreviewMoveItem = this.handlePreviewMoveItem.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
-    this.callbacksFromItems = {
+    this.callbacks = {
+      removeList: this.handleRemoveList,
       removeItem: this.handleRemoveItem,
       moveItem: this.handleMoveItem,
       previewMoveItem: this.handlePreviewMoveItem,
@@ -236,13 +253,6 @@ class KanbanApplication extends React.Component {
   handlePreviewMoveItem(sourceId, targetId) {
     this.setState({ dragging: { sourceId, targetId } });
   }
-  renderRow(index, title, items) {
-    return (
-      <td style={cellStyle}>
-        <h2>{title} <input type="button" style={{ float: 'right' }} data-index={index} value="x" onClick={this.handleRemoveList} /></h2>
-        {items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: index, item: i }} callbacks={this.callbacksFromItems} />)}
-      </td>);
-  }
   renderRow2(index) {
     return (
       <td>
@@ -258,7 +268,7 @@ class KanbanApplication extends React.Component {
         <table>
           <tbody>
             <tr>
-              {this.state.kanban.lists.map((l, i) => this.renderRow(i, l.name, l.items))}
+              {this.state.kanban.lists.map((l, i) => <KanbanList model={l} listIndex={i} callbacks={this.callbacks} />)}
             </tr>
             <tr>
               {this.state.kanban.lists.map((l, i) => this.renderRow2(i))}
