@@ -51,11 +51,19 @@ class KanbanModel {
   removeListAt(index) {
     this.lists.splice(index, 1);
   }
+  insertList(index, list) {
+    this.lists.splice(index, 0, list);
+  }
   moveItem(fromListIndex, fromItemIndex, toListIndex, toItemIndex) {
     const fromList = this.getListAt(fromListIndex);
     const item = fromList.getItemAt(fromItemIndex);
     fromList.removeItemAt(fromItemIndex);
     this.getListAt(toListIndex).insertItem(toItemIndex, item);
+  }
+  moveList(fromListIndex, toListIndex) {
+    const fromList = this.getListAt(fromListIndex);
+    this.removeListAt(fromListIndex);
+    this.insertList(toListIndex, fromList);
   }
   equals(other) {
     return isEqual(this, other);
@@ -88,10 +96,14 @@ class KanbanModel {
   }
 }
 
-const cellStyle = {
+const listStyle = {
   border: '1px solid grey',
   verticalAlign: 'top',
+  cursor: 'grab',
 };
+const listDraggingStyle = assign(clone(listStyle), {
+  opacity: 0.5,
+});
 const cardStyle = {
   backgroundColor: 'LemonChiffon',
   border: '1px solid silver',
@@ -104,7 +116,11 @@ const cardDraggingStyle = assign(clone(cardStyle), {
   backgroundColor: 'transparent',
 });
 
-const dndType = 'kanban-card';
+const dndTypes = {
+  kanbanCard: 'kanban-card',
+  kanbanList: 'kanban-list',
+};
+
 const cardSource = {
   beginDrag(props) {
     return {
@@ -162,9 +178,9 @@ KanbanCard.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-const KanbanCardDraggable = DropTarget(dndType, cardTarget, connect => ({
+const KanbanCardDraggable = DropTarget(dndTypes.kanbanCard, cardTarget, connect => ({
   connectDropTarget: connect.dropTarget(),
-}))(DragSource(dndType, cardSource, (connect, monitor) => ({
+}))(DragSource(dndTypes.kanbanCard, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }))(KanbanCard));
@@ -190,12 +206,38 @@ const listCardTarget = {
   },
 };
 
+const listSource = {
+  beginDrag(props) {
+    return {
+      listIndex: props.listIndex,
+    };
+  },
+};
+const listTarget = {
+  drop(props, monitor /* , component */) {
+    const dragListIndex = monitor.getItem().listIndex;
+    const hoverListIndex = props.listIndex;
+    if (isEqual(dragListIndex, hoverListIndex)) {
+      return;
+    }
+    props.callbacks.moveList(dragListIndex, hoverListIndex);
+  },
+  hover(props, monitor /* , component */) {
+    const dragListIndex = monitor.getItem().itemId;
+    const hoverListIndex = props.itemId;
+    if (isEqual(dragListIndex, hoverListIndex)) {
+      return;
+    }
+    props.callbacks.previewMoveList(dragListIndex, hoverListIndex);
+  },
+};
+
 const KanbanList = props => (
-  props.connectDropTarget((
-    <td style={cellStyle}>
+  props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
+    <td style={props.isDragging ? listDraggingStyle : listStyle}>
       <h2>{props.model.name} <input type="button" style={{ float: 'right' }} data-index={props.listIndex} value="x" onClick={props.callbacks.removeList} /></h2>
       {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} callbacks={props.callbacks} />)}
-    </td>)));
+    </td>)))));
 KanbanList.propTypes = {
   model: PropTypes.instanceOf(KanbanModelList).isRequired,
   listIndex: PropTypes.number.isRequired,
@@ -203,15 +245,25 @@ KanbanList.propTypes = {
     removeList: PropTypes.func.isRequired,
     removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
+    moveList: PropTypes.func.isRequired,
+    previewMoveList: PropTypes.func.isRequired,
     previewMoveItem: PropTypes.func.isRequired,
   }).isRequired,
   // DND
   connectDropTarget: PropTypes.func.isRequired,
+  connectDropTarget2: PropTypes.func.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired,
 };
 
-const KanbanListDraggable = DropTarget(dndType, listCardTarget, connect => ({
+const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, connect => ({
   connectDropTarget: connect.dropTarget(),
-}))(KanbanList);
+}))(DropTarget(dndTypes.kanbanList, listTarget, connect => ({
+  connectDropTarget2: connect.dropTarget(),
+}))(DragSource(dndTypes.kanbanList, listSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging(),
+}))(KanbanList)));
 
 // eslint-disable-next-line react/no-multi-comp
 class KanbanApplication extends React.Component {
@@ -223,12 +275,16 @@ class KanbanApplication extends React.Component {
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handlePreviewMoveItem = this.handlePreviewMoveItem.bind(this);
+    this.handleMoveList = this.handleMoveList.bind(this);
+    this.handlePreviewMoveList = this.handlePreviewMoveList.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
     this.callbacks = {
       removeList: this.handleRemoveList,
       removeItem: this.handleRemoveItem,
       moveItem: this.handleMoveItem,
       previewMoveItem: this.handlePreviewMoveItem,
+      moveList: this.handleMoveList,
+      previewMoveList: this.handlePreviewMoveList,
     };
   }
   componentWillReceiveProps(newProps) {
@@ -283,6 +339,15 @@ class KanbanApplication extends React.Component {
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
   handlePreviewMoveItem(sourceId, targetId) {
+    this.setState({ dragging: { sourceId, targetId } });
+  }
+  handleMoveList(sourceId, targetId) {
+    this.state.kanban.moveList(sourceId, targetId);
+    this.setState({ dragging: null });
+    this.forceUpdate();
+    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  }
+  handlePreviewMoveList(sourceId, targetId) {
     this.setState({ dragging: { sourceId, targetId } });
   }
   renderRow2(index) {

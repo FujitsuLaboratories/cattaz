@@ -57,3 +57,22 @@ test('moveItem should move item', t => {
   * try1
   * keep2`)));
 });
+
+/** @test {KanbanModel#moveList} */
+test('moveList should move list', t => {
+  const model = new KanbanModel();
+  model.addList('keep');
+  model.getListAt(model.getLength() - 1).addItem('keep1');
+  model.getListAt(model.getLength() - 1).addItem('keep2');
+  model.addList('problem');
+  model.addList('try');
+  model.getListAt(model.getLength() - 1).addItem('try1');
+  t.true(model.equals(KanbanModel.deserialize(mdKpt201)));
+  model.moveList(0, 1);
+  t.true(model.equals(KanbanModel.deserialize(`* problem
+* keep
+  * keep1
+  * keep2
+* try
+  * try1`)));
+});
