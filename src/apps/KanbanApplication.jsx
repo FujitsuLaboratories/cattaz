@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
+import assign from 'lodash/assign';
+import clone from 'lodash/clone';
+
+import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 class KanbanList {
   constructor(name) {
@@ -87,7 +92,7 @@ const cellStyle = {
   border: '1px solid grey',
   verticalAlign: 'top',
 };
-const itemStyle = {
+const cardStyle = {
   backgroundColor: 'LemonChiffon',
   border: '1px solid silver',
   display: 'block',
@@ -95,8 +100,30 @@ const itemStyle = {
   padding: '0.1em',
   cursor: 'grab',
 };
+const cardDraggingStyle = assign(clone(cardStyle), {
+  backgroundColor: 'transparent',
+});
 
-class KanbanItem extends React.Component {
+const dndType = 'kanban-card';
+const cardSource = {
+  beginDrag(props) {
+    return {
+      itemId: props.itemId,
+    };
+  },
+};
+const cardTarget = {
+  hover(props, monitor /* , component */) {
+    const dragItemId = monitor.getItem().itemId;
+    const hoverItemId = props.itemId;
+    if (isEqual(dragItemId, hoverItemId)) {
+      return;
+    }
+    props.callbacks.moveItem(dragItemId, hoverItemId);
+  },
+};
+
+class KanbanCard extends React.Component {
   constructor() {
     super();
     this.remove = this.remove.bind(this);
@@ -105,33 +132,47 @@ class KanbanItem extends React.Component {
     this.props.callbacks.removeItem(this.props.itemId);
   }
   render() {
-    return (
-      <span style={itemStyle}>
+    return this.props.connectDragSource(this.props.connectDropTarget((
+      <span style={this.props.isDragging ? cardDraggingStyle : cardStyle}>
         {this.props.title}
         <input type="button" style={{ float: 'right' }} value="x" onClick={this.remove} />
       </span>
-    );
+    )));
   }
 }
-KanbanItem.propTypes = {
+KanbanCard.propTypes = {
   title: PropTypes.string.isRequired,
   itemId: PropTypes.shape({}).isRequired,
   callbacks: PropTypes.shape({
     removeItem: PropTypes.func.isRequired,
+    moveItem: PropTypes.func.isRequired,
   }).isRequired,
+  // DND
+  connectDragSource: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired,
 };
 
+const KanbanCardDraggable = DropTarget(dndType, cardTarget, connect => ({
+  connectDropTarget: connect.dropTarget(),
+}))(DragSource(dndType, cardSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging(),
+}))(KanbanCard));
+
 // eslint-disable-next-line react/no-multi-comp
-export default class KanbanApplication extends React.Component {
+class KanbanApplication extends React.Component {
   constructor(props) {
     super();
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleAddList = this.handleAddList.bind(this);
     this.handleRemoveList = this.handleRemoveList.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
+    this.handleMoveItem = this.handleMoveItem.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
     this.callbacksFromItems = {
       removeItem: this.handleRemoveItem,
+      moveItem: this.handleMoveItem,
     };
   }
   componentWillReceiveProps(newProps) {
@@ -175,11 +216,16 @@ export default class KanbanApplication extends React.Component {
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
+  handleMoveItem(sourceId, targetId) {
+    this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetId.item);
+    this.forceUpdate();
+    // this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  }
   renderRow(index, title, items) {
     return (
       <td style={cellStyle}>
         <h2>{title} <input type="button" style={{ float: 'right' }} data-index={index} value="x" onClick={this.handleRemoveList} /></h2>
-        {items.map((s, i) => <KanbanItem title={s} itemId={{ list: index, item: i }} callbacks={this.callbacksFromItems} />)}
+        {items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: index, item: i }} callbacks={this.callbacksFromItems} />)}
       </td>);
   }
   renderRow2(index) {
@@ -215,3 +261,5 @@ KanbanApplication.propTypes = {
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,
 };
+
+export default DragDropContext(HTML5Backend)(KanbanApplication);
