@@ -104,6 +104,9 @@ const listStyle = {
 const listDraggingStyle = assign(clone(listStyle), {
   opacity: 0.5,
 });
+const listTitleStyle = {
+  fontWeight: 'bold',
+};
 const cardStyle = {
   backgroundColor: 'LemonChiffon',
   border: '1px solid silver',
@@ -199,7 +202,7 @@ const listTarget = {
 const KanbanList = props => (
   props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
     <td style={props.isDragging ? listDraggingStyle : listStyle}>
-      <h2>{props.model.name}</h2>
+      <div style={listTitleStyle}>{props.model.name}</div>
       {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} callbacks={props.callbacks} />)}
     </td>)))));
 KanbanList.propTypes = {
