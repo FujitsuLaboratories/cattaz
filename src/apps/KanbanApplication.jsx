@@ -147,26 +147,18 @@ const cardTarget = {
   },
 };
 
-class KanbanCard extends React.Component {
-  constructor() {
-    super();
-    this.remove = this.remove.bind(this);
-  }
-  remove() {
-    this.props.callbacks.removeItem(this.props.itemId);
-  }
-  render() {
-    return this.props.connectDragSource(this.props.connectDropTarget((
-      <span style={this.props.isDragging ? cardDraggingStyle : cardStyle}>
-        {this.props.title}
-        <input type="button" style={{ float: 'right' }} value="x" onClick={this.remove} />
-      </span>
-    )));
-  }
-}
+const KanbanCard = props => (
+  props.connectDragSource(props.connectDropTarget((
+    <span style={props.isDragging ? cardDraggingStyle : cardStyle}>
+      {props.title}
+      <input type="button" style={{ float: 'right' }} value="x" onClick={props.callbacks.removeItem} data-listIndex={props.itemId.list} data-itemIndex={props.itemId.item} />
+    </span>))));
 KanbanCard.propTypes = {
   title: PropTypes.string.isRequired,
-  itemId: PropTypes.shape({}).isRequired,
+  itemId: PropTypes.shape({
+    list: PropTypes.number,
+    item: PropTypes.number,
+  }).isRequired,
   callbacks: PropTypes.shape({
     removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
@@ -265,7 +257,6 @@ const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, conn
   isDragging: monitor.isDragging(),
 }))(KanbanList)));
 
-// eslint-disable-next-line react/no-multi-comp
 class KanbanApplication extends React.Component {
   constructor(props) {
     super();
@@ -323,8 +314,10 @@ class KanbanApplication extends React.Component {
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
-  handleRemoveItem(itemId) {
-    this.state.kanban.getListAt(itemId.list).removeItemAt(itemId.item);
+  handleRemoveItem(ev) {
+    const listIndex = parseInt(ev.target.getAttribute('data-listIndex'), 10);
+    const itemIndex = parseInt(ev.target.getAttribute('data-itemIndex'), 10);
+    this.state.kanban.getListAt(listIndex).removeItemAt(itemIndex);
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
