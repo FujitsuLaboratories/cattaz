@@ -137,14 +137,6 @@ const cardTarget = {
     }
     props.callbacks.moveItem(dragItemId, hoverItemId);
   },
-  hover(props, monitor /* , component */) {
-    const dragItemId = monitor.getItem().itemId;
-    const hoverItemId = props.itemId;
-    if (isEqual(dragItemId, hoverItemId)) {
-      return;
-    }
-    props.callbacks.previewMoveItem(dragItemId, hoverItemId);
-  },
 };
 
 const KanbanCard = props => (
@@ -162,7 +154,6 @@ KanbanCard.propTypes = {
   callbacks: PropTypes.shape({
     removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
-    previewMoveItem: PropTypes.func.isRequired,
   }).isRequired,
   // DND
   connectDragSource: PropTypes.func.isRequired,
@@ -187,15 +178,6 @@ const listCardTarget = {
     const hoverListIndex = props.listIndex;
     props.callbacks.moveItem(dragItemId, { list: hoverListIndex, item: -1 });
   },
-  hover(props, monitor /* , component */) {
-    const hasDroppedOnChild = monitor.didDrop();
-    if (hasDroppedOnChild) {
-      return;
-    }
-    const dragItemId = monitor.getItem().itemId;
-    const hoverListIndex = props.listIndex;
-    props.callbacks.previewMoveItem(dragItemId, { list: hoverListIndex, item: -1 });
-  },
 };
 
 const listSource = {
@@ -214,14 +196,6 @@ const listTarget = {
     }
     props.callbacks.moveList(dragListIndex, hoverListIndex);
   },
-  hover(props, monitor /* , component */) {
-    const dragListIndex = monitor.getItem().itemId;
-    const hoverListIndex = props.itemId;
-    if (isEqual(dragListIndex, hoverListIndex)) {
-      return;
-    }
-    props.callbacks.previewMoveList(dragListIndex, hoverListIndex);
-  },
 };
 
 const KanbanList = props => (
@@ -238,8 +212,6 @@ KanbanList.propTypes = {
     removeItem: PropTypes.func.isRequired,
     moveItem: PropTypes.func.isRequired,
     moveList: PropTypes.func.isRequired,
-    previewMoveList: PropTypes.func.isRequired,
-    previewMoveItem: PropTypes.func.isRequired,
   }).isRequired,
   // DND
   connectDropTarget: PropTypes.func.isRequired,
@@ -265,17 +237,13 @@ class KanbanApplication extends React.Component {
     this.handleRemoveList = this.handleRemoveList.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.handleMoveItem = this.handleMoveItem.bind(this);
-    this.handlePreviewMoveItem = this.handlePreviewMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
-    this.handlePreviewMoveList = this.handlePreviewMoveList.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
     this.callbacks = {
       removeList: this.handleRemoveList,
       removeItem: this.handleRemoveItem,
       moveItem: this.handleMoveItem,
-      previewMoveItem: this.handlePreviewMoveItem,
       moveList: this.handleMoveList,
-      previewMoveList: this.handlePreviewMoveList,
     };
   }
   componentWillReceiveProps(newProps) {
@@ -285,7 +253,7 @@ class KanbanApplication extends React.Component {
     }
   }
   shouldComponentUpdate(newProps, nextState) {
-    return !this.state.kanban.equals(nextState.kanban) || !isEqual(this.state.dragging, nextState.dragging);
+    return !this.state.kanban.equals(nextState.kanban);
   }
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
@@ -327,21 +295,13 @@ class KanbanApplication extends React.Component {
       targetItemIndex = this.state.kanban.getListAt(targetId.list).getLength();
     }
     this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
-    this.setState({ dragging: null });
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
-  }
-  handlePreviewMoveItem(sourceId, targetId) {
-    this.setState({ dragging: { sourceId, targetId } });
   }
   handleMoveList(sourceId, targetId) {
     this.state.kanban.moveList(sourceId, targetId);
-    this.setState({ dragging: null });
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
-  }
-  handlePreviewMoveList(sourceId, targetId) {
-    this.setState({ dragging: { sourceId, targetId } });
   }
   renderRow2(index) {
     return (
