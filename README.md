@@ -10,7 +10,7 @@ Cattaz is an interactive Wiki platform. You can implement an application which r
 
 ### Node
 
-Install [Node 6](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/en/docs/install).
+Install [Node 8](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/en/docs/install).
 
 ```bash
 yarn install
