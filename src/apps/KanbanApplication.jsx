@@ -7,13 +7,22 @@ import clone from 'lodash/clone';
 import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
+class KanbanModelItem {
+  constructor(name) {
+    this.name = name;
+  }
+  toMarkdown() {
+    return this.name;
+  }
+}
+
 class KanbanModelList {
   constructor(name) {
     this.name = name;
     this.items = [];
   }
-  addItem(item) {
-    this.items.push(item);
+  addItem(text) {
+    this.items.push(new KanbanModelItem(text));
   }
   insertItem(index, item) {
     this.items.splice(index, 0, item);
@@ -30,7 +39,7 @@ class KanbanModelList {
   toMarkdown() {
     return [
       `* ${this.name}`,
-      ...this.items.map(s => `  * ${s}`),
+      ...this.items.map(i => `  * ${i.toMarkdown()}`),
     ].join('\n');
   }
 }
@@ -154,10 +163,10 @@ const cardTarget = {
 const KanbanCard = props => (
   props.connectDragSource(props.connectDropTarget((
     <span style={props.isDragging ? cardDraggingStyle : cardStyle}>
-      {props.title}
+      {props.model.name}
     </span>))));
 KanbanCard.propTypes = {
-  title: PropTypes.string.isRequired,
+  model: PropTypes.instanceOf(KanbanModelItem).isRequired,
   itemId: PropTypes.shape({
     list: PropTypes.number,
     item: PropTypes.number,
@@ -222,7 +231,7 @@ const KanbanList = props => (
   props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
     <td style={props.isDragging ? listDraggingStyle : listStyle}>
       <div style={listTitleStyle}>{props.model.name}</div>
-      {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} app={props.app} />)}
+      {props.model.items.map((s, i) => <KanbanCardDraggable model={s} itemId={{ list: props.listIndex, item: i }} app={props.app} />)}
     </td>)))));
 KanbanList.propTypes = {
   model: PropTypes.instanceOf(KanbanModelList).isRequired,
