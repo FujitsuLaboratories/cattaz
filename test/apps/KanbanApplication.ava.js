@@ -39,6 +39,22 @@ test('KanbanModel should deserialize Markdown', t => {
   t.true(model.equals(KanbanModel.deserialize(mdKpt201)));
 });
 
+/** @test {KanbanModel.deserialize} */
+test('KanbanModel should deserialize Markdown importance', t => {
+  const model = KanbanModel.deserialize(`* list
+  * ****asterisk 4****
+  * ***asterisk 3***
+  * **asterisk 2**
+  * *asterisk 1*
+  * normal
+  * _underline 1_
+  * __underline 2__
+  * ___underline 3___
+  * ____underline 4____
+  * *asterisk 1 2 should be 1**`);
+  t.deepEqual(model.getListAt(0).items.map(i => i.importance), [3, 3, 2, 1, 0, 1, 2, 3, 3, 1]);
+});
+
 /** @test {KanbanModel#moveItem} */
 test('moveItem should move item', t => {
   const model = new KanbanModel();

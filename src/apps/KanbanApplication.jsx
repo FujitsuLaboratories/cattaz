@@ -3,16 +3,19 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import assign from 'lodash/assign';
 import clone from 'lodash/clone';
+import repeat from 'lodash/repeat';
 
 import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 class KanbanModelItem {
-  constructor(name) {
+  constructor(name, importance = 0) {
     this.name = name;
+    this.importance = importance;
   }
   toMarkdown() {
-    return this.name;
+    const emphasis = repeat('*', this.importance);
+    return `${emphasis}${this.name}${emphasis}`;
   }
 }
 
@@ -21,8 +24,8 @@ class KanbanModelList {
     this.name = name;
     this.items = [];
   }
-  addItem(text) {
-    this.items.push(new KanbanModelItem(text));
+  addItem(text, importance = 0) {
+    this.items.push(new KanbanModelItem(text, importance));
   }
   insertItem(index, item) {
     this.items.splice(index, 0, item);
@@ -84,6 +87,7 @@ class KanbanModel {
     try {
       const reList = /^[*-]\s*(.*)$/;
       const reItem = /^\s+[*-]\s*(.*)$/;
+      const reText = /^([*_]*)(.*?)([*_]*)$/;
       const lines = str.split('\n');
       const model = new KanbanModel();
       lines.forEach((l) => {
@@ -94,7 +98,11 @@ class KanbanModel {
         } else if (matchItem) {
           const listLength = model.getLength();
           if (listLength) {
-            model.getListAt(listLength - 1).addItem(matchItem[1]);
+            const matchText = matchItem[1].match(reText);
+            const empLeft = matchText[1] ? matchText[1].length : 0;
+            const empRight = matchText[3] ? matchText[3].length : 0;
+            const importance = Math.min(3, empLeft, empRight);
+            model.getListAt(listLength - 1).addItem(matchText[2], importance);
           }
         }
       });
@@ -119,7 +127,7 @@ const listTitleStyle = {
   margin: '0 0.1em',
   padding: '0 0.1em',
 };
-const cardStyle = {
+const cardStyle0 = {
   backgroundColor: 'LemonChiffon',
   border: '1px solid silver',
   display: 'block',
@@ -127,9 +135,21 @@ const cardStyle = {
   padding: '0.1em',
   cursor: 'grab',
 };
-const cardDraggingStyle = assign(clone(cardStyle), {
-  opacity: 0.5,
+const cardStyle1 = assign(clone(cardStyle0), {
+  backgroundColor: 'PeachPuff',
 });
+const cardStyle2 = assign(clone(cardStyle0), {
+  backgroundColor: 'LightCoral',
+});
+const cardStyle3 = assign(clone(cardStyle0), {
+  backgroundColor: 'Crimson',
+});
+const cardStyles = [
+  cardStyle0,
+  cardStyle1,
+  cardStyle2,
+  cardStyle3,
+];
 
 const dndTypes = {
   kanbanCard: 'kanban-card',
@@ -160,11 +180,18 @@ const cardTarget = {
   },
 };
 
-const KanbanCard = props => (
-  props.connectDragSource(props.connectDropTarget((
-    <span style={props.isDragging ? cardDraggingStyle : cardStyle}>
+const KanbanCard = (props) => {
+  let style = cardStyles[props.model.importance];
+  if (props.isDragging) {
+    style = assign(clone(style), {
+      opacity: 0.5,
+    });
+  }
+  return props.connectDragSource(props.connectDropTarget((
+    <span style={style}>
       {props.model.name}
-    </span>))));
+    </span>)));
+};
 KanbanCard.propTypes = {
   model: PropTypes.instanceOf(KanbanModelItem).isRequired,
   itemId: PropTypes.shape({
