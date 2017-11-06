@@ -97,7 +97,8 @@ class KanbanModel {
 }
 
 const listStyle = {
-  border: '1px solid grey',
+  backgroundColor: 'LightGrey',
+  borderRadius: '4px',
   verticalAlign: 'top',
   cursor: 'grab',
 };
@@ -106,6 +107,8 @@ const listDraggingStyle = assign(clone(listStyle), {
 });
 const listTitleStyle = {
   fontWeight: 'bold',
+  margin: '0 0.1em',
+  padding: '0 0.1em',
 };
 const cardStyle = {
   backgroundColor: 'LemonChiffon',
@@ -116,7 +119,7 @@ const cardStyle = {
   cursor: 'grab',
 };
 const cardDraggingStyle = assign(clone(cardStyle), {
-  backgroundColor: 'transparent',
+  opacity: 0.5,
 });
 
 const dndTypes = {
@@ -244,10 +247,13 @@ const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, conn
 
 const trashInactiveStyle = {
   backgroundColor: 'LightGrey',
+  borderRadius: '4px',
+  margin: '0 0.2em',
+  padding: '0.1em 0.5em',
 };
-const trashActiveStyle = {
+const trashActiveStyle = assign(clone(trashInactiveStyle), {
   backgroundColor: 'OrangeRed',
-};
+});
 const trashCardTarget = {
   canDrop(props, monitor) {
     const sourceApp = monitor.getItem().app;
