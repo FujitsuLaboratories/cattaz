@@ -128,10 +128,16 @@ const cardSource = {
   beginDrag(props) {
     return {
       itemId: props.itemId,
+      app: props.app,
     };
   },
 };
 const cardTarget = {
+  canDrop(props, monitor) {
+    const sourceApp = monitor.getItem().app;
+    const targetApp = props.app;
+    return sourceApp === targetApp;
+  },
   drop(props, monitor /* , component */) {
     const dragItemId = monitor.getItem().itemId;
     const hoverItemId = props.itemId;
@@ -169,6 +175,11 @@ const KanbanCardDraggable = DropTarget(dndTypes.kanbanCard, cardTarget, connect 
 }))(KanbanCard));
 
 const listCardTarget = {
+  canDrop(props, monitor) {
+    const sourceApp = monitor.getItem().app;
+    const targetApp = props.app;
+    return sourceApp === targetApp;
+  },
   drop(props, monitor /* , component */) {
     const hasDroppedOnChild = monitor.didDrop();
     if (hasDroppedOnChild) {
@@ -184,10 +195,16 @@ const listSource = {
   beginDrag(props) {
     return {
       listIndex: props.listIndex,
+      app: props.app,
     };
   },
 };
 const listTarget = {
+  canDrop(props, monitor) {
+    const sourceApp = monitor.getItem().app;
+    const targetApp = props.app;
+    return sourceApp === targetApp;
+  },
   drop(props, monitor /* , component */) {
     const dragListIndex = monitor.getItem().listIndex;
     const hoverListIndex = props.listIndex;
@@ -232,12 +249,22 @@ const trashActiveStyle = {
   backgroundColor: 'OrangeRed',
 };
 const trashCardTarget = {
+  canDrop(props, monitor) {
+    const sourceApp = monitor.getItem().app;
+    const targetApp = props.app;
+    return sourceApp === targetApp;
+  },
   drop(props, monitor /* , component */) {
     const dragItemId = monitor.getItem().itemId;
     props.app.handleRemoveItem(dragItemId);
   },
 };
 const trashListTarget = {
+  canDrop(props, monitor) {
+    const sourceApp = monitor.getItem().app;
+    const targetApp = props.app;
+    return sourceApp === targetApp;
+  },
   drop(props, monitor /* , component */) {
     const dragListIndex = monitor.getItem().listIndex;
     props.app.handleRemoveList(dragListIndex);
