@@ -138,7 +138,7 @@ const cardTarget = {
     if (isEqual(dragItemId, hoverItemId)) {
       return;
     }
-    props.callbacks.moveItem(dragItemId, hoverItemId);
+    props.app.handleMoveItem(dragItemId, hoverItemId);
   },
 };
 
@@ -153,9 +153,8 @@ KanbanCard.propTypes = {
     list: PropTypes.number,
     item: PropTypes.number,
   }).isRequired,
-  callbacks: PropTypes.shape({
-    moveItem: PropTypes.func.isRequired,
-  }).isRequired,
+  // eslint-disable-next-line no-use-before-define
+  app: PropTypes.instanceOf(KanbanApplication).isRequired,
   // DND
   connectDragSource: PropTypes.func.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
@@ -177,7 +176,7 @@ const listCardTarget = {
     }
     const dragItemId = monitor.getItem().itemId;
     const hoverListIndex = props.listIndex;
-    props.callbacks.moveItem(dragItemId, { list: hoverListIndex, item: -1 });
+    props.app.handleMoveItem(dragItemId, { list: hoverListIndex, item: -1 });
   },
 };
 
@@ -195,7 +194,7 @@ const listTarget = {
     if (isEqual(dragListIndex, hoverListIndex)) {
       return;
     }
-    props.callbacks.moveList(dragListIndex, hoverListIndex);
+    props.app.handleMoveList(dragListIndex, hoverListIndex);
   },
 };
 
@@ -203,15 +202,13 @@ const KanbanList = props => (
   props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
     <td style={props.isDragging ? listDraggingStyle : listStyle}>
       <div style={listTitleStyle}>{props.model.name}</div>
-      {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} callbacks={props.callbacks} />)}
+      {props.model.items.map((s, i) => <KanbanCardDraggable title={s} itemId={{ list: props.listIndex, item: i }} app={props.app} />)}
     </td>)))));
 KanbanList.propTypes = {
   model: PropTypes.instanceOf(KanbanModelList).isRequired,
   listIndex: PropTypes.number.isRequired,
-  callbacks: PropTypes.shape({
-    moveItem: PropTypes.func.isRequired,
-    moveList: PropTypes.func.isRequired,
-  }).isRequired,
+  // eslint-disable-next-line no-use-before-define
+  app: PropTypes.instanceOf(KanbanApplication).isRequired,
   // DND
   connectDropTarget: PropTypes.func.isRequired,
   connectDropTarget2: PropTypes.func.isRequired,
@@ -237,23 +234,21 @@ const trashActiveStyle = {
 const trashCardTarget = {
   drop(props, monitor /* , component */) {
     const dragItemId = monitor.getItem().itemId;
-    props.callbacks.removeItem(dragItemId);
+    props.app.handleRemoveItem(dragItemId);
   },
 };
 const trashListTarget = {
   drop(props, monitor /* , component */) {
     const dragListIndex = monitor.getItem().listIndex;
-    props.callbacks.removeList(dragListIndex);
+    props.app.handleRemoveList(dragListIndex);
   },
 };
 const KanbanTrash = props => props.connectDropTargetC(props.connectDropTargetL((
   <span style={props.isOverC || props.isOverL ? trashActiveStyle : trashInactiveStyle}>Drop here to remove</span>
 )));
 KanbanTrash.propTypes = {
-  callbacks: PropTypes.shape({
-    removeList: PropTypes.func.isRequired,
-    removeItem: PropTypes.func.isRequired,
-  }).isRequired,
+  // eslint-disable-next-line no-use-before-define
+  app: PropTypes.instanceOf(KanbanApplication).isRequired,
   // DND
   connectDropTargetC: PropTypes.func.isRequired,
   connectDropTargetL: PropTypes.func.isRequired,
@@ -278,12 +273,6 @@ class KanbanApplication extends React.Component {
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
     this.state = { kanban: KanbanModel.deserialize(props.data) };
-    this.callbacks = {
-      removeList: this.handleRemoveList,
-      removeItem: this.handleRemoveItem,
-      moveItem: this.handleMoveItem,
-      moveList: this.handleMoveList,
-    };
   }
   componentWillReceiveProps(newProps) {
     if (this.props.data !== newProps.data) {
@@ -351,11 +340,11 @@ class KanbanApplication extends React.Component {
       <div>
         <input ref={(c) => { this.inputList = c; }} type="text" placeholder="Add list" />
         <input type="button" value="Add list" onClick={this.handleAddList} />
-        <KanbanTrashDraggable callbacks={this.callbacks} />
+        <KanbanTrashDraggable app={this} />
         <table>
           <tbody>
             <tr>
-              {this.state.kanban.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} callbacks={this.callbacks} />)}
+              {this.state.kanban.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} app={this} />)}
             </tr>
             <tr>
               {this.state.kanban.lists.map((l, i) => this.renderRow2(i))}
