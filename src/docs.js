@@ -2,18 +2,18 @@ const files = [
   'apps',
   'app-date',
   'app-datematcher',
+  'app-draw',
   'app-hello',
   'app-helpful',
   'app-kanban',
   'app-kpt',
   'app-mandala',
+  'app-map',
   'app-meetingtime',
   'app-reversi',
   'app-vote',
   'app-votecrypto',
   'app-weather',
-  'app-map',
-  'app-draw',
 ];
 
 const docs = {
