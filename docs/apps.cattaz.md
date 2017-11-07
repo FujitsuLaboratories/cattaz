@@ -8,6 +8,7 @@ Cattaz has sevral applications installed.
 |[`datematcher`](./app-datematcher)|Date matcher helps an organizer to coodinate meeting time.|
 |[`hello`](./app-hello)|"Hello World" application in cattaz.|
 |[`helpful`](./app-helpful)|An application to get feedbacks via "Was this page helpful?"|
+|[`kanban`](./app-kanban)|Organize your tasks by dragging and dropping task cards.|
 |[`kpt`](./app-kpt)|[KPT method](http://code-artisan.io/retrospective-method-kpt/) application for retrospective. A team can itemize keeps, problems, and tries in collaborative way.|
 |[`mandala`](./app-mandala)|An application for brainstorming.|
 |[`meetingtime`](./app-meetingtime)|It tracks duration of a meeting.|
