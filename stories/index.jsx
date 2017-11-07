@@ -50,3 +50,54 @@ storiesOf('Wiki navigation', module)
   .add('page1', () => <WikiNavigationPage name="page1" />)
   .add('page2', () => <WikiNavigationPage name="page2" />)
   .add('page3', () => <WikiNavigationPage name="page3" />);
+
+storiesOf('Kanban usecase', module)
+  .add('markdown', () => (
+    <AppEnabledWikiEditorCodeMirror
+      defaultValue={[
+        '# Meeting minute',
+        '',
+        '* TODO',
+        '  * task 1',
+        '  * task 2',
+        '  * *task 3*',
+        '* DOING',
+        '  * **task 4**',
+        '  * task 5',
+        '* DONE',
+      ].join('\n')}
+    />))
+  .add('app', () => (
+    <AppEnabledWikiEditorCodeMirror
+      defaultValue={[
+        '# Meeting minute',
+        '',
+        '```kanban',
+        '* TODO',
+        '  * task 1',
+        '  * task 2',
+        '  * *task 3*',
+        '* DOING',
+        '  * **task 4**',
+        '  * task 5',
+        '* DONE',
+        '```',
+      ].join('\n')}
+    />))
+  .add('dnd', () => (
+    <AppEnabledWikiEditorCodeMirror
+      defaultValue={[
+        '# Meeting minute',
+        '',
+        '```kanban',
+        '* TODO',
+        '  * task 1',
+        '  * task 2',
+        '* DOING',
+        '  * *task 3*',
+        '  * **task 4**',
+        '  * task 5',
+        '* DONE',
+        '```',
+      ].join('\n')}
+    />));
