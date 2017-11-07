@@ -1,4 +1,5 @@
 const files = [
+  'index',
   'apps',
   'app-date',
   'app-datematcher',
