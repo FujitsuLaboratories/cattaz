@@ -31,9 +31,9 @@ export default class Main extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div style={{ margin: '8px' }}>
         <h1><img src={logo} alt="cattaz" width="640" /></h1>
-        <h2>pages</h2>
+        <h2>Wiki pages</h2>
         {this.state.getPagesError}
         <ul>
           {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${p}`}>{decodeURIComponent(p)}</NavLink></li>)}
@@ -42,7 +42,7 @@ export default class Main extends React.Component {
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
-        <h2>docs</h2>
+        <h2>Documentation</h2>
         <ul>
           {Object.keys(docs).map(p => <li key={p}><NavLink to={`/doc/${encodeURIComponent(p)}`}>{p}</NavLink></li>)}
         </ul>
