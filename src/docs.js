@@ -4,6 +4,7 @@ const files = [
   'app-datematcher',
   'app-hello',
   'app-helpful',
+  'app-kanban',
   'app-kpt',
   'app-mandala',
   'app-meetingtime',
