@@ -59,11 +59,9 @@ storiesOf('Kanban usecase', module)
         '',
         '* TODO',
         '  * task 1',
-        '  * task 2',
-        '  * *task 3*',
+        '  * *task 2*',
         '* DOING',
-        '  * **task 4**',
-        '  * task 5',
+        '  * **task 3**',
         '* DONE',
       ].join('\n')}
     />))
@@ -75,12 +73,26 @@ storiesOf('Kanban usecase', module)
         '```kanban',
         '* TODO',
         '  * task 1',
-        '  * task 2',
-        '  * *task 3*',
+        '  * *task 2*',
         '* DOING',
-        '  * **task 4**',
-        '  * task 5',
+        '  * **task 3**',
         '* DONE',
+        '```',
+      ].join('\n')}
+    />))
+  .add('add from app', () => (
+    <AppEnabledWikiEditorCodeMirror
+      defaultValue={[
+        '# Meeting minute',
+        '',
+        '```kanban',
+        '* TODO',
+        '  * task 1',
+        '  * *task 2*',
+        '* DOING',
+        '  * **task 3**',
+        '* DONE',
+        '  * task 4',
         '```',
       ].join('\n')}
     />))
@@ -91,13 +103,12 @@ storiesOf('Kanban usecase', module)
         '',
         '```kanban',
         '* TODO',
-        '  * task 1',
-        '  * task 2',
+        '  * *task 2*',
         '* DOING',
-        '  * *task 3*',
-        '  * **task 4**',
-        '  * task 5',
+        '  * task 1',
+        '  * **task 3**',
         '* DONE',
+        '  * task 4',
         '```',
       ].join('\n')}
     />));
