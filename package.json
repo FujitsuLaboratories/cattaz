@@ -2,9 +2,8 @@
   "name": "cattaz",
   "version": "1.0.0",
   "description": "Application environment in Wiki",
-  "main": ".storybook/config.js",
+  "main": "src/index.jsx",
   "dependencies": {
-    "@storybook/react": "3.1.6",
     "babel-polyfill": "^6.26.0",
     "brace": "^0.10.0",
     "codemirror": "^5.31.0",
@@ -38,6 +37,7 @@
     "yjs": "^12.3.3"
   },
   "devDependencies": {
+    "@storybook/react": "3.1.6",
     "ava": "^0.23.0",
     "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -82,7 +82,7 @@
     "build": "npm-run-all -l -p build:app -p build:esdoc build:licenses build:sme build:storybook",
     "build:app": "cross-env NODE_ENV=production webpack --progress --colors --config webpack.config.babel.js",
     "build:esdoc": "esdoc -c esdoc.json",
-    "build:licenses": "yarn licenses generate-disclaimer --prod > licenses.txt",
+    "build:licenses": "yarn licenses generate-disclaimer --prod > build/licenses.txt",
     "build:sme": "source-map-explorer build/bundle.js build/bundle.js.map --html > build/sme.html",
     "build:storybook": "cross-env NODE_ENV=production build-storybook",
     "storybook": "cross-env NODE_ENV=development run-p -l server:storybook server:websocket",

@@ -26,6 +26,10 @@ const js = {
   plugins: [
     new CopyWebpackPlugin([
       {
+        from: 'LICENSE',
+        to: '',
+      },
+      {
         from: 'src/index.html',
         to: '',
       },
