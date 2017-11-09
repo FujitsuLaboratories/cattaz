@@ -75,7 +75,7 @@
     "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
-    "clean": "rimraf build storybook-static .nyc_output coverage esdoc licenses.txt",
+    "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
     "lint": "run-p -l lint:*",
     "lint:eslint": "eslint --color --report-unused-disable-directives src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.js stories/**/*.jsx *.js",
     "lint:markdownlint": "markdownlint --config .markdownlint.json README.md docs",

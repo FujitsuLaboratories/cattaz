@@ -27,7 +27,7 @@ const js = {
     new CopyWebpackPlugin([
       {
         from: 'LICENSE',
-        to: '',
+        to: 'LICENSE.txt',
       },
       {
         from: 'src/index.html',

@@ -48,7 +48,7 @@ export default class Main extends React.Component {
         </ul>
         <h2>License</h2>
         <ul>
-          <li><a href="LICENSE">The MIT License</a></li>
+          <li><a href="LICENSE.txt">The MIT License</a></li>
           <li><a href="licenses.txt">Attibution notice for third party software</a></li>
         </ul>
       </div>
