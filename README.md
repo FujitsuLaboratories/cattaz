@@ -1,8 +1,8 @@
-# cattaz
+# Cattaz
 
-TODO add badges of Travis, etc.
+TODO add badges of Travis, Code Climate, Codecov, Coveralls, and David.
 
-Cattaz is an interactive Wiki platform. You can implement an application which runs in a Wiki page.
+Cattaz is a realtime collaborative Wiki platform. You can implement an application that runs in a Wiki page.
 
 ![Cattaz](docs/assets/cattaz.png "Cattaz")
 
