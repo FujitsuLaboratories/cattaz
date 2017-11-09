@@ -57,5 +57,5 @@ HelloApplication.propTypes = {
 Hello app can be extended to implement your own app logic.
 
 * First, copy `src/apps/HelloApplication.jsx` and make `<Your App Name Here>.jsx` in `src/apps/` folder.
-* Edit `src/apps/index.js` in same directory to import the `<Your App Name Here>.jsx` and add it to export default. 
+* Edit `src/apps/index.js` in same directory to import the `<Your App Name Here>.jsx` and add it to export default.
 * Start editing `<Your App Name Here>.jsx` to implement your app logic as explained for Hello application.

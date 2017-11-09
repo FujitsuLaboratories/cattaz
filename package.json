@@ -62,6 +62,7 @@
     "file-loader": "^1.1.5",
     "http-server": "^0.10.0",
     "json-loader": "^0.5.7",
+    "markdownlint-cli": "^0.4.0",
     "npm-run-all": "^4.1.1",
     "nyc": "^11.3.0",
     "postcss": "^6.0.14",
@@ -75,7 +76,9 @@
   },
   "scripts": {
     "clean": "rimraf build storybook-static .nyc_output coverage esdoc licenses.txt",
-    "lint": "eslint --color --report-unused-disable-directives src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.js stories/**/*.jsx *.js",
+    "lint": "run-p -l lint:*",
+    "lint:eslint": "eslint --color --report-unused-disable-directives src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.js stories/**/*.jsx *.js",
+    "lint:markdownlint": "markdownlint --config .markdownlint.json README.md docs",
     "build": "npm-run-all -l -p build:app -p build:esdoc build:licenses build:sme build:storybook",
     "build:app": "cross-env NODE_ENV=production webpack --progress --colors --config webpack.config.babel.js",
     "build:esdoc": "esdoc -c esdoc.json",
