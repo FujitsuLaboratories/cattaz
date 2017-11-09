@@ -1,7 +1,7 @@
 # Cattaz documentation
 
 Cattaz documentation is self-hosted.
-You can edit text and use applications in place.
+You can edit text and use applications in the same place.
 
 ## Markdown syntax
 
@@ -44,7 +44,7 @@ In this example, `js` stands for JavaScript and its content will be JavaScript c
   }
   ```
 
-Cattaz introduced a new interpretation to fenced code blocks.
+Cattaz introduces a new interpretation to fenced code blocks.
 Language specifier is a name of application.
 Text in a fenced code block is state of the application.
 
@@ -64,10 +64,10 @@ Text in a fenced code block is state of the application.
 
 An application can be interactive.
 For instance, you can type your name in the textbox above and the application will show a hello message to you.
-Please note that text of editor on the left will be changed accordingly.
+Please note that text contents in editor on the left will be sychronized simultaneously.
 
 The opposite is also true.
-If you edit text inside the fenced code block, the hello application will change its message.
+Editing text inside the fenced code block will update message shown below the text input.
 
 To implement your own application, please see [Hello World documentation](./app-hello).
 
