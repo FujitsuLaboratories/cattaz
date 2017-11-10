@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
 import RouterLink from 'react-router-dom/Link';
+import TimeAgo from 'react-timeago';
 
 import logo from '../docs/assets/cattaz.svg';
 
@@ -42,7 +43,7 @@ export default class Main extends React.Component {
           {this.state.pages.map(p => (
             <li key={p}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
-              <span style={metadataStyle}>(created: {p.created}, modified: {p.modified}, active: {p.active})</span>
+              <span style={metadataStyle}>(created: <TimeAgo date={p.created} />, modified: <TimeAgo date={p.modified} />, active: {p.active})</span>
             </li>))}
         </ul>
         <p>
