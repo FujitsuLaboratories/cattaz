@@ -14,8 +14,8 @@ ReactDOM.render(
   <HashRouter>
     <Switch>
       <Route exact path="/" component={Main} />
-      <Route path="/page/:page" component={Page} />
-      <Route path="/doc/:page" render={props => <Page {...props} doc />} />
+      <Route path="/page/:page+" component={Page} />
+      <Route path="/doc/:page+" render={props => <Page {...props} doc />} />
     </Switch>
   </HashRouter>,
   document.getElementById('app'),

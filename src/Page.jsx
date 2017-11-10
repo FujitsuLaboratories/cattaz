@@ -22,7 +22,7 @@ export default class Page extends React.Component {
     }
   }
   loadDoc(pageName) {
-    const mdFileName = docs[pageName];
+    const mdFileName = docs[decodeURIComponent(pageName)];
     if (!mdFileName) {
       this.setState({ docText: `There is no document named '${pageName}'` });
       return;
@@ -35,7 +35,7 @@ export default class Page extends React.Component {
       });
   }
   render() {
-    const pageName = this.props.match.params.page;
+    const pageName = decodeURIComponent(this.props.match.params.page);
     const roomName = this.props.doc ? null : pageName;
     const defaultValue = this.props.doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
     const { docText } = this.state;

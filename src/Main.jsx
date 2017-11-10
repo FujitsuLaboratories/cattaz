@@ -26,7 +26,7 @@ export default class Main extends React.Component {
   handleNew() {
     const pageName = this.newPageName.value;
     if (pageName) {
-      this.context.router.history.push(`/page/${encodeURIComponent(pageName)}`);
+      this.context.router.history.push(`/page/${pageName}`);
     }
   }
   render() {
@@ -36,7 +36,7 @@ export default class Main extends React.Component {
         <h2>Wiki pages</h2>
         {this.state.getPagesError}
         <ul>
-          {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${p}`}>{decodeURIComponent(p)}</NavLink></li>)}
+          {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${decodeURIComponent(p)}`}>{decodeURIComponent(p)}</NavLink></li>)}
         </ul>
         <p>
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
@@ -44,7 +44,7 @@ export default class Main extends React.Component {
         </p>
         <h2>Documentation</h2>
         <ul>
-          {Object.keys(docs).map(p => <li key={p}><NavLink to={`/doc/${encodeURIComponent(p)}`}>{p}</NavLink></li>)}
+          {Object.keys(docs).map(p => <li key={p}><NavLink to={`/doc/${p}`}>{p}</NavLink></li>)}
         </ul>
         <h2>License</h2>
         <ul>
