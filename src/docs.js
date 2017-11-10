@@ -16,6 +16,9 @@ const files = [
   'app-votecrypto',
   'app-weather',
   'usage',
+  'ja/index',
+  'ja/app-hello',
+  'ja/usage',
 ];
 
 const docs = {
