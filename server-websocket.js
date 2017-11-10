@@ -31,6 +31,7 @@ const server = http.createServer((req, res) => {
 const io = socketIo.listen(server);
 
 const yInstances = {};
+const metadata = {};
 
 function getInstanceOfY(room) {
   if (yInstances[room] == null) {
@@ -48,6 +49,11 @@ function getInstanceOfY(room) {
       },
       share: {},
     });
+    metadata[room] = {
+      created: new Date(),
+      modified: new Date(),
+      active: 0,
+    };
   }
   return yInstances[room];
 }
@@ -55,7 +61,15 @@ function getInstanceOfY(room) {
 router.get('/pages', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(Object.keys(yInstances)));
+  res.end(JSON.stringify(Object.keys(metadata).map((k) => {
+    const m = metadata[k];
+    return {
+      page: k,
+      created: m.created,
+      modified: m.modified,
+      active: m.active,
+    };
+  })));
 });
 
 io.on('connection', (socket) => {
@@ -67,6 +81,7 @@ io.on('connection', (socket) => {
       if (rooms.indexOf(room) === -1) {
         y.connector.userJoined(socket.id, 'slave');
         rooms.push(room);
+        metadata[room].active += 1;
       }
     });
   });
@@ -74,6 +89,7 @@ io.on('connection', (socket) => {
     if (msg.room != null) {
       getInstanceOfY(msg.room).then((y) => {
         y.connector.receiveMessage(socket.id, msg);
+        metadata[msg.room].modified = new Date();
       });
     }
   });
@@ -85,6 +101,7 @@ io.on('connection', (socket) => {
         if (j >= 0) {
           y.connector.userLeft(socket.id);
           rooms.splice(j, 1);
+          metadata[room].active -= 1;
         }
       });
     }
@@ -95,6 +112,7 @@ io.on('connection', (socket) => {
       if (i >= 0) {
         y.connector.userLeft(socket.id);
         rooms.splice(i, 1);
+        metadata[room].active -= 1;
       }
     });
   });

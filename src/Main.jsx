@@ -30,13 +30,21 @@ export default class Main extends React.Component {
     }
   }
   render() {
+    const metadataStyle = {
+      margin: '0 0 0 0.5em',
+      color: 'grey',
+    };
     return (
       <div style={{ margin: '8px' }}>
         <h1><img src={logo} alt="cattaz" width="640" /></h1>
         <h2>Wiki pages</h2>
         {this.state.getPagesError}
         <ul>
-          {this.state.pages.map(p => <li key={p}><NavLink to={`/page/${decodeURIComponent(p)}`}>{decodeURIComponent(p)}</NavLink></li>)}
+          {this.state.pages.map(p => (
+            <li key={p}>
+              <NavLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</NavLink>
+              <span style={metadataStyle}>(created: {p.created}, modified: {p.modified}, active: {p.active})</span>
+            </li>))}
         </ul>
         <p>
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
