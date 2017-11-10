@@ -6,7 +6,7 @@ You can edit text and use applications in the same place.
 ## Markdown syntax
 
 Syntax of Cattaz is based on Markdown.
-Markdown has 'fenced code block' syntax, which starts with 3 or more backslashes or tildes.
+Markdown has 'fenced code block' syntax, which starts with 3 or more backticks or tildes.
 Normally, text in a fenced code block will be rendered in fixed width.
 
 * Input
