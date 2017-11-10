@@ -4,7 +4,6 @@ import HashRouter from 'react-router-dom/HashRouter';
 import NavLink from 'react-router-dom/NavLink';
 
 import logo from '../docs/assets/cattaz.svg';
-import docs from './docs';
 
 const url = `http://${window.location.hostname}:1234`;
 
@@ -52,7 +51,15 @@ export default class Main extends React.Component {
         </p>
         <h2>Documentation</h2>
         <ul>
-          {Object.keys(docs).map(p => <li key={p}><NavLink to={`/doc/${p}`}>{p}</NavLink></li>)}
+          <li><NavLink to="/doc/index">Index</NavLink> (<NavLink to="/doc/ja/index">日本語</NavLink>)</li>
+          <li><NavLink to="/doc/usage">Usage</NavLink> (<NavLink to="/doc/ja/usage">日本語</NavLink>)</li>
+          <li>List of applications
+            <ul>
+              <li><NavLink to="/doc/app-hello">Hello</NavLink> (<NavLink to="/doc/ja/app-hello">日本語</NavLink>)</li>
+              <li><NavLink to="/doc/app-kanban">Kanban</NavLink></li>
+              <li><NavLink to="/doc/apps">and more</NavLink></li>
+            </ul>
+          </li>
         </ul>
         <h2>License</h2>
         <ul>
