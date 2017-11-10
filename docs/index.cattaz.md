@@ -75,4 +75,5 @@ To implement your own application, please see [Hello World documentation](./app-
 
 ## Resources
 
+* [How to run](./usage)
 * [List of applications](./apps)
