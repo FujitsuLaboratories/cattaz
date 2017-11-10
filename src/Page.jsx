@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import NavLink from 'react-router-dom/NavLink';
+import RouterLink from 'react-router-dom/Link';
 
 import AppEnabledWikiEditor from './AppEnabledWikiEditorCodeMirror';
 import docs from './docs';
@@ -42,7 +42,7 @@ export default class Page extends React.Component {
     return (
       <div>
         <div style={{ height: 33 + 4 }}>
-          <NavLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></NavLink>
+          <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></RouterLink>
           <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
         </div>
         <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} />

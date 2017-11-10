@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
-import NavLink from 'react-router-dom/NavLink';
+import RouterLink from 'react-router-dom/Link';
 
 import logo from '../docs/assets/cattaz.svg';
 
@@ -41,7 +41,7 @@ export default class Main extends React.Component {
         <ul>
           {this.state.pages.map(p => (
             <li key={p}>
-              <NavLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</NavLink>
+              <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
               <span style={metadataStyle}>(created: {p.created}, modified: {p.modified}, active: {p.active})</span>
             </li>))}
         </ul>
@@ -51,13 +51,13 @@ export default class Main extends React.Component {
         </p>
         <h2>Documentation</h2>
         <ul>
-          <li><NavLink to="/doc/index">Index</NavLink> (<NavLink to="/doc/ja/index">日本語</NavLink>)</li>
-          <li><NavLink to="/doc/usage">Usage</NavLink> (<NavLink to="/doc/ja/usage">日本語</NavLink>)</li>
+          <li><RouterLink to="/doc/index">Index</RouterLink> (<RouterLink to="/doc/ja/index">日本語</RouterLink>)</li>
+          <li><RouterLink to="/doc/usage">Usage</RouterLink> (<RouterLink to="/doc/ja/usage">日本語</RouterLink>)</li>
           <li>List of applications
             <ul>
-              <li><NavLink to="/doc/app-hello">Hello</NavLink> (<NavLink to="/doc/ja/app-hello">日本語</NavLink>)</li>
-              <li><NavLink to="/doc/app-kanban">Kanban</NavLink></li>
-              <li><NavLink to="/doc/apps">and more</NavLink></li>
+              <li><RouterLink to="/doc/app-hello">Hello</RouterLink> (<RouterLink to="/doc/ja/app-hello">日本語</RouterLink>)</li>
+              <li><RouterLink to="/doc/app-kanban">Kanban</RouterLink></li>
+              <li><RouterLink to="/doc/apps">and more</RouterLink></li>
             </ul>
           </li>
         </ul>
