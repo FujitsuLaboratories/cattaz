@@ -12,9 +12,10 @@ Cattaz is a realtime collaborative Wiki platform. You can implement an applicati
 ![Cattaz](docs/assets/cattaz.png "Cattaz")
 
 * Project site (TODO link to landing page)
-* Demo site (TODO link to build)
-* Documentation (TODO link to documentation ./docs/index)
-  * Documentation on Hello World (TODO link to documentation ./docs/app-hello)
+* [Demo site](http://cattaz.io/build/)
+  * [Sandbox page](http://cattaz.io/build/#/page/sandbox)
+* [Documentation](http://cattaz.io/build/#/doc/index)
+  * [Documentation on Hello World](http://cattaz.io/build/#/doc/app-hello)
 
 ## Usage
 
