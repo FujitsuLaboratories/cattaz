@@ -1,6 +1,8 @@
 # Cattaz
 
-TODO add badges of Travis, Code Climate, Codecov, Coveralls, and David.
+TODO add badges of Code Climate, Codecov, Coveralls, and David.
+
+[![Build Status](https://travis-ci.org/FujitsuLaboratories/cattaz.svg?branch=master)](https://travis-ci.org/FujitsuLaboratories/cattaz)
 
 Cattaz is a realtime collaborative Wiki platform. You can implement an application that runs in a Wiki page.
 
