@@ -7,5 +7,12 @@ node_js:
 cache:
   directories:
     - node_modules
+env:
+  # CODECLIMATE_REPO_TOKEN
+  - secure: "QihmjCmSiHY6FnzHTNP0u4SEEB3JkxEMJeCjveyGFgQa7r4SG8HuA5b3WIEo7eDWQHq9+p0NknVmk5TNRSTZdXI/Pq6WLDzDohDK79B4lnM5JQnBh8WGYAnU/6ewfmX0cg4AhL0ey8yrYB744RoDwiPikALL6oEA0sdt4cQxvzIK7fxyDdYa10Fu6OwmsWgsxMpfbQktRE6n35LBmqOwlQIhm2WhF9wv4bI9XAgu6qxhi9m9MqZ8obLXqiIh/lAzpxxzoCdpb0M4ovzLtL20hfl4eDkJEozz5AffxvtmOmYD3bJNVXuGGIItXZAkPPZMwONnCL/bSxZJF8tYcDSwiswzA0IEZ/sNmKPAUVj0zzIKr5n8wNyNDZ8UIayoxMgb5bKSjjFizBxmt0pHnFNzGPfOYMXkq5BR92XXc5sfrBGAV3y/i4IYtTQmNsVSXW1/Uy9+jZUVhfWKz7RLUsLvLHwWqA+vLhqFCip/Z4xw5EFfsfXlZb/eWam75AtQDPiOj0x6Bh5Rq54Z0nRTuU0Q79VHWDrtPsiIRnCTVJ9hxscuc8auvypXlN62npiUzUWfj00ZPubd6pGGUe7ZoRWPAH9dQGXTHW/elfM2Ice+MFe2Kk/kQHmdbh1Skt95AtfUgWr6DamjFpE6RLezMnDhcdlE1vzUDXjZmkh8qEbVorY="
 script:
   - ./scripts/run-travis-tests.sh
+after_success:
+  - ./node_modules/.bin/codecov # CODECOV_TOKEN is not required for Travis to test public repositories
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js # COVERALLS_SERVICE_NAME and COVERALLS_REPO_TOKEN env variables is not required for Travis
+  - ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info # Needs CODECLIMATE_REPO_TOKEN env variable
