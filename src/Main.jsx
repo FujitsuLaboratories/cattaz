@@ -7,6 +7,7 @@ import TimeAgo from 'react-timeago';
 import logo from '../docs/assets/cattaz.svg';
 
 const url = `http://${window.location.hostname}:1234`;
+const timeAgoMinPeriod = 10;
 
 export default class Main extends React.Component {
   constructor() {
@@ -43,7 +44,7 @@ export default class Main extends React.Component {
           {this.state.pages.map(p => (
             <li key={p.page}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
-              <span style={metadataStyle}>(created: <TimeAgo date={p.created} />, modified: <TimeAgo date={p.modified} />, active: {p.active})</span>
+              <span style={metadataStyle}>(created: <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />, modified: <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />, active: {p.active})</span>
             </li>))}
         </ul>
         <p>
