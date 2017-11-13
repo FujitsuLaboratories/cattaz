@@ -130,7 +130,7 @@ Resources:
         ToPort: 1234
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
-        FromPort: 8080
+        FromPort: 80
         ToPort: 8080
         CidrIp: 0.0.0.0/0
   EcsSecurityGroup:
@@ -163,7 +163,7 @@ Resources:
       - Ref: PubSubnetAz2
       CrossZone: true
       Listeners:
-      - LoadBalancerPort: 8080
+      - LoadBalancerPort: 80
         InstancePort: 8080
         Protocol: HTTP
       - LoadBalancerPort: 1234
