@@ -1,10 +1,11 @@
 # Cattaz
 
-TODO add badges of Code Climate, and David.
+TODO add badges of David.
 
 [![Build Status](https://travis-ci.org/FujitsuLaboratories/cattaz.svg?branch=master)](https://travis-ci.org/FujitsuLaboratories/cattaz)
 [![codecov](https://codecov.io/gh/FujitsuLaboratories/cattaz/branch/master/graph/badge.svg)](https://codecov.io/gh/FujitsuLaboratories/cattaz)
 [![Coverage Status](https://coveralls.io/repos/github/FujitsuLaboratories/cattaz/badge.svg?branch=master)](https://coveralls.io/github/FujitsuLaboratories/cattaz?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4c3a48fb279c44d0ec7b/maintainability)](https://codeclimate.com/github/FujitsuLaboratories/cattaz/maintainability)
 
 Cattaz is a realtime collaborative Wiki platform. You can implement an application that runs in a Wiki page.
 
