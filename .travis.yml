@@ -11,3 +11,4 @@ script:
   - ./scripts/run-travis-tests.sh
 after_success:
   - ./node_modules/.bin/codecov # CODECOV_TOKEN is not required for Travis to test public repositories
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js # COVERALLS_SERVICE_NAME and COVERALLS_REPO_TOKEN env variables is not required for Travis
