@@ -9,3 +9,5 @@ cache:
     - node_modules
 script:
   - ./scripts/run-travis-tests.sh
+after_success:
+  - ./node_modules/.bin/codecov # CODECOV_TOKEN is not required for Travis to test public repositories
