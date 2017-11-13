@@ -41,7 +41,7 @@ export default class Main extends React.Component {
         {this.state.getPagesError}
         <ul>
           {this.state.pages.map(p => (
-            <li key={p}>
+            <li key={p.page}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
               <span style={metadataStyle}>(created: <TimeAgo date={p.created} />, modified: <TimeAgo date={p.modified} />, active: {p.active})</span>
             </li>))}
