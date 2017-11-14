@@ -1,6 +1,6 @@
 # Reversi application
 
-You can play Reversi game in Wiki.
+You can play Reversi game.
 
 ```reversi
 ```

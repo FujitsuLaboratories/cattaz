@@ -50,7 +50,7 @@ export default class Main extends React.Component {
   handleNext() {
     this.setState({ currentPageNum: this.state.currentPageNum + 1 });
   }
-  renderWikiPages() {
+  renderListPages() {
     const metadataStyle = {
       margin: '0 0 0 0.5em',
       color: 'grey',
@@ -80,8 +80,8 @@ export default class Main extends React.Component {
     return (
       <div style={{ margin: '8px' }}>
         <h1><img src={logo} alt="cattaz" width="640" /></h1>
-        <h2>Wiki pages</h2>
-        {this.renderWikiPages()}
+        <h2>List of pages</h2>
+        {this.renderListPages()}
         <h2>Documentation</h2>
         <ul>
           <li><RouterLink to="/doc/index">Index</RouterLink> (<RouterLink to="/doc/ja/index">日本語</RouterLink>)</li>
