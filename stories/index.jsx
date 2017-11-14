@@ -5,15 +5,9 @@ import { storiesOf, linkTo } from '@storybook/react';
 // To be converted by postcss via webpack
 import 'github-markdown-css/github-markdown.css';
 
-import AppEnabledWikiEditorAce from '../src/AppEnabledWikiEditorAce';
 import AppEnabledWikiEditorCodeMirror from '../src/AppEnabledWikiEditorCodeMirror';
 
 import logo from '../docs/assets/cattaz.svg';
-
-storiesOf('Ace', module)
-  .add('no sync', () => <AppEnabledWikiEditorAce defaultValue={['kpt', 'mandala', 'votecrypto'].map(s => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
-  .add('sync in room1', () => <AppEnabledWikiEditorAce defaultValue="syncing with room1" roomName="room1" />)
-  .add('sync in room2', () => <AppEnabledWikiEditorAce defaultValue="syncing with room2" roomName="room2" />);
 
 storiesOf('CodeMirror', module)
   .add('no sync', () => <AppEnabledWikiEditorCodeMirror defaultValue={['kpt', 'mandala', 'votecrypto'].map(s => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
