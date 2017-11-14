@@ -7,15 +7,19 @@
 [![dependencies Status](https://david-dm.org/FujitsuLaboratories/cattaz/status.svg)](https://david-dm.org/FujitsuLaboratories/cattaz)
 [![devDependencies Status](https://david-dm.org/FujitsuLaboratories/cattaz/dev-status.svg)](https://david-dm.org/FujitsuLaboratories/cattaz?type=dev)
 
-Cattaz is a realtime collaborative Wiki platform. You can implement an application that runs in a Wiki page.
-
 ![Cattaz](docs/assets/cattaz.png "Cattaz")
 
-* Project site (TODO link to landing page)
-* [Demo site](http://cattaz.io/build/)
-  * [Sandbox page](http://cattaz.io/build/#/page/sandbox)
-* [Documentation](http://cattaz.io/build/#/doc/index)
-  * [Documentation on Hello World](http://cattaz.io/build/#/doc/app-hello)
+Cattaz is a realtime collaborative tool which can run custom applications in a Wiki page.
+
+* [Project site](http://cattaz.io/)
+
+## Features
+
+* Wiki using Markdown with realtime preview and operational transformation
+  * Try it in [sandbox page](http://cattaz.io/build/#/page/sandbox)
+* Custom applications run in preview pane
+  * For instance, you can drag-and-drop task cards in [Kanban](http://cattaz.io/build/#/doc/app-kanban)
+  * To create your own, see [documentation on Hello World](http://cattaz.io/build/#/doc/app-hello) and [browse more in documentation](http://cattaz.io/build/#/doc/index)
 
 ## Usage
 
@@ -38,3 +42,9 @@ docker run -it -p 8080:8080 -p 1234:1234 cattaz
 ```
 
 Now you can visit `http://localhost:8080/` to view the application.
+
+## Links
+
+* [Project site](http://cattaz.io/)
+* [Demo site](http://cattaz.io/build/)
+* [Documentation](http://cattaz.io/build/#/doc/index)
