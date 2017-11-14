@@ -38,6 +38,10 @@ export default class Main extends React.Component {
     return (
       <div>
         {this.state.getPagesError}
+        <p>
+          Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
+          <input type="button" value="Create" onClick={this.handleNew} />
+        </p>
         <ul>
           {this.state.pages.map(p => (
             <li key={p.page}>
@@ -45,10 +49,6 @@ export default class Main extends React.Component {
               <span style={metadataStyle}>(created: <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />, modified: <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />, active: {p.active})</span>
             </li>))}
         </ul>
-        <p>
-          Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
-          <input type="button" value="Create" onClick={this.handleNew} />
-        </p>
       </div>);
   }
   render() {
