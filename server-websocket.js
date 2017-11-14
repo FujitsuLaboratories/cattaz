@@ -89,7 +89,9 @@ io.on('connection', (socket) => {
     if (msg.room != null) {
       getInstanceOfY(msg.room).then((y) => {
         y.connector.receiveMessage(socket.id, msg);
-        metadata[msg.room].modified = new Date();
+        if (msg.type === 'update') {
+          metadata[msg.room].modified = new Date();
+        }
       });
     }
   });
