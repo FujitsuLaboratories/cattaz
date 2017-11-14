@@ -19,7 +19,18 @@ export default class Main extends React.Component {
     window.fetch(`${url}/pages`)
       .then(response => response.json())
       .then((data) => {
-        this.setState({ pages: data, getPagesError: '' });
+        this.setState({
+          pages: data.sort((x, y) => {
+            if (x.modified > y.modified) {
+              return -1;
+            }
+            if (x.modified < y.modified) {
+              return 1;
+            }
+            return 0;
+          }),
+          getPagesError: '',
+        });
       }).catch((e) => {
         this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
       });
