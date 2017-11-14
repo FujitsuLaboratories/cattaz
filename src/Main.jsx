@@ -30,15 +30,13 @@ export default class Main extends React.Component {
       this.context.router.history.push(`/page/${pageName}`);
     }
   }
-  render() {
+  renderWikiPages() {
     const metadataStyle = {
       margin: '0 0 0 0.5em',
       color: 'grey',
     };
     return (
-      <div style={{ margin: '8px' }}>
-        <h1><img src={logo} alt="cattaz" width="640" /></h1>
-        <h2>Wiki pages</h2>
+      <div>
         {this.state.getPagesError}
         <ul>
           {this.state.pages.map(p => (
@@ -51,6 +49,14 @@ export default class Main extends React.Component {
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
+      </div>);
+  }
+  render() {
+    return (
+      <div style={{ margin: '8px' }}>
+        <h1><img src={logo} alt="cattaz" width="640" /></h1>
+        <h2>Wiki pages</h2>
+        {this.renderWikiPages()}
         <h2>Documentation</h2>
         <ul>
           <li><RouterLink to="/doc/index">Index</RouterLink> (<RouterLink to="/doc/ja/index">日本語</RouterLink>)</li>

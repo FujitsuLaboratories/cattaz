@@ -95,21 +95,19 @@ export default class VoteHelpfulApplication extends React.Component {
         value={key}
       />));
 
-    /* eslint-disable camelcase, dot-notation, no-mixed-operators */
     const W = 320;
-    const n_y = this.state.vote.candidates['Yes'];
-    const n_n = this.state.vote.candidates['No'];
-    const w_y = n_y / (n_y + n_n);
-    const w_n = n_n / (n_y + n_n);
+    const ny = this.state.vote.candidates.Yes;
+    const nn = this.state.vote.candidates.No;
+    const wy = ny / (ny + nn);
+    const wn = nn / (ny + nn);
 
     const barElems = (
       <div style={{ marginTop: '10px', textAlign: 'center', width: `${(2 * 200) + (4 * 10)}px` }}>
-        <span style={styles.barLabel}>{Math.round(w_y * 100)}%</span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: n_y / (n_y + n_n) * W })}>{n_y}</span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: n_n / (n_y + n_n) * W })}>{n_n}</span>
-        <span style={styles.barLabel}>{Math.round(w_n * 100)}%</span>
+        <span style={styles.barLabel}>{Math.round(wy * 100)}%</span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: (ny / (ny + nn)) * W })}>{ny}</span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: (nn / (ny + nn)) * W })}>{nn}</span>
+        <span style={styles.barLabel}>{Math.round(wn * 100)}%</span>
       </div>);
-    /* eslint-enable */
 
     return (
       <div>

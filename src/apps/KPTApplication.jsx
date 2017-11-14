@@ -60,26 +60,21 @@ export default class KPTApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kpt.equals(nextState.kpt);
   }
-  handleAddKeep() {
-    const { value } = this.inputKeep;
+  addItem(input, method) {
+    const { value } = input;
     if (!value) return;
-    this.state.kpt.addKeep(value);
+    method(value);
     this.forceUpdate();
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
+  }
+  handleAddKeep() {
+    this.addItem(this.inputKeep, this.state.kpt.addKeep.bind(this.state.kpt));
   }
   handleAddProblem() {
-    const { value } = this.inputProblem;
-    if (!value) return;
-    this.state.kpt.addProblem(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
+    this.addItem(this.inputProblem, this.state.kpt.addProblem.bind(this.state.kpt));
   }
   handleAddTry() {
-    const { value } = this.inputTry;
-    if (!value) return;
-    this.state.kpt.addTry(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
+    this.addItem(this.inputTry, this.state.kpt.addTry.bind(this.state.kpt));
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
     return (

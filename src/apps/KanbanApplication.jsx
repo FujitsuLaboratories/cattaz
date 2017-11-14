@@ -92,10 +92,12 @@ class KanbanModel {
       const model = new KanbanModel();
       lines.forEach((l) => {
         const matchList = l.match(reList);
-        const matchItem = l.match(reItem);
         if (matchList) {
           model.addList(matchList[1]);
-        } else if (matchItem) {
+          return;
+        }
+        const matchItem = l.match(reItem);
+        if (matchItem) {
           const listLength = model.getLength();
           if (listLength) {
             const matchText = matchItem[1].match(reText);
@@ -352,6 +354,10 @@ class KanbanApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kanban.equals(nextState.kanban);
   }
+  modelUpdated() {
+    this.forceUpdate();
+    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  }
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
     const textbox = this[`input${index}`];
@@ -359,8 +365,7 @@ class KanbanApplication extends React.Component {
       const text = textbox.value;
       if (text) {
         this.state.kanban.getListAt(index).addItem(text);
-        this.forceUpdate();
-        this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+        this.modelUpdated();
       }
     }
   }
@@ -369,19 +374,16 @@ class KanbanApplication extends React.Component {
     const text = textbox.value;
     if (text) {
       this.state.kanban.addList(text);
-      this.forceUpdate();
-      this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+      this.modelUpdated();
     }
   }
   handleRemoveList(listIndex) {
     this.state.kanban.removeListAt(listIndex);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+    this.modelUpdated();
   }
   handleRemoveItem(itemId) {
     this.state.kanban.getListAt(itemId.list).removeItemAt(itemId.item);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+    this.modelUpdated();
   }
   handleMoveItem(sourceId, targetId) {
     let targetItemIndex = targetId.item;
@@ -389,13 +391,11 @@ class KanbanApplication extends React.Component {
       targetItemIndex = this.state.kanban.getListAt(targetId.list).getLength();
     }
     this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+    this.modelUpdated();
   }
   handleMoveList(sourceId, targetId) {
     this.state.kanban.moveList(sourceId, targetId);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+    this.modelUpdated();
   }
   renderRow2(index) {
     return (

@@ -99,28 +99,29 @@ export default class MeetingTimeApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.time.equals(nextState.time);
   }
-  handleUpdateStartTime() {
+  updateTime(updater) {
     const value = getNowTime();
-    this.state.time.updateStartTime(value);
+    updater(value);
     this.forceUpdate();
     this.props.onEdit(this.state.time.serialize(), this.props.appContext);
   }
+  handleUpdateStartTime() {
+    this.updateTime(this.state.time.updateStartTime.bind(this.state.time));
+  }
   handleUpdateEndTime() {
-    const value = getNowTime();
-    this.state.time.updateEndTime(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.time.serialize(), this.props.appContext);
+    this.updateTime(this.state.time.updateEndTime.bind(this.state.time));
   }
   render() {
     const duration = calculationDuration(this.state.time.startTime, this.state.time.endTime);
+    const convertDateToString = date => `${date.year}/${date.month}/${date.day} (${date.week}) ${date.hour}:${date.minute}`;
     return (
       <div>
         <div key="start">
-          Start at {this.state.time.startTime.year}/{this.state.time.startTime.month}/{this.state.time.startTime.day} ({this.state.time.startTime.week}) {this.state.time.startTime.hour}:{this.state.time.startTime.minute}&nbsp;
+          Start at {convertDateToString(this.state.time.startTime)}&nbsp;
           <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
         </div>
         <div key="end">
-          End at {this.state.time.endTime.year}/{this.state.time.endTime.month}/{this.state.time.endTime.day} ({this.state.time.endTime.week}) {this.state.time.endTime.hour}:{this.state.time.endTime.minute}&nbsp;
+          End at {convertDateToString(this.state.time.endTime)}&nbsp;
           <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
         </div>
         <div key="duration">
