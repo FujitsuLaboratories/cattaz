@@ -8,12 +8,15 @@ import logo from '../docs/assets/cattaz.svg';
 
 const url = `http://${window.location.hostname}:1234`;
 const timeAgoMinPeriod = 10;
+const pagesListMax = 10;
 
 export default class Main extends React.Component {
   constructor() {
     super();
     this.handleNew = this.handleNew.bind(this);
-    this.state = { pages: [], getPagesError: '' };
+    this.state = { pages: [], currentPageNum: 1, getPagesError: '' };
+    this.handlePrevious = this.handlePrevious.bind(this);
+    this.handleNext = this.handleNext.bind(this);
   }
   componentDidMount() {
     window.fetch(`${url}/pages`)
@@ -41,11 +44,19 @@ export default class Main extends React.Component {
       this.context.router.history.push(`/page/${pageName}`);
     }
   }
+  handlePrevious() {
+    this.setState({ currentPageNum: this.state.currentPageNum - 1 });
+  }
+  handleNext() {
+    this.setState({ currentPageNum: this.state.currentPageNum + 1 });
+  }
   renderWikiPages() {
     const metadataStyle = {
       margin: '0 0 0 0.5em',
       color: 'grey',
     };
+    const totalPageCount = Math.ceil(this.state.pages.length / pagesListMax);
+    const currentPages = this.state.pages.slice((this.state.currentPageNum - 1) * pagesListMax, this.state.currentPageNum * pagesListMax);
     return (
       <div>
         {this.state.getPagesError}
@@ -54,12 +65,15 @@ export default class Main extends React.Component {
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
         <ul>
-          {this.state.pages.map(p => (
+          {currentPages.map(p => (
             <li key={p.page}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
               <span style={metadataStyle}>(created: <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />, modified: <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />, active: {p.active})</span>
             </li>))}
         </ul>
+        {this.state.currentPageNum > 1 ? <button type="button" onClick={this.handlePrevious}>Prev</button> : null}
+        {this.state.pages.length > pagesListMax ? <span>&nbsp;Page:{this.state.currentPageNum}&nbsp;</span> : null}
+        {this.state.currentPageNum < totalPageCount ? <button type="button" onClick={this.handleNext}>Next</button> : null}
       </div>);
   }
   render() {
