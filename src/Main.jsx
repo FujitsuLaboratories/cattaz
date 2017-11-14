@@ -86,7 +86,7 @@ export default class Main extends React.Component {
         <ul>
           <li><RouterLink to="/doc/index">Index</RouterLink> (<RouterLink to="/doc/ja/index">日本語</RouterLink>)</li>
           <li><RouterLink to="/doc/usage">Usage</RouterLink> (<RouterLink to="/doc/ja/usage">日本語</RouterLink>)</li>
-          <li>List of applications
+          <li>List of sample applications
             <ul>
               <li><RouterLink to="/doc/app-hello">Hello</RouterLink> (<RouterLink to="/doc/ja/app-hello">日本語</RouterLink>)</li>
               <li><RouterLink to="/doc/app-kanban">Kanban</RouterLink></li>
