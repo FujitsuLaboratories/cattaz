@@ -1,4 +1,5 @@
 import clone from 'lodash/clone';
+import every from 'lodash/every';
 import isEqual from 'lodash/isEqual';
 import flatMap from 'lodash/flatMap';
 import fill from 'lodash/fill';
@@ -118,7 +119,16 @@ export default class ReversiModel {
     try {
       const obj = Yaml.safeLoad(str);
       const model = new ReversiModel();
-      if (obj.steps) model.steps = obj.steps;
+      if (obj.steps) {
+        if (!every(obj.steps, (step) => {
+          if (!isValidPos(step.x, step.y)) return false;
+          if (step.stone !== StoneBlack && step.stone !== StoneWhite) return false;
+          return true;
+        })) {
+          throw new Error('invalid steps');
+        }
+        model.steps = obj.steps;
+      }
       if (obj.nextTurn) model.nextTurn = obj.nextTurn;
       return model;
     } catch (ex) {
