@@ -3,6 +3,7 @@ import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 
 import WikiParser from '../src/WikiParser';
+import AppContainer from '../src/AppContainer';
 import Apps from '../src/apps';
 
 const markdown = `
@@ -71,7 +72,9 @@ test('renderCustomHast should handle app:kpt node', t => {
   const hastOriginal = WikiParser.parseToHast(markdown);
   const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
   const reactNode = WikiParser.renderCustomHast(hastConverted);
-  const appNode = reactNode.props.children[2];
+  const containerNode = reactNode.props.children[2];
+  t.is(containerNode.type, AppContainer);
+  const appNode = containerNode.props.children;
   t.is(appNode.type, Apps.kpt);
   const codeBlockNode = reactNode.props.children[4];
   t.is(codeBlockNode.type, 'pre');

@@ -7,6 +7,7 @@ Cattaz has sevral applications installed.
 |[`date`](./app-date)|Timestamp application. It records the current time.|
 |[`datematcher`](./app-datematcher)|Date matcher helps an organizer to coodinate meeting time.|
 |[`draw`](./app-draw)|Draw lots application.|
+|[`error`](./app-error)|Sample application which raises an error.|
 |[`hello`](./app-hello)|"Hello World" application in cattaz.|
 |[`helpful`](./app-helpful)|An application to get feedbacks via "Was this page helpful?"|
 |[`kanban`](./app-kanban)|Organize your tasks by dragging and dropping task cards.|
