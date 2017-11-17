@@ -5,6 +5,19 @@ body {
   margin-top: 0 !important;
 }
 
+.appError {
+  margin: 0.5em 0;
+  padding: 0.1em;
+  background-color: LemonChiffon;
+}
+.appError pre {
+  margin: 0;
+  padding: 0;
+  font-size: 75%;
+  max-height: 8em;
+  overflow: auto;
+}
+
 /*
 https://github.com/tomkp/react-split-pane/blob/master/README.md#example-styling
 */
