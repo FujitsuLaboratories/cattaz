@@ -10,6 +10,7 @@ import isEqual from 'lodash/isEqual';
 import repeat from 'lodash/repeat';
 
 import Apps from './apps';
+import AppContainer from './AppContainer';
 
 const internalLink = /^[./]/;
 
@@ -74,7 +75,7 @@ export default class WikiParser {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
         if (appComponent) {
-          return React.createElement(appComponent, {
+          const app = React.createElement(appComponent, {
             data: children[0],
             onEdit: ctx.onEdit,
             appContext: {
@@ -84,6 +85,7 @@ export default class WikiParser {
               position: JSON.parse(props.position),
             },
           });
+          return React.createElement(AppContainer, {}, app);
         }
         throw new Error('unknown app');
       }
