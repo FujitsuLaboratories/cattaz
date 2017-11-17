@@ -129,7 +129,7 @@ export default class DateMatcherApplication extends React.Component {
         {this.state.model.candidates.map(s => <th style={cellStyle}>{s}</th>)}
       </tr>);
     const attendees = Object.keys(this.state.model.attendees).map((attendeeName) => {
-      const ans = this.state.model.attendees[attendeeName];
+      const ans = this.state.model.attendees[attendeeName] || {};
       const isEditingRow = attendeeName === this.state.editing;
       return (
         <tr key={attendeeName}>
