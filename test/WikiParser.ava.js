@@ -120,3 +120,71 @@ keeps: []
 para
 `);
 });
+
+/** @test {WikiParser.replaceAppCode} */
+test('including [backticks or tildes] in fenced code block increases surrounding [backticks or tildes]', t => {
+  const mdB = `
+\`\`\`hello
+\`\`\`
+`;
+  const mdBIndent = `
+- test
+  - test
+    \`\`\`hello
+    \`\`\` 
+`;
+  const mdT = `
+~~~hello
+~~~
+`;
+  const mdTIndent = `
+- test
+  - test
+    ~~~hello
+    ~~~ 
+`;
+  const posB = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdB)).children[0].position;
+  const replacedB3 = WikiParser.replaceAppCode(mdB, posB, 'hello', '```');
+  const replacedB7 = WikiParser.replaceAppCode(mdB, posB, 'hello', '```````');
+  const posIndentB = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdBIndent)).children[0].children[1].children[3].children[1].children[3].position;
+  const replacedIndentB = WikiParser.replaceAppCode(mdBIndent, posIndentB, 'hello', '```');
+  const posT = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdB)).children[0].position;
+  const replacedT3 = WikiParser.replaceAppCode(mdT, posT, 'hello', '~~~');
+  const replacedT7 = WikiParser.replaceAppCode(mdT, posT, 'hello', '~~~~~~~');
+  const posIndentT = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdTIndent)).children[0].children[1].children[3].children[1].children[3].position;
+  const replacedIndentT = WikiParser.replaceAppCode(mdTIndent, posIndentT, 'hello', '~~~');
+  t.is(replacedB3, `
+\`\`\`\`hello
+\`\`\`
+\`\`\`\`
+`);
+  t.is(replacedB7, `
+\`\`\`\`\`\`\`\`hello
+\`\`\`\`\`\`\`
+\`\`\`\`\`\`\`\`
+`);
+  t.is(replacedIndentB, `
+- test
+  - test
+    \`\`\`\`hello
+    \`\`\`
+    \`\`\`\`
+`);
+  t.is(replacedT3, `
+~~~~hello
+~~~
+~~~~
+`);
+  t.is(replacedT7, `
+~~~~~~~~hello
+~~~~~~~
+~~~~~~~~
+`);
+  t.is(replacedIndentT, `
+- test
+  - test
+    ~~~~hello
+    ~~~
+    ~~~~
+`);
+});

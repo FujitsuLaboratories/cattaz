@@ -140,6 +140,39 @@ export default class WikiParser {
     return appText.split('\n').map(l => `${indent}${l}`).join('\n');
   }
   /**
+   * @param {!string} startFencedStr
+   * @param {!string} appText
+   * @returns {string}
+   */
+  static addBackticks(startFencedStr, appText) {
+    function addBackticksStr(insertChar, originalBackticksLen, extraBackticks) {
+      if (extraBackticks) {
+        const extraBackticksLen = extraBackticks.map(v => v.length);
+        const maxBackticksLen = Math.max.apply(null, extraBackticksLen);
+        const diffBackticksLen = (maxBackticksLen - originalBackticksLen) + 1;
+        if (diffBackticksLen > 0) {
+          const backticks = repeat(insertChar, diffBackticksLen);
+          return backticks;
+        }
+      }
+      return '';
+    }
+    let originalBackticks = startFencedStr.match(/```+/);
+    let backticks = '';
+    let originalBackticksLen = 0;
+    if (originalBackticks) {
+      originalBackticksLen = originalBackticks[0].length;
+      const extraBackticks = appText.match(/^\x20*```+/mg);
+      backticks = addBackticksStr('`', originalBackticksLen, extraBackticks);
+    } else {
+      originalBackticks = startFencedStr.match(/~~~+/);
+      originalBackticksLen = originalBackticks[0].length;
+      const extraBackticks = appText.match(/^\x20*~~~+/mg);
+      backticks = addBackticksStr('~', originalBackticksLen, extraBackticks);
+    }
+    return [backticks, originalBackticks];
+  }
+  /**
    * @param {!string} originalText
    * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
    * @param {!string} appLanguage
@@ -149,10 +182,13 @@ export default class WikiParser {
   static replaceAppCode(originalText, originalAppLocation, appLanguage, newAppText) {
     const textBefore = originalText.substring(0, originalAppLocation.start.offset);
     const textAfter = originalText.substring(originalAppLocation.end.offset);
-    const endMarkIndentation = originalAppLocation.end.column - (1 + 3);
-    const text = `${textBefore}\`\`\`${appLanguage}
+    const fencedText = originalText.substring(originalAppLocation.start.offset, originalAppLocation.end.offset);
+    const startFencedStr = fencedText.substring(0, fencedText.search(/\r\n|\r|\n/));
+    const [backticks, originalBackticks] = WikiParser.addBackticks(startFencedStr, newAppText);
+    const endMarkIndentation = originalAppLocation.start.column - 1;
+    const text = `${textBefore}${originalBackticks}${backticks}${appLanguage}
 ${WikiParser.indentAppCode(originalAppLocation, newAppText)}
-${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
+${repeat(' ', endMarkIndentation)}${originalBackticks}${backticks}${textAfter}`;
     return text;
   }
 }
