@@ -227,6 +227,7 @@ Resources:
       ContainerDefinitions:
       - Image:
           Ref: EcsRepository
+        Command: [yarn, run, landingpage]
         Memory: 256
         Name: cattaz-container
         PortMappings:

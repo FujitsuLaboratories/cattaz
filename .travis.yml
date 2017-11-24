@@ -15,8 +15,8 @@ env:
     # AWS_SECRET_ACCESS_KEY
     - secure: "3FbeNtgfhu3WFzoC2JZthOgrE/Oh9c4xMOBtS1NZ72rro2vuVVjY5wvwN9aPib/qRpLt9qndI71kttgobUOhTWOJVt6tfYn3/+DjDBnPXOUhLRp2tMi5MhbRY4pRzqQqrGEwj6U6LnUd9uB/164P6pvhfArvCFtcF/g3Zv3wcYIRP9Ett7VMNIoqRzLxPCryF5iSEHlirlkciouYjNVSVknjg6yTvzmUvkqLqOYIfvdxI57HnkFrJhPFACD4REX9VTyxCuChyfl7vtqAeMWTipVf5DaanPS/U6cbymIeCB9pmq33xNi9TpyXh6WnDm2TJHZDfY8iN3znp9/NZkftp3/pT30psbcx20K7qQVV3b84+NfxVs8MVspiIIqPzL972H9b54tH3EMUMPymT46BsBvN2EQTEWw8/2tvZcAjJzdSQf0ZzCI5FL68SGk03AQ4nFBG/v1SRIKsGWTl0PH9uHHXrgtwtvjqL28M0yivSuBut+CCtfi26RZdnP+xDDahBcBG8EOLiQGx/PP99s2ItDgJ0L9SL6UXfyVIZY0mqdYkc6GJO8VvQsKjDb0axS4oKgXXcDbViPb6lqAiqdxq936nkG32PdqpxIiSD3DkwGugxy4tWphLEgKggQQ71/Qk94NgCxrQWru1I6hMKa/LxTv1xxmXI8l60SRDN1eH4QU="
     - AWS_DEFAULT_REGION=ap-northeast-1
-    - ECS_CLUSTER=cattaz
-    - ECS_SERVICE=cattaz-ecs-EcsService-DMX7UEBABH9H
+    - ECS_CLUSTER=cattaz2
+    - ECS_SERVICE=cattaz-ecs2-EcsService-1X471KVWUPJT1
     - ECS_REPO=cattaz
 script:
   - ./scripts/run-travis-tests.sh
