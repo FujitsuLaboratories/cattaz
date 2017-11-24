@@ -41,7 +41,7 @@ docker build . -t cattaz # --build-arg http_proxy=http://user:pass@proxy.example
 docker run -it -p 8080:8080 -p 1234:1234 cattaz
 ```
 
-Now you can visit `http://localhost:8080/build/` to view the application.
+Now you can visit `http://localhost:8080/` to view the application.
 
 ## Links
 
