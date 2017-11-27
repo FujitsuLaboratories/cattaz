@@ -140,6 +140,23 @@ export default class WikiParser {
     return appText.split('\n').map(l => `${indent}${l}`).join('\n');
   }
   /**
+   * @param {!string} startFencingStr
+   * @param {!string} appText
+   * @returns {string[]} Pair of extra fencing chars and original fencing chars
+   */
+  static getExtraFencingChars(startFencingStr, appText) {
+    const originalFencing = startFencingStr.match(/[`~]{3,}/)[0];
+    const fencingChar = originalFencing[0];
+    const symbolCounter = new RegExp(`^\x20*(${fencingChar}{${originalFencing.length},})`);
+    const maxSymbols = Math.max(...appText.split('\n').map((l) => {
+      const match = l.match(symbolCounter);
+      if (match) return match[1].length;
+      return 0;
+    }));
+    const diffFencingLen = Math.max((maxSymbols - originalFencing.length) + 1, 0);
+    return [repeat(fencingChar, diffFencingLen), originalFencing];
+  }
+  /**
    * @param {!string} originalText
    * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
    * @param {!string} appLanguage
@@ -149,10 +166,13 @@ export default class WikiParser {
   static replaceAppCode(originalText, originalAppLocation, appLanguage, newAppText) {
     const textBefore = originalText.substring(0, originalAppLocation.start.offset);
     const textAfter = originalText.substring(originalAppLocation.end.offset);
-    const endMarkIndentation = originalAppLocation.end.column - (1 + 3);
-    const text = `${textBefore}\`\`\`${appLanguage}
+    const fencedText = originalText.substring(originalAppLocation.start.offset, originalAppLocation.end.offset);
+    const startFencedStr = fencedText.substring(0, fencedText.search(/\r\n|\r|\n/));
+    const [backticks, originalBackticks] = WikiParser.getExtraFencingChars(startFencedStr, newAppText);
+    const endMarkIndentation = originalAppLocation.start.column - 1;
+    const text = `${textBefore}${originalBackticks}${backticks}${appLanguage}
 ${WikiParser.indentAppCode(originalAppLocation, newAppText)}
-${repeat(' ', endMarkIndentation)}\`\`\`${textAfter}`;
+${repeat(' ', endMarkIndentation)}${originalBackticks}${backticks}${textAfter}`;
     return text;
   }
 }
