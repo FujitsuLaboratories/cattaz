@@ -108,7 +108,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   handleAppEdit(newText, appContext) {
     const cm = this.editor.getCodeMirror();
     const startFencedStr = cm.getLine(appContext.position.start.line - 1);
-    const [backticks, originalBackticks] = WikiParser.addBackticks(startFencedStr, newText);
+    const [backticks, originalBackticks] = WikiParser.getExtraFencingChars(startFencedStr, newText);
     if (backticks) {
       cm.operation(() => {
         cm.replaceRange(backticks, { line: appContext.position.start.line - 1, ch: (appContext.position.start.column - 1) + originalBackticks.length });
