@@ -131,7 +131,7 @@ test('including [backticks or tildes] in fenced code block increases surrounding
 - test
   - test
     \`\`\`hello
-    \`\`\` 
+    \`\`\`
 `;
   const mdT = `
 ~~~hello
@@ -141,7 +141,7 @@ test('including [backticks or tildes] in fenced code block increases surrounding
 - test
   - test
     ~~~hello
-    ~~~ 
+    ~~~
 `;
   const posB = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdB)).children[0].position;
   const replacedB3 = WikiParser.replaceAppCode(mdB, posB, 'hello', '```');
