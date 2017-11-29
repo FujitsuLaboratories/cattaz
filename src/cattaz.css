@@ -4,6 +4,10 @@ body {
 .markdown-body > div > *:first-child {
   margin-top: 0 !important;
 }
+.markdown-body li.md > p.md:first-child {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
 
 .appError {
   margin: 0.5em 0;
