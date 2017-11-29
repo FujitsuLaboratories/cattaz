@@ -40,13 +40,13 @@ export default class Page extends React.Component {
     const defaultValue = this.props.doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
     const { docText } = this.state;
     return (
-      <div>
+      <React.Fragment>
         <div style={{ height: 33 + 4 }}>
           <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></RouterLink>
           <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
         </div>
         <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} />
-      </div>);
+      </React.Fragment>);
   }
 }
 

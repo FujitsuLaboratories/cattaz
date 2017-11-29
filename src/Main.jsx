@@ -58,7 +58,7 @@ export default class Main extends React.Component {
     const totalPageCount = Math.ceil(this.state.pages.length / pagesListMax);
     const currentPages = this.state.pages.slice((this.state.currentPageNum - 1) * pagesListMax, this.state.currentPageNum * pagesListMax);
     return (
-      <div>
+      <React.Fragment>
         {this.state.getPagesError}
         <p>
           Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
@@ -74,7 +74,7 @@ export default class Main extends React.Component {
         {this.state.currentPageNum > 1 ? <button type="button" onClick={this.handlePrevious}>Prev</button> : null}
         {this.state.pages.length > pagesListMax ? <span>&nbsp;Page:{this.state.currentPageNum}&nbsp;</span> : null}
         {this.state.currentPageNum < totalPageCount ? <button type="button" onClick={this.handleNext}>Next</button> : null}
-      </div>);
+      </React.Fragment>);
   }
   render() {
     return (
