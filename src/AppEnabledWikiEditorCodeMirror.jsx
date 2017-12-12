@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { diffChars } from 'diff';
-import CodeMirror from 'react-codemirror';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/markdown/markdown';
 import SplitPane from 'react-split-pane';
 
@@ -22,7 +22,7 @@ const resizerMargin = 12;
 export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   constructor(props) {
     super();
-    this.state = { text: props.defaultValue, hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), editorPercentage: 50 };
+    this.state = { hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), editorPercentage: 50 };
     this.handleResize = this.updateSize.bind(this);
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
@@ -30,7 +30,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   }
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
-    this.editor.getCodeMirror().on('changes', this.handleEdit);
     this.updateHeight();
     this.updateWidth();
     if (this.props.roomName) {
@@ -48,23 +47,19 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         },
       }).then((y) => {
         this.y = y;
-        y.share.textarea.bindCodeMirror(this.editor.getCodeMirror());
+        y.share.textarea.bindCodeMirror(this.editor.editor);
       });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      this.setState({ text: nextProps.value });
-      this.editor.getCodeMirror().setValue(nextProps.value);
+      this.editor.editor.setValue(nextProps.value);
     }
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
-    if (this.editor) {
-      this.editor.getCodeMirror().off('changes', this.handleEdit);
-    }
     if (this.y) {
-      this.y.share.textarea.unbindCodeMirror(this.editor.getCodeMirror());
+      this.y.share.textarea.unbindCodeMirror(this.editor.editor);
     }
   }
   updateHeight() {
@@ -72,7 +67,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     if (newHeight !== this.state.height) {
       this.setState({ height: newHeight });
       if (this.editor) {
-        this.editor.getCodeMirror().setSize(null, newHeight);
+        this.editor.editor.setSize(null, newHeight);
       }
     }
   }
@@ -100,13 +95,13 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   handleEdit() {
-    const text = this.editor.getCodeMirror().getValue();
+    const text = this.editor.editor.getValue();
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
-    this.setState({ text, hast });
+    this.setState({ hast });
   }
   handleAppEdit(newText, appContext) {
-    const cm = this.editor.getCodeMirror();
+    const cm = this.editor.editor;
     const startFencedStr = cm.getLine(appContext.position.start.line - 1);
     const [backticks] = WikiParser.getExtraFencingChars(startFencedStr, newText);
     if (backticks) {
@@ -167,7 +162,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     };
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <CodeMirror ref={(c) => { this.editor = c; }} value={this.state.text} options={cmOptions} />
+        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} />
         <div
           style={{
             overflow: 'auto',
