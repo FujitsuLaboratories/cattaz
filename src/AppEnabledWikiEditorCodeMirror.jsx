@@ -40,6 +40,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         connector: {
           name: 'websockets-client',
           url: `http://${window.location.hostname}:1234`,
+          // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
           room: encodeURIComponent(this.props.roomName),
         },
         share: {
