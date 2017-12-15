@@ -4,6 +4,7 @@ import { diffChars } from 'diff';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/markdown/markdown';
 import SplitPane from 'react-split-pane';
+import io from 'socket.io-client';
 
 import Y from 'yjs/dist/y.es6';
 import yArray from 'y-array/dist/y-array.es6';
@@ -29,6 +30,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleAppEdit = this.handleAppEdit.bind(this);
   }
   componentDidMount() {
+    this.socket = io(`http://${window.location.hostname}:1234`);
     window.addEventListener('resize', this.handleResize);
     this.updateHeight();
     this.updateWidth();
@@ -39,7 +41,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         },
         connector: {
           name: 'websockets-client',
-          url: `http://${window.location.hostname}:1234`,
+          socket: this.socket,
           // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
           room: encodeURIComponent(this.props.roomName),
         },
@@ -51,6 +53,9 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         y.share.textarea.bindCodeMirror(this.editor.editor);
       });
     }
+    this.socket.on('activeUser', (userNum) => {
+      this.props.onActiveUser(userNum);
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
@@ -62,6 +67,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     if (this.y) {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
       this.y.close();
+      this.socket.disconnect();
     }
   }
   updateHeight() {
@@ -181,6 +187,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   }
 }
 AppEnabledWikiEditorCodeMirror.propTypes = {
+  onActiveUser: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
   value: PropTypes.string,
   roomName: PropTypes.string,

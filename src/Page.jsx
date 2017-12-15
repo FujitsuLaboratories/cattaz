@@ -9,7 +9,8 @@ import logo from '../docs/assets/cattaz.svg';
 export default class Page extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = { activeUser: 0 };
+    this.handleActiveUserDisp = this.handleActiveUserDisp.bind(this);
   }
   componentDidMount() {
     if (this.props.doc) {
@@ -34,6 +35,9 @@ export default class Page extends React.Component {
         this.setState({ docText: text });
       });
   }
+  handleActiveUserDisp(userNum) {
+    this.setState({ activeUser: userNum });
+  }
   render() {
     const pageName = this.props.match.params.page;
     const roomName = this.props.doc ? null : pageName;
@@ -44,8 +48,9 @@ export default class Page extends React.Component {
         <div style={{ height: 33 + 4 }}>
           <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></RouterLink>
           <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
+          {this.state.activeUser > 0 ? <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>(active: {this.state.activeUser})</span> : null}
         </div>
-        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} />
+        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} onActiveUser={this.handleActiveUserDisp} />
       </React.Fragment>);
   }
 }
