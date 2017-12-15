@@ -61,6 +61,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     window.removeEventListener('resize', this.handleResize, false);
     if (this.y) {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
+      this.y.close();
     }
   }
   updateHeight() {
