@@ -4324,9 +4324,9 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.0"
 
-hast-to-hyperscript@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/hast-to-hyperscript/-/hast-to-hyperscript-3.1.0.tgz#58ef4af5344f4da22f0622e072a8d5fa062693d3"
+hast-to-hyperscript@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hast-to-hyperscript/-/hast-to-hyperscript-4.0.0.tgz#3eb25483ec72a8e9a71e4b1ad7eb8f7c86f755db"
   dependencies:
     comma-separated-tokens "^1.0.0"
     is-nan "^1.2.1"
@@ -5634,9 +5634,9 @@ mdast-util-definitions@^1.2.0:
   dependencies:
     unist-util-visit "^1.0.0"
 
-mdast-util-to-hast@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/mdast-util-to-hast/-/mdast-util-to-hast-2.5.0.tgz#f087844d255c7540f36906da30ba106c0ee5ee2f"
+mdast-util-to-hast@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mdast-util-to-hast/-/mdast-util-to-hast-3.0.0.tgz#69e367fb2a9eb02474dfc017733b8fd272d55d3a"
   dependencies:
     collapse-white-space "^1.0.0"
     detab "^2.0.0"
