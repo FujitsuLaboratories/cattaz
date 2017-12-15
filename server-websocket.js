@@ -82,6 +82,7 @@ io.on('connection', (socket) => {
         y.connector.userJoined(socket.id, 'slave');
         rooms.push(room);
         metadata[room].active += 1;
+        io.in(room).emit('activeUser', metadata[room].active);
       }
     });
   });
@@ -104,6 +105,7 @@ io.on('connection', (socket) => {
           y.connector.userLeft(socket.id);
           rooms.splice(j, 1);
           metadata[room].active -= 1;
+          io.in(room).emit('activeUser', metadata[room].active);
         }
       });
     }
@@ -115,6 +117,7 @@ io.on('connection', (socket) => {
         y.connector.userLeft(socket.id);
         rooms.splice(i, 1);
         metadata[room].active -= 1;
+        io.in(room).emit('activeUser', metadata[room].active);
       }
     });
   });
