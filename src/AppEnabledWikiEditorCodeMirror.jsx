@@ -12,7 +12,7 @@ import yWebsocketsClient from 'y-websockets-client/dist/y-websockets-client.es6'
 import yMemory from 'y-memory/dist/y-memory.es6';
 import yText from 'y-text/dist/y-text.es6';
 
-import verge from 'verge';
+import actual from 'actual';
 
 import WikiParser from './WikiParser';
 
@@ -71,7 +71,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   updateHeight() {
-    const newHeight = verge.viewportH() - this.props.heightMargin;
+    const newHeight = actual('height', 'px') - this.props.heightMargin;
     if (newHeight !== this.state.height) {
       this.setState({ height: newHeight });
       if (this.editor) {
@@ -80,7 +80,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   updateWidth() {
-    const vw = verge.viewportW();
+    const vw = actual('width', 'px');
     let newWidth = (vw * (this.state.editorPercentage / 100)) - resizerMargin;
     if (newWidth < 0) {
       newWidth = 0;
@@ -95,7 +95,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.updateHeight();
   }
   handleSplitResized(newSize) {
-    const viewportWidth = verge.viewportW();
+    const viewportWidth = actual('width', 'px');
     const newPercentage = (100.0 * newSize) / viewportWidth;
     if (newPercentage !== this.state.editorPercentage) {
       this.setState({ editorPercentage: newPercentage });
