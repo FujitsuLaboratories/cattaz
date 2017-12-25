@@ -9,6 +9,10 @@ body {
   margin-bottom: 0 !important;
 }
 
+.appContainer {
+  margin: 0.5em 0;
+}
+
 .appError {
   margin: 0.5em 0;
   padding: 0.1em;

@@ -29,7 +29,7 @@ export default class AppContainer extends React.Component {
         </div>
       );
     }
-    return this.props.children;
+    return <div className="appContainer">{this.props.children}</div>;
   }
 }
 AppContainer.propTypes = {
