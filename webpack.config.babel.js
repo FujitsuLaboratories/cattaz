@@ -7,14 +7,18 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    './src/index.jsx',
-  ],
+  entry: {
+    platform: [
+      'babel-polyfill',
+      'whatwg-fetch',
+      './src/index.jsx',
+    ],
+  },
   output: {
     path: path.resolve('build'),
-    filename: 'bundle.js',
+    filename: '[name].js',
+    libraryTarget: 'var',
+    library: 'Cattaz',
   },
   devServer: {
     contentBase: 'build',
@@ -23,6 +27,12 @@ const js = {
     extensions: ['.js', '.jsx', '.json'],
   },
   devtool: 'source-map',
+  externals: {
+    react: 'React',
+    'prop-types': 'PropTypes',
+    'js-yaml': 'JsYaml',
+    lodash: 'Lodash',
+  },
   plugins: [
     new CopyWebpackPlugin([
       {

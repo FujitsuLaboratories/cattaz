@@ -10,6 +10,8 @@ import 'github-markdown-css/github-markdown.css';
 import Main from './Main';
 import Page from './Page';
 
+import SetApp from './SetApp';
+
 ReactDOM.render(
   <HashRouter>
     <Switch>
@@ -20,3 +22,6 @@ ReactDOM.render(
   </HashRouter>,
   document.getElementById('app'),
 );
+
+// eslint-disable-next-line
+export { SetApp };

@@ -9,7 +9,8 @@ import clone from 'lodash/clone';
 import isEqual from 'lodash/isEqual';
 import repeat from 'lodash/repeat';
 
-import Apps from './apps';
+import { Apps } from './SetApp';
+
 import AppContainer from './AppContainer';
 
 const internalLink = /^[./]/;
