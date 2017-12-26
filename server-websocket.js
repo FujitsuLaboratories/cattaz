@@ -11,6 +11,7 @@ import socketIo from 'socket.io';
 import http from 'http';
 import Router from 'router';
 import finalhandler from 'finalhandler';
+import clone from 'lodash/clone';
 
 Y.extend(yWebsocketsServer, yMemory);
 
@@ -106,6 +107,7 @@ io.on('connection', (socket) => {
           rooms.splice(j, 1);
           metadata[room].active -= 1;
           io.in(room).emit('activeUser', metadata[room].active);
+          io.in(room).emit('clientCursor', { type: 'delete', id: socket.id });
         }
       });
     }
@@ -118,8 +120,16 @@ io.on('connection', (socket) => {
         rooms.splice(i, 1);
         metadata[room].active -= 1;
         io.in(room).emit('activeUser', metadata[room].active);
+        io.in(room).emit('clientCursor', { type: 'delete', id: socket.id });
       }
     });
+  });
+  socket.on('clientCursor', (msg) => {
+    if (msg.room != null) {
+      const msgCloned = clone(msg);
+      msgCloned.id = socket.id;
+      socket.to(msg.room).emit('clientCursor', msgCloned);
+    }
   });
 });
 
