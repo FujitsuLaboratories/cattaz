@@ -15,16 +15,18 @@ import yText from 'y-text/dist/y-text.es6';
 import actual from 'actual';
 
 import WikiParser from './WikiParser';
-import Generator from './Generator';
 
 Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
 const resizerMargin = 12;
 
 class OtherClientCursor {
-  constructor(id, color) {
+  constructor(id) {
     this.id = id;
-    this.color = color;
+    this.setColor(id);
+  }
+  setColor(hashId) {
+    this.color = `#${hashId.slice(0, 6)}`;
   }
   updateCursor(cursorPos, cm) {
     this.removeCursor();
@@ -54,7 +56,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
-    this.clientColor = Generator.color();
     this.OtherClients = [];
   }
   componentDidMount() {
@@ -87,7 +88,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           const clients = this.OtherClients.filter(obj => obj.id === msg.id);
           if (msg.type === 'update') {
             if (clients.length === 0) {
-              const client = new OtherClientCursor(msg.id, msg.color);
+              const client = new OtherClientCursor(msg.id);
               this.OtherClients.push(client);
               client.updateCursor(msg.cursorPos, cm);
             } else {
@@ -148,7 +149,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     const cursorMsg = {
       type,
       room: this.props.roomName,
-      color: this.clientColor,
       cursorPos,
     };
     this.socket.emit('clientCursor', cursorMsg);
