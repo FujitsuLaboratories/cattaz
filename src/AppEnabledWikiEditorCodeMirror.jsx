@@ -56,7 +56,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
-    this.OtherClients = [];
+    this.otherClients = new Map();
   }
   componentDidMount() {
     this.socket = io(`http://${window.location.hostname}:1234`);
@@ -85,22 +85,19 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           this.props.onActiveUser(userNum);
         });
         this.socket.on('clientCursor', (msg) => {
-          const clients = this.OtherClients.filter(obj => obj.id === msg.id);
+          const client = this.otherClients.get(msg.id);
           if (msg.type === 'update') {
-            if (clients.length === 0) {
-              const client = new OtherClientCursor(msg.id);
-              this.OtherClients.push(client);
-              client.updateCursor(msg.cursorPos, cm);
+            if (!client) {
+              const newClient = new OtherClientCursor(msg.id);
+              this.otherClients.set(msg.id, newClient);
+              newClient.updateCursor(msg.cursorPos, cm);
             } else {
-              clients.forEach((obj) => {
-                obj.updateCursor(msg.cursorPos, cm);
-              });
+              client.updateCursor(msg.cursorPos, cm);
             }
           } else if (msg.type === 'delete') {
-            if (clients.length > 0) {
-              clients.forEach((obj) => {
-                obj.removeCursor();
-              });
+            if (client) {
+              client.removeCursor();
+              this.otherClients.delete(msg.id);
             }
           }
         });
@@ -118,7 +115,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
       this.y.close();
       this.socket.disconnect();
-      this.OtherClients.splice(0, this.OtherClients.length);
     }
   }
   updateHeight() {
