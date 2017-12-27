@@ -61,11 +61,11 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.otherClients = new Map();
   }
   componentDidMount() {
-    this.socket = io(`http://${window.location.hostname}:1234`);
     window.addEventListener('resize', this.handleResize);
     this.updateHeight();
     this.updateWidth();
     if (this.props.roomName) {
+      this.socket = io(`http://${window.location.hostname}:1234`);
       Y({
         db: {
           name: 'memory',
@@ -97,6 +97,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     if (this.y) {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
       this.y.close();
+    }
+    if (this.socket) {
       this.socket.off('activeUser', this.handleActiveUser);
       this.socket.off('clientCursor', this.handleClientCursor);
       this.socket.disconnect();
