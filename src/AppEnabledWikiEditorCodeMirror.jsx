@@ -56,6 +56,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
+    this.handleActiveUser = this.handleActiveUser.bind(this);
+    this.handleClientCursor = this.handleClientCursor.bind(this);
     this.otherClients = new Map();
   }
   componentDidMount() {
@@ -80,28 +82,9 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       }).then((y) => {
         this.y = y;
         y.share.textarea.bindCodeMirror(this.editor.editor);
-        const cm = this.editor.editor;
-        this.socket.on('activeUser', (userNum) => {
-          this.props.onActiveUser(userNum);
-        });
-        this.socket.on('clientCursor', (msg) => {
-          const client = this.otherClients.get(msg.id);
-          if (msg.type === 'update') {
-            if (!client) {
-              const newClient = new OtherClientCursor(msg.id);
-              this.otherClients.set(msg.id, newClient);
-              newClient.updateCursor(msg.cursorPos, cm);
-            } else {
-              client.updateCursor(msg.cursorPos, cm);
-            }
-          } else if (msg.type === 'delete') {
-            if (client) {
-              client.removeCursor();
-              this.otherClients.delete(msg.id);
-            }
-          }
-        });
+        this.socket.on('clientCursor', this.handleClientCursor);
       });
+      this.socket.on('activeUser', this.handleActiveUser);
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -114,6 +97,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     if (this.y) {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
       this.y.close();
+      this.socket.off('activeUser', this.handleActiveUser);
+      this.socket.off('clientCursor', this.handleClientCursor);
       this.socket.disconnect();
     }
   }
@@ -140,6 +125,28 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   updateSize() {
     this.updateWidth();
     this.updateHeight();
+  }
+  handleActiveUser(userNum) {
+    this.props.onActiveUser(userNum);
+  }
+  handleClientCursor(msg) {
+    const client = this.otherClients.get(msg.id);
+    if (msg.type === 'update') {
+      if (!this.editor) return;
+      const cm = this.editor.editor;
+      if (!client) {
+        const newClient = new OtherClientCursor(msg.id);
+        this.otherClients.set(msg.id, newClient);
+        newClient.updateCursor(msg.cursorPos, cm);
+      } else {
+        client.updateCursor(msg.cursorPos, cm);
+      }
+    } else if (msg.type === 'delete') {
+      if (client) {
+        client.removeCursor();
+        this.otherClients.delete(msg.id);
+      }
+    }
   }
   sendCursorMsg(type, cursorPos) {
     const cursorMsg = {
