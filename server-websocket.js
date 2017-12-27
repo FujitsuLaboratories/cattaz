@@ -11,6 +11,8 @@ import socketIo from 'socket.io';
 import http from 'http';
 import Router from 'router';
 import finalhandler from 'finalhandler';
+import clone from 'lodash/clone';
+import crypto from 'crypto';
 
 Y.extend(yWebsocketsServer, yMemory);
 
@@ -56,6 +58,12 @@ function getInstanceOfY(room) {
     };
   }
   return yInstances[room];
+}
+
+function getSha1Hash(plaintext) {
+  const sha1 = crypto.createHash('sha1');
+  sha1.update(plaintext);
+  return sha1.digest('hex');
 }
 
 router.get('/pages', (req, res) => {
@@ -106,6 +114,7 @@ io.on('connection', (socket) => {
           rooms.splice(j, 1);
           metadata[room].active -= 1;
           io.in(room).emit('activeUser', metadata[room].active);
+          io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
         }
       });
     }
@@ -118,8 +127,16 @@ io.on('connection', (socket) => {
         rooms.splice(i, 1);
         metadata[room].active -= 1;
         io.in(room).emit('activeUser', metadata[room].active);
+        io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
       }
     });
+  });
+  socket.on('clientCursor', (msg) => {
+    if (msg.room != null) {
+      const msgCloned = clone(msg);
+      msgCloned.id = getSha1Hash(socket.id);
+      socket.to(msg.room).emit('clientCursor', msgCloned);
+    }
   });
 });
 

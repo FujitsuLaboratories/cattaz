@@ -20,6 +20,34 @@ Y.extend(yArray, yWebsocketsClient, yMemory, yText);
 
 const resizerMargin = 12;
 
+class OtherClientCursor {
+  constructor(id) {
+    this.id = id;
+    this.setColor(id);
+  }
+  setColor(hashId) {
+    this.color = `#${hashId.slice(0, 6)}`;
+  }
+  updateCursor(cursorPos, cm) {
+    this.removeCursor();
+    const cursorCoords = cm.cursorCoords(cursorPos);
+    const cursorElement = document.createElement('span');
+    cursorElement.style.borderLeftStyle = 'solid';
+    cursorElement.style.borderLeftWidth = '2px';
+    cursorElement.style.borderLeftColor = this.color;
+    cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
+    cursorElement.style.padding = 0;
+    cursorElement.style.zIndex = 0;
+    this.marker = cm.setBookmark(cursorPos, { widget: cursorElement, insertLeft: true });
+  }
+  removeCursor() {
+    if (this.marker) {
+      this.marker.clear();
+      this.marker = null;
+    }
+  }
+}
+
 export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   constructor(props) {
     super();
@@ -28,6 +56,9 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
+    this.handleActiveUser = this.handleActiveUser.bind(this);
+    this.handleClientCursor = this.handleClientCursor.bind(this);
+    this.otherClients = new Map();
   }
   componentDidMount() {
     this.socket = io(`http://${window.location.hostname}:1234`);
@@ -51,11 +82,10 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       }).then((y) => {
         this.y = y;
         y.share.textarea.bindCodeMirror(this.editor.editor);
+        this.socket.on('clientCursor', this.handleClientCursor);
       });
+      this.socket.on('activeUser', this.handleActiveUser);
     }
-    this.socket.on('activeUser', (userNum) => {
-      this.props.onActiveUser(userNum);
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
@@ -67,6 +97,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     if (this.y) {
       this.y.share.textarea.unbindCodeMirror(this.editor.editor);
       this.y.close();
+      this.socket.off('activeUser', this.handleActiveUser);
+      this.socket.off('clientCursor', this.handleClientCursor);
       this.socket.disconnect();
     }
   }
@@ -94,6 +126,36 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.updateWidth();
     this.updateHeight();
   }
+  handleActiveUser(userNum) {
+    this.props.onActiveUser(userNum);
+  }
+  handleClientCursor(msg) {
+    const client = this.otherClients.get(msg.id);
+    if (msg.type === 'update') {
+      if (!this.editor) return;
+      const cm = this.editor.editor;
+      if (!client) {
+        const newClient = new OtherClientCursor(msg.id);
+        this.otherClients.set(msg.id, newClient);
+        newClient.updateCursor(msg.cursorPos, cm);
+      } else {
+        client.updateCursor(msg.cursorPos, cm);
+      }
+    } else if (msg.type === 'delete') {
+      if (client) {
+        client.removeCursor();
+        this.otherClients.delete(msg.id);
+      }
+    }
+  }
+  sendCursorMsg(type, cursorPos) {
+    const cursorMsg = {
+      type,
+      room: this.props.roomName,
+      cursorPos,
+    };
+    this.socket.emit('clientCursor', cursorMsg);
+  }
   handleSplitResized(newSize) {
     const viewportWidth = actual('width', 'px');
     const newPercentage = (100.0 * newSize) / viewportWidth;
@@ -102,11 +164,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.updateWidth();
     }
   }
-  handleEdit() {
+  handleEdit(_, data) {
     const text = this.editor.editor.getValue();
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ hast });
+    if (data.origin === '+input' || data.origin === '*compose' || data.origin === '+delete') {
+      this.sendCursorMsg('update', { line: data.from.line, ch: data.from.ch });
+    }
   }
   handleAppEdit(newText, appContext) {
     const cm = this.editor.editor;
@@ -160,6 +225,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         cm.replaceRange(indentedNewText, position);
       });
     }
+    this.sendCursorMsg('update', { line: appContext.position.start.line - 1, ch: (appContext.position.start.column - 1) });
   }
   render() {
     const cmOptions = {
