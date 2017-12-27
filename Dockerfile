@@ -1,5 +1,9 @@
 FROM node:8.9.3
 
+# A workaround for yarn 1.3.2. It will be removed in next release of yarn.
+# See <https://github.com/yarnpkg/yarn/pull/4761>.
+RUN if [ -n ${http_proxy+x} ]; then yarn config set proxy $http_proxy; fi && if [ -n ${https_proxy+x} ]; then yarn config set https-proxy $http_proxy; fi
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
