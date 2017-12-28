@@ -36,11 +36,14 @@ class OtherClientCursor {
     this.removeCursor();
     const cursorCoords = cm.cursorCoords(cursorPos);
     const cursorElement = document.createElement('span');
-    cursorElement.style.borderLeftStyle = 'solid';
-    cursorElement.style.borderLeftWidth = '2px';
-    cursorElement.style.borderLeftColor = this.color;
-    cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
-    cursorElement.style.padding = 0;
+    cursorElement.innerText = `▲${this.id.substring(0, 3)}`;
+    cursorElement.style.position = 'absolute';
+    cursorElement.style.marginTop = `${(cursorCoords.bottom - cursorCoords.top)}px`;
+    cursorElement.style.color = this.color;
+    cursorElement.style.opacity = 0.8;
+    cursorElement.style.lineHeight = 0;
+    cursorElement.style.verticalAlign = '70%';
+    cursorElement.style.fontSize = '70%';
     cursorElement.style.zIndex = 0;
     this.marker = cm.setBookmark(cursorPos, { widget: cursorElement, insertLeft: true });
   }
