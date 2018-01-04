@@ -1,4 +1,4 @@
-FROM node:8.9.3
+FROM node:8.9.4
 
 # A workaround for yarn 1.3.2. It will be removed in next release of yarn.
 # See <https://github.com/yarnpkg/yarn/pull/4761>.
