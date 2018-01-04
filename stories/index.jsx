@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { storiesOf, linkTo } from '@storybook/react';
+// Issue in v3.3.3. https://github.com/storybooks/storybook/pull/2604
+import { storiesOf, linkTo } from '@storybook/react/dist/client';
 
 // To be converted by postcss via webpack
 import 'github-markdown-css/github-markdown.css';
