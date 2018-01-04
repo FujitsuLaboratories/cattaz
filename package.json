@@ -37,7 +37,7 @@
     "yjs": "^12.3.3"
   },
   "devDependencies": {
-    "@storybook/react": "3.1.6",
+    "@storybook/react": "^3.3.3",
     "ava": "^0.24.0",
     "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
