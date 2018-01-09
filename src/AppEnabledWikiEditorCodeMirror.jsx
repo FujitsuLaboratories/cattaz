@@ -66,6 +66,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleAppEdit = this.handleAppEdit.bind(this);
     this.handleActiveUser = this.handleActiveUser.bind(this);
+    this.handleCursor = this.handleCursor.bind(this);
     this.handleClientCursor = this.handleClientCursor.bind(this);
     this.otherClients = new Map();
   }
@@ -238,6 +239,10 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
     this.sendCursorMsg('update', { line: appContext.position.start.line - 1, ch: (appContext.position.start.column - 1) });
   }
+  handleCursor(editor, data) {
+    // Code-mirror counts lines from zero.
+    this.setState({ activeLine: data.line + 1 });
+  }
   render() {
     const cmOptions = {
       mode: 'markdown',
@@ -247,7 +252,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     };
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} />
+        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} />
         <div
           style={{
             overflow: 'auto',
@@ -257,7 +262,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           }}
           className="markdown-body"
         >
-          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit })}
+          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, activeLine: this.state.activeLine })}
         </div>
       </SplitPane>
     );

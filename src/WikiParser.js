@@ -6,7 +6,6 @@ import toHast from 'mdast-util-to-hast';
 import toH from 'hast-to-hyperscript';
 
 import clone from 'lodash/clone';
-import isEqual from 'lodash/isEqual';
 import repeat from 'lodash/repeat';
 
 import Apps from './apps';
@@ -55,13 +54,12 @@ export default class WikiParser {
         };
       }
     }
-    const newChildren = hast.children.map(c => WikiParser.convertToCustomHast(c));
-    if (!isEqual(newChildren, hast.children)) {
-      const cloned = clone(hast);
-      cloned.children = newChildren;
-      return cloned;
-    }
-    return hast;
+    const cloned = clone(hast);
+    cloned.children = hast.children.map(c => WikiParser.convertToCustomHast(c));
+    cloned.properties = (cloned.properties && clone(cloned.properties)) || {};
+    // Original Hast posirion will be lost in hyperscript.
+    cloned.properties.position = JSON.stringify(hast.position);
+    return cloned;
   }
   /**
    * Render custom Hast
@@ -74,18 +72,20 @@ export default class WikiParser {
       if (name.indexOf('app:') === 0) {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
+        // It is not actually react props
+        // eslint-disable-next-line react/prop-types
+        const position = JSON.parse(props.position);
+        const active = position.start.line <= ctx.activeLine && ctx.activeLine <= position.end.line;
         if (appComponent) {
           const app = React.createElement(appComponent, {
             data: children[0],
             onEdit: ctx.onEdit,
             appContext: {
               language: appName,
-              // It is not actually react props
-              // eslint-disable-next-line react/prop-types
-              position: JSON.parse(props.position),
+              position,
             },
           });
-          return React.createElement(AppContainer, {}, app);
+          return React.createElement(AppContainer, { active }, app);
         }
         throw new Error('unknown app');
       }
@@ -94,7 +94,7 @@ export default class WikiParser {
         const propsForLink = clone(props);
         propsForLink.to = propsForLink.href;
         if (propsForLink.className) {
-          propsForLink.className += ',md';
+          propsForLink.className += ' md';
         } else {
           propsForLink.className = 'md';
         }
@@ -104,9 +104,22 @@ export default class WikiParser {
       const propsForElem = clone(props);
       if (propsForElem) {
         if (propsForElem.className) {
-          propsForElem.className += ',md';
+          propsForElem.className += ' md';
         } else {
           propsForElem.className = 'md';
+        }
+        if (propsForElem.position) {
+          // It is not actually react props
+          // eslint-disable-next-line react/prop-types
+          const position = JSON.parse(props.position);
+          if (position.start.line <= ctx.activeLine && ctx.activeLine <= position.end.line) {
+            if (propsForElem.className) {
+              propsForElem.className += ' active';
+            } else {
+              propsForElem.className = 'active';
+            }
+          }
+          delete propsForElem.position;
         }
       }
       return React.createElement(name, propsForElem, children);

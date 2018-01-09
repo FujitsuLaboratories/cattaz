@@ -17,8 +17,9 @@ export default class AppContainer extends React.Component {
   }
   render() {
     if (this.state.error) {
+      const className = this.props.active ? 'appContainer error activeApp' : 'appContainer error';
       return (
-        <div className="appError">
+        <div className={className}>
           <p>
             Failed to run an application &apos;{this.props.children.props.appContext.language}&apos;
             at line {this.props.children.props.appContext.position.start.line}-{this.props.children.props.appContext.position.end.line}.
@@ -29,9 +30,11 @@ export default class AppContainer extends React.Component {
         </div>
       );
     }
-    return <div className="appContainer">{this.props.children}</div>;
+    const className = this.props.active ? 'appContainer activeApp' : 'appContainer';
+    return <div className={className}>{this.props.children}</div>;
   }
 }
 AppContainer.propTypes = {
   children: PropTypes.node.isRequired,
+  active: PropTypes.bool.isRequired,
 };
