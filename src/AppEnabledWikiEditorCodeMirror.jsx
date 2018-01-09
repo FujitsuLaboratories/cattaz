@@ -5,6 +5,7 @@ import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/markdown/markdown';
 import SplitPane from 'react-split-pane';
 import io from 'socket.io-client';
+import ColorConvert from 'color-convert';
 
 import Y from 'yjs/dist/y.es6';
 import yArray from 'y-array/dist/y-array.es6';
@@ -23,10 +24,13 @@ const resizerMargin = 12;
 class OtherClientCursor {
   constructor(id) {
     this.id = id;
-    this.setColor(id);
-  }
-  setColor(hashId) {
-    this.color = `#${hashId.slice(0, 6)}`;
+    let hue = 0;
+    for (let i = 0; i < id.length; i += 1) {
+      hue *= 2;
+      hue += id.charCodeAt(i);
+      hue %= 360;
+    }
+    this.color = `#${ColorConvert.hsv.hex(hue, 100, 100)}`;
   }
   updateCursor(cursorPos, cm) {
     this.removeCursor();
