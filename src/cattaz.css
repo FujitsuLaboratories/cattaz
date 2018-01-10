@@ -9,16 +9,27 @@ body {
   margin-bottom: 0 !important;
 }
 
-.appContainer {
-  margin: 0.5em 0;
+.markdown-body > div .active-inner {
+  background-color: #C5CAE9; /* Indigo 100 */
+}
+.markdown-body > div .active-outer, .markdown-body > div > .active-inner {
+  background-color: #E8EAF6; /* Indigo 50 */
 }
 
-.appError {
+.appContainer {
+  margin: 0.5em 4px;
+  background-color: white;
+}
+.appContainer.activeApp {
   margin: 0.5em 0;
-  padding: 0.1em;
+  padding-left: 2px;
+  border-left: 2px solid #9FA8DA; /* Indigo 200 */
+}
+
+.appContainer.error {
   background-color: LemonChiffon;
 }
-.appError pre {
+.appContainer.error pre {
   margin: 0;
   padding: 0;
   font-size: 75%;

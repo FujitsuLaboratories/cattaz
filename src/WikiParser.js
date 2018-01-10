@@ -6,7 +6,6 @@ import toHast from 'mdast-util-to-hast';
 import toH from 'hast-to-hyperscript';
 
 import clone from 'lodash/clone';
-import isEqual from 'lodash/isEqual';
 import repeat from 'lodash/repeat';
 
 import Apps from './apps';
@@ -15,6 +14,18 @@ import AppContainer from './AppContainer';
 const internalLink = /^[./]/;
 
 export default class WikiParser {
+  /**
+   * Checks if position is inside region.
+   * @param {!object} position line number and column number of the position. Both of them start from 1.
+   * @param {!object} region position property of Unist.
+   * @return {boolean} true if position is inside region.
+   */
+  static isInside(position, region) {
+    if (position.line < region.start.line || region.end.line < position.line) return false;
+    if (position.line === region.start.line && position.column < region.start.column) return false;
+    if (position.line === region.end.line && position.column > region.end.column) return false;
+    return true;
+  }
   /**
    * Parse Markdown string to hast
    * @param {!string} markdown
@@ -55,13 +66,12 @@ export default class WikiParser {
         };
       }
     }
-    const newChildren = hast.children.map(c => WikiParser.convertToCustomHast(c));
-    if (!isEqual(newChildren, hast.children)) {
-      const cloned = clone(hast);
-      cloned.children = newChildren;
-      return cloned;
-    }
-    return hast;
+    const cloned = clone(hast);
+    cloned.children = hast.children.map(c => WikiParser.convertToCustomHast(c));
+    cloned.properties = (cloned.properties && clone(cloned.properties)) || {};
+    // Original Hast posirion will be lost in hyperscript.
+    cloned.properties.position = JSON.stringify(hast.position);
+    return cloned;
   }
   /**
    * Render custom Hast
@@ -70,44 +80,50 @@ export default class WikiParser {
    * @returns {React.Node}
    */
   static renderCustomHast(customHast, ctx = {}) {
-    function h(name, props, children) {
+    function h(name, properties, children) {
       if (name.indexOf('app:') === 0) {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
+        const position = JSON.parse(properties.position);
+        const active = ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position);
         if (appComponent) {
           const app = React.createElement(appComponent, {
             data: children[0],
             onEdit: ctx.onEdit,
             appContext: {
               language: appName,
-              // It is not actually react props
-              // eslint-disable-next-line react/prop-types
-              position: JSON.parse(props.position),
+              position,
             },
           });
-          return React.createElement(AppContainer, {}, app);
+          return React.createElement(AppContainer, { active }, app);
         }
         throw new Error('unknown app');
       }
-      // eslint-disable-next-line react/prop-types
-      if (name === 'a' && internalLink.test(props.href)) {
-        const propsForLink = clone(props);
+      if (name === 'a' && internalLink.test(properties.href)) {
+        const propsForLink = clone(properties);
         propsForLink.to = propsForLink.href;
-        if (propsForLink.className) {
-          propsForLink.className += ',md';
-        } else {
-          propsForLink.className = 'md';
-        }
+        propsForLink.className = propsForLink.className ? `${propsForLink.className} md` : 'md';
         delete propsForLink.href;
+        delete propsForLink.position;
         return React.createElement(Link, propsForLink, children);
       }
-      const propsForElem = clone(props);
+      const propsForElem = clone(properties);
       if (propsForElem) {
-        if (propsForElem.className) {
-          propsForElem.className += ',md';
-        } else {
-          propsForElem.className = 'md';
+        propsForElem.className = propsForElem.className ? `${propsForElem.className} md` : 'md';
+        const deeperMatch = children && children.find && children.find((c) => {
+          if (!c.props) return false;
+          if (!c.props.className) return false;
+          return c.props.className.indexOf('active-') >= 0;
+        });
+        if (deeperMatch) {
+          propsForElem.className += ' active-outer'; // must have 'md' class
+        } else if (propsForElem.position) {
+          const position = JSON.parse(properties.position);
+          if (ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position)) {
+            propsForElem.className += ' active-inner'; // must have 'md' class
+          }
         }
+        delete propsForElem.position;
       }
       return React.createElement(name, propsForElem, children);
     }
