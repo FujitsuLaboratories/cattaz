@@ -34,18 +34,20 @@ class OtherClientCursor {
   }
   updateCursor(cursorPos, cm) {
     this.removeCursor();
-    const cursorCoords = cm.cursorCoords(cursorPos);
-    const cursorElement = document.createElement('span');
-    cursorElement.innerText = `▲${this.id.substring(0, 3)}`;
-    cursorElement.style.position = 'absolute';
-    cursorElement.style.marginTop = `${(cursorCoords.bottom - cursorCoords.top)}px`;
-    cursorElement.style.color = this.color;
-    cursorElement.style.opacity = 0.8;
-    cursorElement.style.lineHeight = 0;
-    cursorElement.style.verticalAlign = '70%';
-    cursorElement.style.fontSize = '70%';
-    cursorElement.style.zIndex = 0;
-    this.marker = cm.setBookmark(cursorPos, { widget: cursorElement, insertLeft: true });
+    const svgSize = 8;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', svgSize);
+    svg.setAttribute('height', svgSize);
+    svg.setAttribute('viewBox', `0 0 ${svgSize} ${svgSize}`);
+    svg.style.position = 'absolute';
+    svg.style.marginLeft = `-${svgSize / 2}px`;
+    svg.style.marginTop = `${cm.defaultTextHeight()}px`;
+    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    polyline.setAttribute('points', `0 ${svgSize}, ${svgSize / 2} 0, ${svgSize} ${svgSize}, 0 ${svgSize}`);
+    polyline.setAttribute('fill', this.color);
+    polyline.setAttribute('fill-opacity', 0.9);
+    svg.appendChild(polyline);
+    this.marker = cm.setBookmark(cursorPos, { widget: svg, insertLeft: true });
   }
   removeCursor() {
     if (this.marker) {
