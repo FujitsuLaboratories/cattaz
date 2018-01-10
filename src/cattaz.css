@@ -9,12 +9,16 @@ body {
   margin-bottom: 0 !important;
 }
 
-.markdown-body > div > .active {
+.markdown-body > div .active-inner {
+  background-color: #C5CAE9; /* Indigo 100 */
+}
+.markdown-body > div .active-outer, .markdown-body > div > .active-inner {
   background-color: #E8EAF6; /* Indigo 50 */
 }
 
 .appContainer {
   margin: 0.5em 4px;
+  background-color: white;
 }
 .appContainer.activeApp {
   margin: 0.5em 0;

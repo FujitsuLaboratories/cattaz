@@ -16,17 +16,14 @@ const internalLink = /^[./]/;
 export default class WikiParser {
   /**
    * Checks if position is inside region.
-   * @param {number} line line number of the position. Starts from 1.
-   * @param {number} column column number of the position. Starts from 1. Use -1 for dont-care.
+   * @param {!object} position line number and column number of the position. Both of them start from 1.
    * @param {!object} region position property of Unist.
    * @return {boolean} true if position is inside region.
    */
-  static isInside(line, column, region) {
-    if (line < region.start.line || region.end.line < line) return false;
-    if (column >= 0) {
-      if (line === region.start.line && column < region.start.column) return false;
-      if (line === region.end.line && column > region.end.column) return false;
-    }
+  static isInside(position, region) {
+    if (position.line < region.start.line || region.end.line < position.line) return false;
+    if (position.line === region.start.line && position.column < region.start.column) return false;
+    if (position.line === region.end.line && position.column > region.end.column) return false;
     return true;
   }
   /**
@@ -88,7 +85,7 @@ export default class WikiParser {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
         const position = JSON.parse(properties.position);
-        const active = WikiParser.isInside(ctx.activeLine, -1, position);
+        const active = ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position);
         if (appComponent) {
           const app = React.createElement(appComponent, {
             data: children[0],
@@ -113,13 +110,20 @@ export default class WikiParser {
       const propsForElem = clone(properties);
       if (propsForElem) {
         propsForElem.className = propsForElem.className ? `${propsForElem.className} md` : 'md';
-        if (propsForElem.position) {
+        const deeperMatch = children && children.find && children.find((c) => {
+          if (!c.props) return false;
+          if (!c.props.className) return false;
+          return c.props.className.indexOf('active-') >= 0;
+        });
+        if (deeperMatch) {
+          propsForElem.className += ' active-outer'; // must have 'md' class
+        } else if (propsForElem.position) {
           const position = JSON.parse(properties.position);
-          if (WikiParser.isInside(ctx.activeLine, -1, position)) {
-            propsForElem.className += ' active'; // must has 'md' class
+          if (ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position)) {
+            propsForElem.className += ' active-inner'; // must have 'md' class
           }
-          delete propsForElem.position;
         }
+        delete propsForElem.position;
       }
       return React.createElement(name, propsForElem, children);
     }

@@ -240,8 +240,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.sendCursorMsg('update', { line: appContext.position.start.line - 1, ch: (appContext.position.start.column - 1) });
   }
   handleCursor(editor, data) {
-    // Code-mirror counts lines from zero.
-    this.setState({ activeLine: data.line + 1 });
+    // Code-mirror counts lines and columns from zero.
+    this.setState({ cursorPosition: { line: data.line + 1, column: data.ch + 1 } });
   }
   render() {
     const cmOptions = {
@@ -262,7 +262,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           }}
           className="markdown-body"
         >
-          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, activeLine: this.state.activeLine })}
+          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, cursorPosition: this.state.cursorPosition })}
         </div>
       </SplitPane>
     );

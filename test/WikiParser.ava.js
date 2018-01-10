@@ -26,22 +26,16 @@ code3
 test('isInside', t => {
   const region = { start: { line: 2, column: 4 }, end: { line: 4, column: 10 } };
 
-  t.false(WikiParser.isInside(1, -1, region));
-  t.true(WikiParser.isInside(2, -1, region));
-  t.true(WikiParser.isInside(3, -1, region));
-  t.true(WikiParser.isInside(4, -1, region));
-  t.false(WikiParser.isInside(5, -1, region));
-
-  t.false(WikiParser.isInside(2, 0, region));
-  t.false(WikiParser.isInside(2, 3, region));
-  t.true(WikiParser.isInside(2, 4, region));
-  t.true(WikiParser.isInside(2, 5, region));
-  t.true(WikiParser.isInside(3, 0, region));
-  t.true(WikiParser.isInside(3, 1, region));
-  t.true(WikiParser.isInside(4, 0, region));
-  t.true(WikiParser.isInside(4, 9, region));
-  t.true(WikiParser.isInside(4, 10, region));
-  t.false(WikiParser.isInside(4, 11, region));
+  t.false(WikiParser.isInside({ line: 2, column: 0 }, region));
+  t.false(WikiParser.isInside({ line: 2, column: 3 }, region));
+  t.true(WikiParser.isInside({ line: 2, column: 4 }, region));
+  t.true(WikiParser.isInside({ line: 2, column: 5 }, region));
+  t.true(WikiParser.isInside({ line: 3, column: 0 }, region));
+  t.true(WikiParser.isInside({ line: 3, column: 1 }, region));
+  t.true(WikiParser.isInside({ line: 4, column: 0 }, region));
+  t.true(WikiParser.isInside({ line: 4, column: 9 }, region));
+  t.true(WikiParser.isInside({ line: 4, column: 10 }, region));
+  t.false(WikiParser.isInside({ line: 4, column: 11 }, region));
 });
 
 /** @test {WikiParser.parseToHast} */
