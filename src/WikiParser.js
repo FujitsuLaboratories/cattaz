@@ -15,6 +15,21 @@ const internalLink = /^[./]/;
 
 export default class WikiParser {
   /**
+   * Checks if position is inside region.
+   * @param {number} line line number of the position. Starts from 1.
+   * @param {number} column column number of the position. Starts from 1. Use -1 for dont-care.
+   * @param {!object} region position property of Unist.
+   * @return {boolean} true if position is inside region.
+   */
+  static isInside(line, column, region) {
+    if (line < region.start.line || region.end.line < line) return false;
+    if (column >= 0) {
+      if (line === region.start.line && column < region.start.column) return false;
+      if (line === region.end.line && column > region.end.column) return false;
+    }
+    return true;
+  }
+  /**
    * Parse Markdown string to hast
    * @param {!string} markdown
    * @returns {object} Hast object
@@ -68,14 +83,12 @@ export default class WikiParser {
    * @returns {React.Node}
    */
   static renderCustomHast(customHast, ctx = {}) {
-    function h(name, props, children) {
+    function h(name, properties, children) {
       if (name.indexOf('app:') === 0) {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
-        // It is not actually react props
-        // eslint-disable-next-line react/prop-types
-        const position = JSON.parse(props.position);
-        const active = position.start.line <= ctx.activeLine && ctx.activeLine <= position.end.line;
+        const position = JSON.parse(properties.position);
+        const active = WikiParser.isInside(ctx.activeLine, -1, position);
         if (appComponent) {
           const app = React.createElement(appComponent, {
             data: children[0],
@@ -89,35 +102,21 @@ export default class WikiParser {
         }
         throw new Error('unknown app');
       }
-      // eslint-disable-next-line react/prop-types
-      if (name === 'a' && internalLink.test(props.href)) {
-        const propsForLink = clone(props);
+      if (name === 'a' && internalLink.test(properties.href)) {
+        const propsForLink = clone(properties);
         propsForLink.to = propsForLink.href;
-        if (propsForLink.className) {
-          propsForLink.className += ' md';
-        } else {
-          propsForLink.className = 'md';
-        }
+        propsForLink.className = propsForLink.className ? `${propsForLink.className} md` : 'md';
         delete propsForLink.href;
+        delete propsForLink.position;
         return React.createElement(Link, propsForLink, children);
       }
-      const propsForElem = clone(props);
+      const propsForElem = clone(properties);
       if (propsForElem) {
-        if (propsForElem.className) {
-          propsForElem.className += ' md';
-        } else {
-          propsForElem.className = 'md';
-        }
+        propsForElem.className = propsForElem.className ? `${propsForElem.className} md` : 'md';
         if (propsForElem.position) {
-          // It is not actually react props
-          // eslint-disable-next-line react/prop-types
-          const position = JSON.parse(props.position);
-          if (position.start.line <= ctx.activeLine && ctx.activeLine <= position.end.line) {
-            if (propsForElem.className) {
-              propsForElem.className += ' active';
-            } else {
-              propsForElem.className = 'active';
-            }
+          const position = JSON.parse(properties.position);
+          if (WikiParser.isInside(ctx.activeLine, -1, position)) {
+            propsForElem.className += ' active'; // must has 'md' class
           }
           delete propsForElem.position;
         }
