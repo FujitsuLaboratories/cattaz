@@ -43,14 +43,33 @@ export default class Page extends React.Component {
     const roomName = this.props.doc ? null : pageName;
     const defaultValue = this.props.doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
     const { docText } = this.state;
+    const style = {
+      header: {
+        height: 33 + 4, display: 'flex', flexFlow: 'row', alignItems: 'center', margin: 0, padding: 7, backgroundColor: '#F1F1F1',
+      },
+      headerLeft: {
+        display: 'flex', flexFlow: 'row', alignItems: 'center', marginLeft: '5px', marginRight: 'auto',
+      },
+      img: {
+        display: 'block', margin: '0 auto', padding: 0,
+      },
+      pageName: {
+        paddingLeft: '8px', fontSize: '24px',
+      },
+      active: {
+        marginRight: '25px', fontSize: '18px',
+      },
+    };
     return (
       <React.Fragment>
-        <div style={{ height: 33 + 4 }}>
-          <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" /></RouterLink>
-          <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>{pageName}</span>
-          {this.state.activeUser > 0 ? <span style={{ margin: '0 0.5em', verticalAlign: 'top', fontSize: '24px' }}>(active: {this.state.activeUser})</span> : null}
+        <div style={style.header}>
+          <div style={style.headerLeft}>
+            <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" style={style.img} /></RouterLink>
+            <div style={style.pageName}>{pageName}</div>
+          </div>
+          {this.state.activeUser > 0 ? <div style={style.active}>(active: {this.state.activeUser})</div> : null}
         </div>
-        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={33 + 4} onActiveUser={this.handleActiveUserDisp} />
+        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={style.header.height + (style.header.padding * 2)} onActiveUser={this.handleActiveUserDisp} />
       </React.Fragment>);
   }
 }
