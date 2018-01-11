@@ -23,6 +23,16 @@ docker run -it -p 8080:8080 -p 1234:1234 cattaz
 
 上記コマンドを実行後、`http://localhost:8080/`にアクセスするとアプリケーションを見ることができます。
 
+### Docker Compose
+
+```bash
+# export http_proxy=http://user:pass@proxy.example.com:8080
+# export https_proxy=http://user:pass@proxy.example.com:8080
+docker-compose up
+```
+
+上記コマンドを実行後、`http://localhost:8080/`にアクセスするとアプリケーションを見ることができます。
+
 ## Amazon EC2 Container Service
 
 source treeの`aws-ecs.yaml`を参照してください。

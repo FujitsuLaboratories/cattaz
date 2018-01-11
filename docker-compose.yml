@@ -1,0 +1,11 @@
+version: '2'
+services:
+  web:
+    build:
+      context: .
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+    ports:
+      - "1234:1234"
+      - "8080:8080"
