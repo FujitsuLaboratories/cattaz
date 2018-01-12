@@ -60,7 +60,7 @@ class OtherClientCursor {
 export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   constructor(props) {
     super();
-    this.state = { hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), editorPercentage: 50 };
+    this.state = { hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), onFocus: false, editorPercentage: 50 };
     this.handleResize = this.updateSize.bind(this);
     this.handleSplitResized = this.handleSplitResized.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
@@ -68,6 +68,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleActiveUser = this.handleActiveUser.bind(this);
     this.handleCursor = this.handleCursor.bind(this);
     this.handleClientCursor = this.handleClientCursor.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
     this.otherClients = new Map();
   }
   componentDidMount() {
@@ -243,6 +245,12 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     // Code-mirror counts lines and columns from zero.
     this.setState({ cursorPosition: { line: data.line + 1, column: data.ch + 1 } });
   }
+  handleFocus() {
+    this.setState({ onFocus: true });
+  }
+  handleBlur() {
+    this.setState({ onFocus: false });
+  }
   render() {
     const cmOptions = {
       mode: 'markdown',
@@ -252,7 +260,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     };
     return (
       <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} />
+        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} onFocus={this.handleFocus} onBlur={this.handleBlur} />
         <div
           style={{
             overflow: 'auto',
@@ -262,7 +270,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           }}
           className="markdown-body"
         >
-          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, cursorPosition: this.state.cursorPosition })}
+          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, cursorPosition: this.state.onFocus ? this.state.cursorPosition : null })}
         </div>
       </SplitPane>
     );

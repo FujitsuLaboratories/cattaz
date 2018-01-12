@@ -85,7 +85,10 @@ export default class WikiParser {
         const appName = name.substring(4);
         const appComponent = Apps[appName];
         const position = JSON.parse(properties.position);
-        const active = ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position);
+        let active = false;
+        if (ctx.cursorPosition && WikiParser.isInside(ctx.cursorPosition, position)) {
+          active = true;
+        }
         if (appComponent) {
           const app = React.createElement(appComponent, {
             data: children[0],
