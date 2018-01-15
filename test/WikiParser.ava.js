@@ -1,5 +1,6 @@
 import test from 'ava';
 import React from 'react';
+import RouterLink from 'react-router-dom/Link';
 import cloneDeep from 'lodash/cloneDeep';
 
 import WikiParser from '../src/WikiParser';
@@ -20,12 +21,15 @@ code2
 \`\`\`
 code3
 \`\`\`
+
+paragraph _em_
 `;
 
 /** @test {WikiParser.isInside} */
 test('isInside', t => {
   const region = { start: { line: 2, column: 4 }, end: { line: 4, column: 10 } };
 
+  t.false(WikiParser.isInside({ line: 1, column: 1 }, region));
   t.false(WikiParser.isInside({ line: 2, column: 0 }, region));
   t.false(WikiParser.isInside({ line: 2, column: 3 }, region));
   t.true(WikiParser.isInside({ line: 2, column: 4 }, region));
@@ -36,12 +40,13 @@ test('isInside', t => {
   t.true(WikiParser.isInside({ line: 4, column: 9 }, region));
   t.true(WikiParser.isInside({ line: 4, column: 10 }, region));
   t.false(WikiParser.isInside({ line: 4, column: 11 }, region));
+  t.false(WikiParser.isInside({ line: 5, column: 0 }, region));
 });
 
 /** @test {WikiParser.parseToHast} */
 test('parseToHast', t => {
   const hast = WikiParser.parseToHast(markdown);
-  t.is(hast.children.length, 1 + 3 + 3);
+  t.is(hast.children.length, 1 + 3 + 3 + 2);
 });
 
 /** @test {WikiParser.convertToCustomHast} */
@@ -94,6 +99,39 @@ test('renderCustomHast should handle app:kpt node', t => {
   t.is(appNode.type, Apps.kpt);
   const codeBlockNode = reactNode.props.children[4];
   t.is(codeBlockNode.type, 'pre');
+});
+
+/** @test {WikiParser.renderCustomHast} */
+test('renderCustomHast should handle internal links', t => {
+  const hastOriginal = WikiParser.parseToHast('[a](./a)');
+  const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
+  const reactNode = WikiParser.renderCustomHast(hastConverted);
+  const pNode = reactNode.props.children[0];
+  const aNode = pNode.props.children[0];
+  t.is(aNode.type, RouterLink);
+});
+
+/** @test {WikiParser.renderCustomHast} */
+test('renderCustomHast should highlight app at cursor position', t => {
+  const hastOriginal = WikiParser.parseToHast(markdown);
+  const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
+  const reactNode = WikiParser.renderCustomHast(hastConverted, { cursorPosition: { line: 4, column: 1 } });
+  const containerNode = reactNode.props.children[2];
+  t.is(containerNode.type, AppContainer);
+  t.true(containerNode.props.active);
+});
+
+/** @test {WikiParser.renderCustomHast} */
+test('renderCustomHast should highlight element at cursor position', t => {
+  const hastOriginal = WikiParser.parseToHast(markdown);
+  const hastConverted = WikiParser.convertToCustomHast(hastOriginal);
+  const reactNode = WikiParser.renderCustomHast(hastConverted, { cursorPosition: { line: 16, column: 12 } });
+  const pNode = reactNode.props.children[8];
+  t.is(pNode.type, 'p');
+  t.true(pNode.props.className.indexOf('active-outer') >= 0);
+  const emNode = pNode.props.children[1];
+  t.is(emNode.type, 'em');
+  t.true(emNode.props.className.indexOf('active-inner') >= 0);
 });
 
 /** @test {WikiParser.removeLastNewLine} */
