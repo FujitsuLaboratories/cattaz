@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
         y.connector.userJoined(socket.id, 'slave');
         rooms.push(room);
         metadata[room].active += 1;
-        io.in(room).emit('activeUser', metadata[room].active);
+        io.in(escapedRoom).emit('activeUser', metadata[room].active);
       }
     });
   });
