@@ -20,7 +20,7 @@ docker push "$imageName"
 task=$(printf '[{
   "name": "cattaz-container",
   "image": "%s",
-  "command": ["yarn", "run", "landingpage"],
+  "command": ["yarn", "run", "server"],
   "essential": true,
   "memory": 256,
   "cpu": 0,

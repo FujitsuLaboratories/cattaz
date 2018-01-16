@@ -32,5 +32,5 @@ before_deploy:
 deploy:
   - provider: script
     on:
-      branch: release
+      branch: gh-pages
     script: ./scripts/deploy-to-aws-ecs.sh
