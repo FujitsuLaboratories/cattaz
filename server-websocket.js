@@ -87,8 +87,8 @@ io.on('connection', (socket) => {
     // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
     const room = decodeURIComponent(escapedRoom);
     console.log('User', socket.id, 'joins room:', room);
-    socket.join(room);
-    getInstanceOfY(decodeURIComponent(room)).then((y) => {
+    socket.join(escapedRoom);
+    getInstanceOfY(room).then((y) => {
       if (rooms.indexOf(room) === -1) {
         y.connector.userJoined(socket.id, 'slave');
         rooms.push(room);
@@ -141,12 +141,11 @@ io.on('connection', (socket) => {
     });
   });
   socket.on('clientCursor', (msg) => {
-    // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
-    const room = decodeURIComponent(msg.room);
-    if (room != null) {
+    if (msg.room != null) {
       const msgCloned = clone(msg);
       msgCloned.id = getSha1Hash(socket.id);
-      socket.to(msg.room).emit('clientCursor', msgCloned);
+      // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+      socket.to(encodeURIComponent(msg.room)).emit('clientCursor', msgCloned);
     }
   });
 });
