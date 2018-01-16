@@ -45,7 +45,8 @@ function getInstanceOfY(room) {
       },
       connector: {
         name: 'websockets-server',
-        room,
+        // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+        room: encodeURIComponent(room),
         io,
         debug: !!options.debug,
       },
@@ -82,10 +83,12 @@ router.get('/pages', (req, res) => {
 
 io.on('connection', (socket) => {
   const rooms = [];
-  socket.on('joinRoom', (room) => {
+  socket.on('joinRoom', (escapedRoom) => {
+    // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+    const room = decodeURIComponent(escapedRoom);
     console.log('User', socket.id, 'joins room:', room);
     socket.join(room);
-    getInstanceOfY(room).then((y) => {
+    getInstanceOfY(decodeURIComponent(room)).then((y) => {
       if (rooms.indexOf(room) === -1) {
         y.connector.userJoined(socket.id, 'slave');
         rooms.push(room);
@@ -96,10 +99,12 @@ io.on('connection', (socket) => {
   });
   socket.on('yjsEvent', (msg) => {
     if (msg.room != null) {
-      getInstanceOfY(msg.room).then((y) => {
+      // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+      const room = decodeURIComponent(msg.room);
+      getInstanceOfY(room).then((y) => {
         y.connector.receiveMessage(socket.id, msg);
         if (msg.type === 'update') {
-          metadata[msg.room].modified = new Date();
+          metadata[room].modified = new Date();
         }
       });
     }
@@ -113,13 +118,17 @@ io.on('connection', (socket) => {
           y.connector.userLeft(socket.id);
           rooms.splice(j, 1);
           metadata[room].active -= 1;
-          io.in(room).emit('activeUser', metadata[room].active);
-          io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+          // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+          const escapedRoom = encodeURIComponent(room);
+          io.in(escapedRoom).emit('activeUser', metadata[room].active);
+          io.in(escapedRoom).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
         }
       });
     }
   });
-  socket.on('leaveRoom', (room) => {
+  socket.on('leaveRoom', (escapedRoom) => {
+    // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+    const room = decodeURIComponent(escapedRoom);
     getInstanceOfY(room).then((y) => {
       const i = rooms.indexOf(room);
       if (i >= 0) {
@@ -132,7 +141,9 @@ io.on('connection', (socket) => {
     });
   });
   socket.on('clientCursor', (msg) => {
-    if (msg.room != null) {
+    // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
+    const room = decodeURIComponent(msg.room);
+    if (room != null) {
       const msgCloned = clone(msg);
       msgCloned.id = getSha1Hash(socket.id);
       socket.to(msg.room).emit('clientCursor', msgCloned);
