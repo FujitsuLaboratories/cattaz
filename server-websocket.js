@@ -60,6 +60,10 @@ function getInstanceOfY(room) {
   }
   return yInstances[room];
 }
+function removeInstanceOfY(room) {
+  delete yInstances[room];
+  delete metadata[room];
+}
 
 function getSha1Hash(plaintext) {
   const sha1 = crypto.createHash('sha1');
@@ -137,6 +141,14 @@ io.on('connection', (socket) => {
         metadata[room].active -= 1;
         io.in(room).emit('activeUser', metadata[room].active);
         io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+        if (metadata[room].active === 0) {
+          const g = y.destroy();
+          g.then(() => {
+            removeInstanceOfY(room);
+          }).catch((ex) => {
+            console.error(ex);
+          });
+        }
       }
     });
   });
