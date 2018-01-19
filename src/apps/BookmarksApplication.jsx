@@ -5,7 +5,6 @@ import Yaml from 'js-yaml';
 import isEqual from 'lodash/isEqual';
 
 const RECENT_MAX = 20;
-const RECENT_DAYS = 7;
 
 class Bookmark {
   constructor(name, link, recentClicks) {
@@ -19,9 +18,6 @@ class Bookmark {
       this.recentClicks.splice(0, overflow + 1);
     }
     this.recentClicks.push(datetime);
-  }
-  removeHistoriesBefore(datetime) {
-    this.recentClicks = this.recentClicks.filter(d => d >= datetime);
   }
 }
 
@@ -48,11 +44,6 @@ class BookmarksModel {
       bookmark.addClickHistory(datetime);
     }
   }
-  clearOldHistory(datetime) {
-    this.bookmarks.forEach((b) => {
-      b.removeHistoriesBefore(datetime);
-    });
-  }
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -68,9 +59,9 @@ class BookmarksModel {
 }
 
 export default class BookmarksApplication extends React.Component {
-  static getOldDate() {
+  static getDateBeforeDays(days) {
     const date = new Date();
-    date.setDate(date.getDate() - RECENT_DAYS); // Automatically calculate month
+    date.setDate(date.getDate() - days); // Automatically calculate month
     return date;
   }
   constructor(props) {
@@ -94,7 +85,6 @@ export default class BookmarksApplication extends React.Component {
     if (name && link) {
       if (!this.state.bookmarks.hasBookmark(link)) {
         this.state.bookmarks.addBookmark(name, link);
-        this.state.bookmarks.clearOldHistory(BookmarksApplication.getOldDate());
         this.forceUpdate();
         this.props.onEdit(this.state.bookmarks.serialize(), this.props.appContext);
       }
@@ -104,7 +94,6 @@ export default class BookmarksApplication extends React.Component {
     const link = ev.target.getAttribute('data-link'); // href attribute may be changed by canonicalization
     ev.preventDefault();
     this.state.bookmarks.addClickHistory(link, new Date());
-    this.state.bookmarks.clearOldHistory(BookmarksApplication.getOldDate());
     this.forceUpdate();
     this.props.onEdit(this.state.bookmarks.serialize(), this.props.appContext);
     window.open(link, '_blank');
@@ -112,10 +101,12 @@ export default class BookmarksApplication extends React.Component {
   render() {
     const bookmarks = this.state.bookmarks.bookmarks.slice(0);
     bookmarks.sort((a, b) => {
-      const clickDiff = b.recentClicks.length - a.recentClicks.length;
-      if (clickDiff !== 0) return clickDiff;
-      if (a.recentClicks.length === 0) return 0;
-      return a.recentClicks[0] < b.recentClicks[0]; // compare the oldest because it is more stable than comparing the latest
+      for (let i = 0; i < 7; i += 1) {
+        const date = BookmarksApplication.getDateBeforeDays(i);
+        const diff = b.recentClicks.filter(d => d > date).length - a.recentClicks.filter(d => d > date).length;
+        if (diff !== 0) return diff;
+      }
+      return 0;
     });
     return (
       <React.Fragment>
