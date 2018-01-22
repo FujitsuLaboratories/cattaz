@@ -11,6 +11,7 @@ import socketIo from 'socket.io';
 import http from 'http';
 import Router from 'router';
 import finalhandler from 'finalhandler';
+import bodyParser from 'body-parser';
 import clone from 'lodash/clone';
 import crypto from 'crypto';
 
@@ -30,6 +31,7 @@ const router = Router();
 const server = http.createServer((req, res) => {
   router(req, res, finalhandler(req, res));
 });
+router.use(bodyParser.text());
 const io = socketIo.listen(server);
 
 const yInstances = {};
@@ -83,6 +85,39 @@ router.get('/pages', (req, res) => {
       active: m.active,
     };
   })));
+});
+
+router.post('/deletePage', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json');
+  const room = req.body;
+  if (room in yInstances) {
+    yInstances[room].then((y) => {
+      if (room in metadata) {
+        if (metadata[room].active === 0) {
+          const g = y.destroy();
+          g.then(() => {
+            removeInstanceOfY(room);
+            res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
+          }).catch((ex) => {
+            console.error(ex);
+            res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
+          });
+        } else if (metadata[room].active > 0) {
+          res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
+        } else {
+          res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata active' }));
+        }
+      } else {
+        res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
+      }
+    }, (ex) => {
+      console.error(ex);
+      res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
+    });
+  } else {
+    res.end(JSON.stringify({ status: 'FAILURE', msg: 'No y instance' }));
+  }
 });
 
 io.on('connection', (socket) => {
@@ -141,14 +176,6 @@ io.on('connection', (socket) => {
         metadata[room].active -= 1;
         io.in(room).emit('activeUser', metadata[room].active);
         io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
-        if (metadata[room].active === 0) {
-          const g = y.destroy();
-          g.then(() => {
-            removeInstanceOfY(room);
-          }).catch((ex) => {
-            console.error(ex);
-          });
-        }
       }
     });
   });
