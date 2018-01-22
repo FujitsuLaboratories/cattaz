@@ -4,20 +4,53 @@ import Yaml from 'js-yaml';
 
 import isEqual from 'lodash/isEqual';
 
-const RECENT_MAX = 20;
+const DAYS_TO_KEEP = 14;
+
+function toUTCDateValue(datetime) {
+  return (datetime.getUTCFullYear() * 10000) + ((datetime.getUTCMonth() + 1) * 100) + datetime.getUTCDate();
+}
+function fromUTCDateValue(value) {
+  const year = Math.floor(value / 10000);
+  const month = Math.floor((value % 10000) / 100);
+  const date = value % 100;
+  return new Date(Date.UTC(year, month + 1, date));
+}
 
 class Bookmark {
-  constructor(name, link, recentClicks) {
+  constructor(name, link, clicks = []) {
     this.name = name;
     this.link = link;
-    this.recentClicks = recentClicks;
+    this.clicks = new Map(clicks);
   }
-  addClickHistory(datetime) {
-    const overflow = this.recentClicks.length - RECENT_MAX;
-    if (overflow >= 0) {
-      this.recentClicks.splice(0, overflow + 1);
+  addClickCount(datetime) {
+    const utcDateValue = toUTCDateValue(datetime);
+    if (this.clicks.has(utcDateValue)) {
+      this.clicks.set(utcDateValue, this.clicks.get(utcDateValue) + 1);
+    } else {
+      this.clicks.set(utcDateValue, 1);
+      if (this.clicks.size > DAYS_TO_KEEP) {
+        const minDateValue = Math.min(...this.clicks.keys());
+        this.clicks.delete(minDateValue);
+      }
     }
-    this.recentClicks.push(datetime);
+  }
+  getScore(datetime) {
+    const msec = fromUTCDateValue(toUTCDateValue(datetime)).getTime();
+    return [...this.clicks.entries()].reduce((prevValue, currentValue) => {
+      const [date, count] = currentValue;
+      const dateDiff = Math.round((msec - fromUTCDateValue(date).getTime()) / (24 * 60 * 60 * 1000));
+      return prevValue + (count / (dateDiff + 1));
+    }, 0);
+  }
+  toSerializable() {
+    return {
+      name: this.name,
+      link: this.link,
+      clicks: [...this.clicks.entries()],
+    };
+  }
+  static fromDeserialized(obj) {
+    return new Bookmark(obj.name, obj.link, obj.clicks);
   }
 }
 
@@ -29,19 +62,21 @@ class BookmarksModel {
     return isEqual(this, other);
   }
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.safeDump({
+      bookmarks: this.bookmarks.map(b => b.toSerializable()),
+    });
   }
   addBookmark(name, link) {
-    this.bookmarks.push(new Bookmark(name, link, []));
+    this.bookmarks.push(new Bookmark(name, link));
   }
   hasBookmark(link) {
     const bookmark = this.bookmarks.find(b => b.link === link);
     return !!bookmark;
   }
-  addClickHistory(link, datetime) {
+  addClickCount(link, datetime) {
     const bookmark = this.bookmarks.find(b => b.link === link);
     if (bookmark) {
-      bookmark.addClickHistory(datetime);
+      bookmark.addClickCount(datetime);
     }
   }
   static deserialize(str) {
@@ -49,7 +84,7 @@ class BookmarksModel {
       const obj = Yaml.safeLoad(str);
       const model = new BookmarksModel();
       if (obj.bookmarks) {
-        model.bookmarks = obj.bookmarks.map(e => new Bookmark(e.name, e.link, e.recentClicks));
+        model.bookmarks = obj.bookmarks.map(Bookmark.fromDeserialized);
       }
       return model;
     } catch (ex) {
@@ -93,25 +128,19 @@ export default class BookmarksApplication extends React.Component {
   handleClick(ev) {
     const link = ev.target.getAttribute('data-link'); // href attribute may be changed by canonicalization
     ev.preventDefault();
-    this.state.bookmarks.addClickHistory(link, new Date());
+    this.state.bookmarks.addClickCount(link, new Date());
     this.forceUpdate();
     this.props.onEdit(this.state.bookmarks.serialize(), this.props.appContext);
     window.open(link, '_blank');
   }
   render() {
-    const bookmarks = this.state.bookmarks.bookmarks.slice(0);
-    bookmarks.sort((a, b) => {
-      for (let i = 0; i < 7; i += 1) {
-        const date = BookmarksApplication.getDateBeforeDays(i);
-        const diff = b.recentClicks.filter(d => d > date).length - a.recentClicks.filter(d => d > date).length;
-        if (diff !== 0) return diff;
-      }
-      return 0;
-    });
+    const now = new Date();
+    const scoredBookmarks = this.state.bookmarks.bookmarks.map(b => [b, b.getScore(now)]);
+    scoredBookmarks.sort((a, b) => b[1] - a[1]);
     return (
       <React.Fragment>
         <ol>
-          {bookmarks.map(b => <li key={b.link}><a href={b.link} onClick={this.handleClick} data-link={b.link}>{b.name}</a></li>)}
+          {scoredBookmarks.map(b => <li key={b[0].link}><a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>{b[0].name}</a></li>)}
         </ol>
         <input type="text" ref={(c) => { this.inputName = c; }} placeholder="name" />
         <input type="text" ref={(c) => { this.inputLink = c; }} placeholder="link" />
