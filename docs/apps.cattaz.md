@@ -4,6 +4,7 @@ Cattaz has sevral applications installed.
 
 |Name|Description|
 |----|-----------|
+|[`bookmarks`](./app-bookmarks)|Social bookmarking application.|
 |[`date`](./app-date)|Timestamp application. It records the current time.|
 |[`datematcher`](./app-datematcher)|Date matcher helps an organizer to coodinate meeting time.|
 |[`draw`](./app-draw)|Draw lots application.|

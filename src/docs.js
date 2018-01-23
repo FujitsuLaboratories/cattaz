@@ -1,6 +1,7 @@
 const files = [
   'index',
   'apps',
+  'app-bookmarks',
   'app-date',
   'app-datematcher',
   'app-draw',

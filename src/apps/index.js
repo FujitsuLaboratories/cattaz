@@ -1,3 +1,4 @@
+import bookmarks from './BookmarksApplication';
 import hello from './HelloApplication';
 import kpt from './KPTApplication';
 import mandala from './MandalaApplication';
@@ -15,6 +16,7 @@ import draw from './DrawApplication';
 import kanban from './KanbanApplication';
 
 export default {
+  bookmarks,
   hello,
   kpt,
   mandala,
