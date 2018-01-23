@@ -91,33 +91,33 @@ router.post('/deletePage', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   const room = req.body;
-  if (room in yInstances) {
-    yInstances[room].then((y) => {
-      if (room in metadata) {
-        if (metadata[room].active === 0) {
-          const g = y.destroy();
-          g.then(() => {
-            removeInstanceOfY(room);
-            res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
-          }).catch((ex) => {
-            console.error(ex);
-            res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
-          });
-        } else if (metadata[room].active > 0) {
-          res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
-        } else {
-          res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata active' }));
-        }
-      } else {
-        res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
-      }
-    }, (ex) => {
-      console.error(ex);
-      res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
-    });
-  } else {
+  const yPromise = yInstances[room];
+  if (!yPromise) {
     res.end(JSON.stringify({ status: 'FAILURE', msg: 'No y instance' }));
+    return;
   }
+  yPromise.then((y) => {
+    const roomMetadata = metadata[room];
+    if (!roomMetadata) {
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
+      return;
+    }
+    if (roomMetadata.active > 0) {
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
+      return;
+    }
+    const g = y.destroy();
+    g.then(() => {
+      removeInstanceOfY(room);
+      res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
+    }).catch((ex) => {
+      console.error(ex);
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
+    });
+  }, (ex) => {
+    console.error(ex);
+    res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
+  });
 });
 
 io.on('connection', (socket) => {

@@ -10,7 +10,6 @@ import logo from '../docs/assets/cattaz.svg';
 const url = `http://${window.location.hostname}:1234`;
 const timeAgoMinPeriod = 10;
 const pagesListMax = 10;
-Modal.setAppElement('#app');
 
 export default class Main extends React.Component {
   constructor() {
@@ -26,6 +25,7 @@ export default class Main extends React.Component {
     this.handleDeleteOkBtnModal = this.handleDeleteOkBtnModal.bind(this);
   }
   componentDidMount() {
+    Modal.setAppElement(this.containerElement);
     this.getListPages();
   }
   getListPages() {
@@ -136,7 +136,7 @@ export default class Main extends React.Component {
       },
     };
     return (
-      <div style={{ margin: '8px' }}>
+      <div style={{ margin: '8px' }} ref={(c) => { this.containerElement = c; }}>
         <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.handleDeleteCloseModal}
