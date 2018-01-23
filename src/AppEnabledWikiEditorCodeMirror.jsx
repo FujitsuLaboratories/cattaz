@@ -163,12 +163,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   sendCursorMsg(type, cursorPos) {
-    const cursorMsg = {
-      type,
-      room: this.props.roomName,
-      cursorPos,
-    };
-    this.socket.emit('clientCursor', cursorMsg);
+    if (this.socket) {
+      const cursorMsg = {
+        type,
+        room: this.props.roomName,
+        cursorPos,
+      };
+      this.socket.emit('clientCursor', cursorMsg);
+    }
   }
   handleSplitResized(newSize) {
     const viewportWidth = actual('width', 'px');
