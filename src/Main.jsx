@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import HashRouter from 'react-router-dom/HashRouter';
 import RouterLink from 'react-router-dom/Link';
 import TimeAgo from 'react-timeago';
+import Modal from 'react-modal';
 
 import logo from '../docs/assets/cattaz.svg';
 
@@ -21,12 +22,21 @@ if (userAgent.indexOf('msie') !== -1 || userAgent.indexOf('trident') !== -1) {
 export default class Main extends React.Component {
   constructor() {
     super();
+    this.state = {
+      pages: [], currentPageNum: 1, getPagesError: '', modalIsOpen: false, deletePageName: '', deleteErrorMsg: '',
+    };
     this.handleNew = this.handleNew.bind(this);
-    this.state = { pages: [], currentPageNum: 1, getPagesError: '' };
     this.handlePrevious = this.handlePrevious.bind(this);
     this.handleNext = this.handleNext.bind(this);
+    this.handleDeleteOpenModal = this.handleDeleteOpenModal.bind(this);
+    this.handleDeleteCloseModal = this.handleDeleteCloseModal.bind(this);
+    this.handleDeleteOkBtnModal = this.handleDeleteOkBtnModal.bind(this);
   }
   componentDidMount() {
+    Modal.setAppElement(this.containerElement);
+    this.getListPages();
+  }
+  getListPages() {
     window.fetch(`${url}/pages`, {
       headers,
     })
@@ -57,6 +67,34 @@ export default class Main extends React.Component {
       this.context.router.history.push(`/page/${pageName}`);
     }
   }
+  handleDeleteOpenModal(e) {
+    this.setState({ modalIsOpen: true, deletePageName: e.target.id });
+  }
+  handleDeleteCloseModal() {
+    this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
+  }
+  handleDeleteOkBtnModal() {
+    window.fetch(`${url}/deletePage`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: this.state.deletePageName,
+    })
+      .then(res => res.json())
+      .then((data) => {
+        if (data.status === 'SUCCESS') {
+          this.getListPages();
+          this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
+        } else {
+          this.setState({ deleteErrorMsg: `Error: ${data.msg}` });
+        }
+      }).catch((e) => {
+        this.setState({ deleteErrorMsg: `Error: ${e}` });
+      });
+  }
+
   handlePrevious() {
     this.setState({ currentPageNum: this.state.currentPageNum - 1 });
   }
@@ -82,6 +120,7 @@ export default class Main extends React.Component {
             <li key={p.page}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
               <span style={metadataStyle}>(created: <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />, modified: <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />, active: {p.active})</span>
+              <button className="deleteBtn" onClick={this.handleDeleteOpenModal} id={p.page}>Delete</button>
             </li>))}
         </ul>
         {this.state.currentPageNum > 1 ? <button type="button" onClick={this.handlePrevious}>Prev</button> : null}
@@ -90,8 +129,39 @@ export default class Main extends React.Component {
       </React.Fragment>);
   }
   render() {
+    const modalStyles = {
+      wrapper: {
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+        },
+      },
+      pageName: {
+        marginTop: '10px',
+      },
+      error: {
+        color: '#e74c3c',
+      },
+    };
     return (
-      <div style={{ margin: '8px' }}>
+      <div style={{ margin: '8px' }} ref={(c) => { this.containerElement = c; }}>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.handleDeleteCloseModal}
+          style={modalStyles.wrapper}
+          contentLabel="Delete page"
+        >
+          <div>Do you really want to delete?</div>
+          <div style={modalStyles.pageName}>&quot;{this.state.deletePageName}&quot;</div>
+          {this.state.deleteErrorMsg !== '' ? <div style={modalStyles.error}>{this.state.deleteErrorMsg}</div> : null}
+          <button className="deleteCancelBtnModal" onClick={this.handleDeleteCloseModal}>Cancel</button>
+          <button className="deleteOkBtnModal" onClick={this.handleDeleteOkBtnModal}>OK</button>
+        </Modal>
         <h1><img src={logo} alt="cattaz" width="640" /></h1>
         <h2>List of pages</h2>
         {this.renderListPages()}

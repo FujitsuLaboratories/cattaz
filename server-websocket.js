@@ -11,6 +11,7 @@ import socketIo from 'socket.io';
 import http from 'http';
 import Router from 'router';
 import finalhandler from 'finalhandler';
+import bodyParser from 'body-parser';
 import clone from 'lodash/clone';
 import crypto from 'crypto';
 
@@ -30,6 +31,7 @@ const router = Router();
 const server = http.createServer((req, res) => {
   router(req, res, finalhandler(req, res));
 });
+router.use(bodyParser.text());
 const io = socketIo.listen(server);
 
 const yInstances = {};
@@ -60,6 +62,10 @@ function getInstanceOfY(room) {
   }
   return yInstances[room];
 }
+function removeInstanceOfY(room) {
+  delete yInstances[room];
+  delete metadata[room];
+}
 
 function getSha1Hash(plaintext) {
   const sha1 = crypto.createHash('sha1');
@@ -79,6 +85,39 @@ router.get('/pages', (req, res) => {
       active: m.active,
     };
   })));
+});
+
+router.post('/deletePage', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json');
+  const room = req.body;
+  const yPromise = yInstances[room];
+  if (!yPromise) {
+    res.end(JSON.stringify({ status: 'FAILURE', msg: 'No y instance' }));
+    return;
+  }
+  yPromise.then((y) => {
+    const roomMetadata = metadata[room];
+    if (!roomMetadata) {
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
+      return;
+    }
+    if (roomMetadata.active > 0) {
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
+      return;
+    }
+    const g = y.destroy();
+    g.then(() => {
+      removeInstanceOfY(room);
+      res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
+    }).catch((ex) => {
+      console.error(ex);
+      res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
+    });
+  }, (ex) => {
+    console.error(ex);
+    res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
+  });
 });
 
 io.on('connection', (socket) => {

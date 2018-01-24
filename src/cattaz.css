@@ -37,6 +37,65 @@ body {
   overflow: auto;
 }
 
+.deleteBtn {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #777777;
+  color: #ffffff;
+  border: 2px solid #777777;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 10px;
+  padding: 4px 8px;
+  text-decoration: none;
+  outline: none;
+  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background-color: #ffffff;
+  color: #666666;
+}
+
+.deleteOkBtnModal {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #3498db;
+  color: #ffffff;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 10px 10px 0px 10px;
+  padding: 8px 16px;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.deleteOkBtnModal:hover {
+  background-color: #2980b9;
+}
+
+.deleteCancelBtnModal {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #ffffff;
+  color: #7f8c8d;
+  border: 1px solid #7f8c8d;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 10px 10px 0px 10px;
+  padding: 8px 16px;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
+
 /*
 https://github.com/tomkp/react-split-pane/blob/master/README.md#example-styling
 */

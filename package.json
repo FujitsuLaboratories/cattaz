@@ -6,6 +6,7 @@
   "dependencies": {
     "actual": "^0.4.0",
     "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.2",
     "codemirror": "^5.33.0",
     "color-convert": "^1.9.1",
     "diff": "^3.4.0",
@@ -22,6 +23,7 @@
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^16.2.0",
+    "react-modal": "^3.1.11",
     "react-router-dom": "^4.2.2",
     "react-split-pane": "^0.1.74",
     "react-timeago": "^3.4.3",
