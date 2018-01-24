@@ -43,7 +43,11 @@ const bodyParserText = bodyParser.text();
 
 const yInstances = {};
 const dirs = getDirectories('y-leveldb-databases').map(p => LevelDBLib.unescapeNamespace(p.split(sep)[1]));
-const metadata = dirs.reduce((accumulator, d) => Object.assign(accumulator, { [d]: {} }), {});
+const metadata = dirs.reduce((accumulator, d) => Object.assign(accumulator, {
+  [d]: {
+    active: 0,
+  },
+}), {});
 
 function getInstanceOfY(room) {
   if (yInstances[room] == null) {
@@ -62,11 +66,13 @@ function getInstanceOfY(room) {
       },
       share: {},
     });
-    metadata[room] = {
-      created: new Date(),
-      modified: new Date(),
-      active: 0,
-    };
+    if (!metadata[room]) {
+      metadata[room] = {
+        created: new Date(),
+        modified: new Date(),
+        active: 0,
+      };
+    }
   }
   return yInstances[room];
 }
@@ -164,6 +170,13 @@ io.on('connection', (socket) => {
       const escapedRoom = encodeURIComponent(room);
       io.in(escapedRoom).emit('activeUser', metadata[room].active);
       io.in(escapedRoom).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+      if (metadata[room].active === 0) {
+        LevelDBLib.closeDatabase(y).then(() => {
+          delete yInstances[room];
+        }, (ex) => {
+          console.error(ex);
+        });
+      }
     }));
     rooms.splice(0, rooms.length);
   });
@@ -178,6 +191,13 @@ io.on('connection', (socket) => {
       metadata[room].active -= 1;
       io.in(room).emit('activeUser', metadata[room].active);
       io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+      if (metadata[room].active === 0) {
+        LevelDBLib.closeDatabase(y).then(() => {
+          delete yInstances[room];
+        }, (ex) => {
+          console.error(ex);
+        });
+      }
     }
   });
   socket.on('clientCursor', (msg) => {

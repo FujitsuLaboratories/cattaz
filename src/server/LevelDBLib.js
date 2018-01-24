@@ -28,4 +28,29 @@ export default class LevelDBLib {
       return String.fromCharCode(parseInt(group, 16));
     });
   }
+
+  /**
+   * Closes database
+   * @param {*} y y instance
+   * @returns {Promise}
+   */
+  static closeDatabase(y) {
+    // Because y.close waits whenTransactionsFinished forever,
+    // we copied y.close and removed whenTransactionsFinished.
+    if (y.connector.destroy != null) {
+      y.connector.destroy();
+    } else {
+      y.connector.disconnect();
+    }
+    y.connector.disconnect();
+    y.db.destroyTypes();
+    const g = y.db.destroy();
+    for (;;) {
+      const i = g.next();
+      if (i.done) {
+        break;
+      }
+    }
+    return y.db.whenTransactionsFinished();
+  }
 }
