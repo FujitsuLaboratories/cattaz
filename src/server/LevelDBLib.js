@@ -1,3 +1,6 @@
+import { join, sep } from 'path';
+import { lstatSync, readdirSync } from 'fs';
+
 const unsafeChars = /[^-_a-zA-Z0-9]/g;
 const windowsReserved = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 const escapeSeq = /%([_0-9a-fA-F]+)%/g;
@@ -27,6 +30,30 @@ export default class LevelDBLib {
       if (group === '_') return '';
       return String.fromCharCode(parseInt(group, 16));
     });
+  }
+
+  static restoreMetadata(path) {
+    const isDirectory = (source) => {
+      try {
+        return lstatSync(source).isDirectory();
+      } catch (e) {
+        return false;
+      }
+    };
+    const getDirectories = source => (isDirectory(source) ? readdirSync(source).map(name => join(source, name)).filter(isDirectory) : []);
+    const pages = getDirectories(path).map(p => LevelDBLib.unescapeNamespace(p.split(sep)[1]));
+    return pages.reduce((accumulator, p) => {
+      const dbPath = join(path, LevelDBLib.escapeNamespace(p));
+      const directoryCreated = lstatSync(dbPath).ctime; // Not correct on Linux
+      const latestFileModified = new Date(Math.max(...readdirSync(dbPath).map(name => join(dbPath, name)).map(f => lstatSync(f).mtimeMs)));
+      return Object.assign(accumulator, {
+        [p]: {
+          created: directoryCreated,
+          modified: latestFileModified,
+          active: 0,
+        },
+      });
+    }, {});
   }
 
   /**
