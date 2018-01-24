@@ -58,10 +58,6 @@ function getInstanceOfY(room) {
   }
   return yInstances[room];
 }
-function removeInstanceOfY(room) {
-  delete yInstances[room];
-  delete metadata[room];
-}
 
 function getSha1Hash(plaintext) {
   const sha1 = crypto.createHash('sha1');
@@ -87,13 +83,7 @@ app.post('/deletePage', bodyParserText, async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   const room = req.body;
-  const yPromise = yInstances[room];
-  if (!yPromise) {
-    res.end(JSON.stringify({ status: 'FAILURE', msg: 'No y instance' }));
-    return;
-  }
   try {
-    const y = await yPromise;
     const roomMetadata = metadata[room];
     if (!roomMetadata) {
       res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
@@ -103,17 +93,12 @@ app.post('/deletePage', bodyParserText, async (req, res) => {
       res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
       return;
     }
-    try {
-      await y.destroy();
-      removeInstanceOfY(room);
-      res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
-    } catch (ex) {
-      console.error(ex);
-      res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
-    }
+    await LevelDBLib.deleteDatabase('y-leveldb-databases', room);
+    delete metadata[room];
+    res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
   } catch (ex) {
     console.error(ex);
-    res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
+    res.end(JSON.stringify({ status: 'FAILURE', msg: 'Failed to delete database' }));
   }
 });
 
