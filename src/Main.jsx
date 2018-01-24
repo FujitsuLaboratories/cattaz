@@ -10,6 +10,14 @@ const url = `http://${window.location.hostname}:1234`;
 const timeAgoMinPeriod = 10;
 const pagesListMax = 10;
 
+// TODO: Make appropriate cross-origin correspondence
+// Avoid unnecessary caching in IE browser
+let headers = {};
+const userAgent = window.navigator.userAgent.toLowerCase();
+if (userAgent.indexOf('msie') !== -1 || userAgent.indexOf('trident') !== -1) {
+  headers = { pragma: 'no-cache' };
+}
+
 export default class Main extends React.Component {
   constructor() {
     super();
@@ -19,7 +27,9 @@ export default class Main extends React.Component {
     this.handleNext = this.handleNext.bind(this);
   }
   componentDidMount() {
-    window.fetch(`${url}/pages`)
+    window.fetch(`${url}/pages`, {
+      headers,
+    })
       .then(response => response.json())
       .then((data) => {
         this.setState({
