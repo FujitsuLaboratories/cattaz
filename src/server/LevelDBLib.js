@@ -1,5 +1,6 @@
 import { join, sep } from 'path';
 import { lstatSync, readdirSync } from 'fs';
+import rimraf from 'rimraf';
 
 const unsafeChars = /[^-_a-zA-Z0-9]/g;
 const windowsReserved = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
@@ -79,5 +80,24 @@ export default class LevelDBLib {
       }
     }
     return y.db.whenTransactionsFinished();
+  }
+
+  /**
+   * Deletes database. The database must be closed before deleting.
+   * @param {string} path parent directory of each levelDB database
+   * @param {string} page raw page name of wiki page
+   * @returns {Promise}
+   */
+  static deleteDatabase(path, page) {
+    const dbpath = join(path, LevelDBLib.escapeNamespace(page));
+    return new Promise((resolve, reject) => {
+      rimraf(dbpath, {}, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
   }
 }
