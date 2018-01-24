@@ -24,6 +24,9 @@ export default class Main extends React.Component {
       .then((data) => {
         this.setState({
           pages: data.sort((x, y) => {
+            if (x.modified === y.modified) return 0;
+            if (!x.modified) return 1;
+            if (!y.modified) return -1;
             if (x.modified > y.modified) {
               return -1;
             }
