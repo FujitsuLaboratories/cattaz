@@ -22,18 +22,16 @@ export default class Page extends React.Component {
       this.loadDoc(nextProps.match.params.page);
     }
   }
-  loadDoc(pageName) {
+  async loadDoc(pageName) {
     const mdFileName = docs[pageName];
     if (!mdFileName) {
       this.setState({ docText: `There is no document named '${pageName}'` });
       return;
     }
     this.setState({ docText: null });
-    window.fetch(mdFileName)
-      .then(res => res.text())
-      .then((text) => {
-        this.setState({ docText: text });
-      });
+    const res = await window.fetch(mdFileName);
+    const text = await res.text();
+    this.setState({ docText: text });
   }
   handleActiveUserDisp(userNum) {
     this.setState({ activeUser: userNum });

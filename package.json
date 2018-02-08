@@ -110,6 +110,7 @@
   "ava": {
     "require": [
       "babel-register",
+      "babel-polyfill",
       "./test/setup-enzyme.js"
     ],
     "babel": "inherit"

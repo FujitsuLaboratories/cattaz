@@ -36,30 +36,30 @@ export default class Main extends React.Component {
     Modal.setAppElement(this.containerElement);
     this.getListPages();
   }
-  getListPages() {
-    window.fetch(`${url}/pages`, {
-      headers,
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          pages: data.sort((x, y) => {
-            if (x.modified === y.modified) return 0;
-            if (!x.modified) return 1;
-            if (!y.modified) return -1;
-            if (x.modified > y.modified) {
-              return -1;
-            }
-            if (x.modified < y.modified) {
-              return 1;
-            }
-            return 0;
-          }),
-          getPagesError: '',
-        });
-      }).catch((e) => {
-        this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
+  async getListPages() {
+    try {
+      const response = await window.fetch(`${url}/pages`, {
+        headers,
       });
+      const data = await response.json();
+      this.setState({
+        pages: data.sort((x, y) => {
+          if (x.modified === y.modified) return 0;
+          if (!x.modified) return 1;
+          if (!y.modified) return -1;
+          if (x.modified > y.modified) {
+            return -1;
+          }
+          if (x.modified < y.modified) {
+            return 1;
+          }
+          return 0;
+        }),
+        getPagesError: '',
+      });
+    } catch (e) {
+      this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
+    }
   }
   handleNew() {
     const pageName = this.newPageName.value;
@@ -73,26 +73,26 @@ export default class Main extends React.Component {
   handleDeleteCloseModal() {
     this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
   }
-  handleDeleteOkBtnModal() {
-    window.fetch(`${url}/deletePage`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'text/plain;charset=utf-8',
-      },
-      body: this.state.deletePageName,
-    })
-      .then(res => res.json())
-      .then((data) => {
-        if (data.status === 'SUCCESS') {
-          this.getListPages();
-          this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
-        } else {
-          this.setState({ deleteErrorMsg: `Error: ${data.msg}` });
-        }
-      }).catch((e) => {
-        this.setState({ deleteErrorMsg: `Error: ${e}` });
+  async handleDeleteOkBtnModal() {
+    try {
+      const res = await window.fetch(`${url}/deletePage`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: this.state.deletePageName,
       });
+      const data = await res.json();
+      if (data.status === 'SUCCESS') {
+        this.getListPages();
+        this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
+      } else {
+        this.setState({ deleteErrorMsg: `Error: ${data.msg}` });
+      }
+    } catch (e) {
+      this.setState({ deleteErrorMsg: `Error: ${e}` });
+    }
   }
 
   handlePrevious() {

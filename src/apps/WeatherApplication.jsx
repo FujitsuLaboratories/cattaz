@@ -62,25 +62,25 @@ export default class WeatherApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.weather.equals(nextState.weather) || this.state.errorMessage !== nextState.errorMessage;
   }
-  handleGetWeather() {
+  async handleGetWeather() {
     const city = this.inputCity.value;
     if (!city) return;
-    window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`)
-      .then(response => response.json())
-      .then((data) => {
-        if (data.cod === 200) {
-          this.state.weather.setWeather(data);
-          this.forceUpdate();
-          this.setState({ errorMessage: '' });
-          this.props.onEdit(this.state.weather.serialize(), this.props.appContext);
-        } else if (data.cod === 401) {
-          this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
-        } else {
-          this.setState({ errorMessage: `Get Weather Error [ ${data.message} ]` });
-        }
-      }).catch((e) => {
-        this.setState({ errorMessage: `Get Weather Error [ ${e} ]` });
-      });
+    try {
+      const response = await window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`);
+      const data = await response.json();
+      if (data.cod === 200) {
+        this.state.weather.setWeather(data);
+        this.forceUpdate();
+        this.setState({ errorMessage: '' });
+        this.props.onEdit(this.state.weather.serialize(), this.props.appContext);
+      } else if (data.cod === 401) {
+        this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
+      } else {
+        this.setState({ errorMessage: `Get Weather Error [ ${data.message} ]` });
+      }
+    } catch (e) {
+      this.setState({ errorMessage: `Get Weather Error [ ${e} ]` });
+    }
   }
   render() {
     return (

@@ -72,13 +72,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleBlur = this.handleBlur.bind(this);
     this.otherClients = new Map();
   }
-  componentDidMount() {
+  async componentDidMount() {
     window.addEventListener('resize', this.handleResize);
     this.updateHeight();
     this.updateWidth();
     if (this.props.roomName) {
       this.socket = io(`http://${window.location.hostname}:1234`);
-      Y({
+      this.socket.on('activeUser', this.handleActiveUser);
+      this.y = await Y({
         db: {
           name: 'memory',
         },
@@ -91,12 +92,9 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         share: {
           textarea: 'Text',
         },
-      }).then((y) => {
-        this.y = y;
-        y.share.textarea.bindCodeMirror(this.editor.editor);
-        this.socket.on('clientCursor', this.handleClientCursor);
       });
-      this.socket.on('activeUser', this.handleActiveUser);
+      this.y.share.textarea.bindCodeMirror(this.editor.editor);
+      this.socket.on('clientCursor', this.handleClientCursor);
     }
   }
   componentWillReceiveProps(nextProps) {
