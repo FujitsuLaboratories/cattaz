@@ -7,6 +7,7 @@ const isProduction = environment === 'production';
 
 function configure(base) {
   const config = defaultConfigFunc(base);
+  config.entry.preview.unshift('babel-polyfill'); // required by async/await
   config.devtool = isProduction ? 'source-map' : 'eval-source-map';
   config.resolve.extensions.push('.jsx');
   config.plugins.push(new CopyWebpackPlugin([
