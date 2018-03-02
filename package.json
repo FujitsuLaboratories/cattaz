@@ -78,8 +78,9 @@
     "rimraf": "^2.6.2",
     "sinon": "^4.4.2",
     "source-map-explorer": "^1.5.0",
-    "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.2"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.10",
+    "webpack-dev-server": "^3.1.0"
   },
   "scripts": {
     "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
@@ -87,7 +88,7 @@
     "lint:eslint": "eslint --color --report-unused-disable-directives src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.js stories/**/*.jsx *.js",
     "lint:markdownlint": "markdownlint --config .markdownlint.json README.md docs",
     "build": "npm-run-all -l -p build:app -p build:esdoc build:licenses build:sme build:storybook",
-    "build:app": "cross-env NODE_ENV=production webpack --progress --colors --config webpack.config.babel.js",
+    "build:app": "cross-env NODE_ENV=production webpack --mode production --progress --colors --config webpack.config.babel.js",
     "build:esdoc": "esdoc -c esdoc.json",
     "build:licenses": "yarn licenses generate-disclaimer --prod > build/licenses.txt",
     "build:sme": "source-map-explorer build/bundle.js build/bundle.js.map --html > build/sme.html",

@@ -1,7 +1,6 @@
 /* eslint import/no-extraneous-dependencies: [error, {devDependencies: true}] */
 
 import path from 'path';
-import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -47,20 +46,6 @@ const js = {
         flatten: true,
       },
     ]),
-    ...(isProduction ? [
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify('production'),
-        },
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true,
-      }),
-      new webpack.LoaderOptionsPlugin({
-        minimize: true,
-      }),
-      new webpack.optimize.ModuleConcatenationPlugin(),
-    ] : []),
   ],
   module: {
     rules: [
