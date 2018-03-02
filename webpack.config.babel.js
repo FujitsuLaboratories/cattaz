@@ -1,7 +1,7 @@
 /* eslint import/no-extraneous-dependencies: [error, {devDependencies: true}] */
 
-import path from 'path';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -15,8 +15,8 @@ const js = {
     path: path.resolve('build'),
     filename: 'bundle.js',
   },
-  devServer: {
-    contentBase: 'build',
+  serve: {
+    content: 'build',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
@@ -126,4 +126,4 @@ const js = {
   },
 };
 
-export default js;
+module.exports = js;

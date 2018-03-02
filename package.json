@@ -80,7 +80,7 @@
     "source-map-explorer": "^1.5.0",
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.10",
-    "webpack-dev-server": "^3.1.0"
+    "webpack-serve": "^0.1.5"
   },
   "scripts": {
     "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
@@ -98,7 +98,7 @@
     "start": "cross-env NODE_ENV=development run-p -l server:devserver server:websocket-dev",
     "server": "cross-env NODE_ENV=production run-p -l server:build server:websocket",
     "server:storybook": "start-storybook -p 6006",
-    "server:devserver": "webpack-dev-server --progress --colors --config webpack.config.babel.js",
+    "server:devserver": "webpack-serve --config webpack.config.babel.js",
     "server:websocket": "babel-node server-websocket.js",
     "server:websocket-dev": "babel-watch server-websocket.js",
     "server:build": "http-server build",
