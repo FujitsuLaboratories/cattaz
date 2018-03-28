@@ -182,6 +182,23 @@ const cardTarget = {
   },
 };
 
+function renderKanbanCardText(text) {
+  const regexLink = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const children = [];
+  let lastLinkIndex = 0;
+  for (let matchLink = regexLink.exec(text); matchLink; matchLink = regexLink.exec(text)) {
+    if (lastLinkIndex < matchLink.index) {
+      children.push(text.substring(lastLinkIndex, matchLink.index));
+    }
+    children.push(<a href={matchLink[2]}>{matchLink[1]}</a>);
+    lastLinkIndex = regexLink.lastIndex;
+  }
+  if (lastLinkIndex < text.length) {
+    children.push(text.substring(lastLinkIndex, text.length));
+  }
+  return children;
+}
+
 const KanbanCard = (props) => {
   let style = cardStyles[props.model.importance];
   if (props.isDragging) {
@@ -191,7 +208,7 @@ const KanbanCard = (props) => {
   }
   return props.connectDragSource(props.connectDropTarget((
     <span style={style}>
-      {props.model.name}
+      {renderKanbanCardText(props.model.name)}
     </span>)));
 };
 KanbanCard.propTypes = {

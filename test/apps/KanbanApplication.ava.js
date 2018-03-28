@@ -51,8 +51,10 @@ test('KanbanModel should deserialize Markdown importance', t => {
   * __underline 2__
   * ___underline 3___
   * ____underline 4____
-  * *asterisk 1 2 should be 1**`);
-  t.deepEqual(model.getListAt(0).items.map(i => i.importance), [3, 3, 2, 1, 0, 1, 2, 3, 3, 1]);
+  * *asterisk 1 2 should be 1**
+  * [text](link)
+  * *text[text](link)and[text2](link2)text*`);
+  t.deepEqual(model.getListAt(0).items.map(i => i.importance), [3, 3, 2, 1, 0, 1, 2, 3, 3, 1, 0, 1]);
 });
 
 /** @test {KanbanModel#moveItem} */
