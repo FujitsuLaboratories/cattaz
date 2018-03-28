@@ -20,9 +20,11 @@ Normally, text in a fenced code block will be rendered in fixed width.
 * Output
 
   <!-- markdownlint-disable MD040 -->
+
   ```
   hello
   ```
+
   <!-- markdownlint-enable MD040 -->
 
 Fenced code block may have language specifier.

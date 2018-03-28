@@ -20,9 +20,11 @@ Markdownには、3つ以上のバッククォート、または、チルダで�
 * Output
 
   <!-- markdownlint-disable MD040 -->
+
   ```
   hello
   ```
+
   <!-- markdownlint-enable MD040 -->
 
 fenced code blockは、言語指定ができます。
