@@ -14,6 +14,7 @@ You can drag-and-drop kanban cards to organize your tasks.
   * task 5
 * DONE
   * task 6
+  * Add kanban to [app list](#/doc/apps)
 ```
 
 ## Usage
@@ -27,3 +28,6 @@ You can drag-and-drop kanban cards to organize your tasks.
 Kanban application uses Markdown format. Markdown should be a nested unordered list and its depth should be two.
 
 It also understands Markdown emphasises, e.g. `*empasis 1*`, `**empasis 2**`, and `***empasis 3***`. Emphasised items will be colored.
+Emphasises should be applied to whole text.
+
+Text may include Markdown links.
