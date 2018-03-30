@@ -51,6 +51,8 @@ const cellStyle = {
 export default class DateMatcherApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputCandidates = React.createRef();
+    this.refInputNewAttendee = React.createRef();
     this.handleSetCandidates = this.handleSetCandidates.bind(this);
     this.handleAddAttendee = this.handleAddAttendee.bind(this);
     this.handleStartEdit = this.handleStartEdit.bind(this);
@@ -69,7 +71,7 @@ export default class DateMatcherApplication extends React.Component {
     return !this.state.model.equals(nextState.model) || this.state.editing !== nextState.editing;
   }
   handleSetCandidates() {
-    const { value } = this.inputCandidates;
+    const { value } = this.refInputCandidates.current;
     if (!value) return;
     const candidates = uniq(value.split('\n').map(s => s.trim()).filter(s => s));
     if (candidates.length === 0) return;
@@ -79,7 +81,7 @@ export default class DateMatcherApplication extends React.Component {
     this.props.onEdit(model.serialize(), this.props.appContext);
   }
   handleAddAttendee() {
-    const { value } = this.inputNewAttendee;
+    const { value } = this.refInputNewAttendee.current;
     if (!value) return;
     const attendeeName = value.trim();
     if (!attendeeName) return;
@@ -117,7 +119,7 @@ export default class DateMatcherApplication extends React.Component {
   renderAdmin() {
     return (
       <div>
-        <textarea ref={(c) => { this.inputCandidates = c; }} />
+        <textarea ref={this.refInputCandidates} />
         <p>Fill meeting time candidates for each line.</p>
         <button onClick={this.handleSetCandidates}>Start date matching</button>
       </div>);
@@ -156,7 +158,7 @@ export default class DateMatcherApplication extends React.Component {
           <tbody>{attendees}</tbody>
         </table>
         <p>
-          <input ref={(c) => { this.inputNewAttendee = c; }} type="text" placeholder="attenndee name" />
+          <input ref={this.refInputNewAttendee} type="text" placeholder="attenndee name" />
           <button onClick={this.handleAddAttendee}>Add attendee</button>
         </p>
       </div>);

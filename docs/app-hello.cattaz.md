@@ -42,12 +42,12 @@ HelloApplication.propTypes = {
 
   ```js
   handleEdit() {
-      const name = this.input.value;
+      const name = this.refInput.current.value;
       this.setState({ name });
       this.props.onEdit(name, this.props.appContext);
   }
   ...
-  <div key="input"><input type="text" ref={(c) => { this.input = c; }} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
+  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
   ```
 
 * `appContext` is an object to determine application's context. It will be used for the second argument of `onEdit` callback. Basically user can write multiple instances of apps on same editor and `appContext` will help to separate contents between apps.

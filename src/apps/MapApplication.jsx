@@ -38,12 +38,14 @@ class MapModel {
 export default class MapApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputPlace = React.createRef();
+    this.refIframe = React.createRef();
     this.handleSearchPlace = this.handleSearchPlace.bind(this);
     this.handleGetMap = this.handleGetMap.bind(this);
     this.state = { map: MapModel.deserialize(props.data) };
   }
   componentDidMount() {
-    const doc = this.iframe.contentWindow.document;
+    const doc = this.refIframe.current.contentWindow.document;
     doc.open();
     doc.write(`
     <!DOCTYPE html>
@@ -147,17 +149,17 @@ export default class MapApplication extends React.Component {
   }
   componentDidUpdate(prevProps, prevState /* , prevContext */) {
     if (!this.state.map.equals(prevState.map)) {
-      this.iframe.contentWindow.postMessage({ type: 'setCoordinate', value: this.state.map }, window.location.origin);
+      this.refIframe.current.contentWindow.postMessage({ type: 'setCoordinate', value: this.state.map }, window.location.origin);
     }
   }
   handleSearchPlace() {
-    const address = this.inputPlace.value;
+    const address = this.refInputPlace.current.value;
     if (!address) return;
-    this.iframe.contentWindow.postMessage({ type: 'searchPlace', value: address }, window.location.origin);
+    this.refIframe.current.contentWindow.postMessage({ type: 'searchPlace', value: address }, window.location.origin);
   }
   handleGetMap() {
-    this.iframe.contentWindow.postMessage({ type: 'getMapNotification' }, window.location.origin);
-    this.state.map.setCoordinate(this.iframe.contentWindow.latlng);
+    this.refIframe.current.contentWindow.postMessage({ type: 'getMapNotification' }, window.location.origin);
+    this.state.map.setCoordinate(this.refIframe.current.contentWindow.latlng);
     this.props.onEdit(this.state.map.serialize(), this.props.appContext);
   }
   render() {
@@ -169,11 +171,11 @@ export default class MapApplication extends React.Component {
       <div>
         <div>
           <div style={{ color: '#ba000d' }}>{apiKeyErrorMessage}</div>
-          <input ref={(input) => { this.inputPlace = input; }} type="text" placeholder="Add Place" />
+          <input ref={this.refInputPlace} type="text" placeholder="Add Place" />
           <input type="button" value="Search" onClick={this.handleSearchPlace} />
           <input type="button" value="Get Marker" onClick={this.handleGetMap} />
         </div>
-        <iframe ref={(input) => { this.iframe = input; }} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
+        <iframe ref={this.refIframe} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
           <p>Your browser does not support iframes.</p>
         </iframe>
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>

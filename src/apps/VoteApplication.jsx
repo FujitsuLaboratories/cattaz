@@ -37,6 +37,7 @@ class VoteModel {
 export default class VoteApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
     this.state = { vote: VoteModel.deserialize(props.data), errorMessage: '' };
@@ -51,7 +52,7 @@ export default class VoteApplication extends React.Component {
     return !this.state.vote.equals(nextState.vote) || this.state.errorMessage !== nextState.errorMessage;
   }
   handleAddCandidate() {
-    const { value } = this.inputCandidates;
+    const { value } = this.refInputCandidate.current;
     if (!value) return;
     if (this.state.vote.addCandidate(value)) {
       this.forceUpdate();
@@ -70,7 +71,7 @@ export default class VoteApplication extends React.Component {
   render() {
     return (
       <div style={{ marginBottom: '50px' }}>
-        <input ref={(input) => { this.inputCandidates = input; }} type="text" placeholder="Add Candidates" />
+        <input ref={this.refInputCandidate} type="text" placeholder="Name of candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <ul>

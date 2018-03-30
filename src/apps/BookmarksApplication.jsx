@@ -101,6 +101,8 @@ export default class BookmarksApplication extends React.Component {
   }
   constructor(props) {
     super();
+    this.refInputName = React.createRef();
+    this.refInputLink = React.createRef();
     this.handleAdd = this.handleAdd.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.state = { bookmarks: BookmarksModel.deserialize(props.data) };
@@ -115,8 +117,8 @@ export default class BookmarksApplication extends React.Component {
     return !this.state.bookmarks.equals(nextState.bookmarks);
   }
   handleAdd() {
-    const name = this.inputName.value;
-    const link = this.inputLink.value;
+    const name = this.refInputName.current.value;
+    const link = this.refInputLink.current.value;
     if (name && link) {
       if (!this.state.bookmarks.hasBookmark(link)) {
         this.state.bookmarks.addBookmark(name, link);
@@ -142,8 +144,8 @@ export default class BookmarksApplication extends React.Component {
         <ol>
           {scoredBookmarks.map(b => <li key={b[0].link}><a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>{b[0].name}</a></li>)}
         </ol>
-        <input type="text" ref={(c) => { this.inputName = c; }} placeholder="name" />
-        <input type="text" ref={(c) => { this.inputLink = c; }} placeholder="link" />
+        <input type="text" ref={this.refInputName} placeholder="name" />
+        <input type="text" ref={this.refInputLink} placeholder="link" />
         <button onClick={this.handleAdd}>Add bookmark</button>
       </React.Fragment>);
   }

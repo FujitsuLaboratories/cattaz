@@ -25,6 +25,8 @@ export default class Main extends React.Component {
     this.state = {
       pages: [], currentPageNum: 1, getPagesError: '', modalIsOpen: false, deletePageName: '', deleteErrorMsg: '',
     };
+    this.refInputNewPageName = React.createRef();
+    this.refContainer = React.createRef();
     this.handleNew = this.handleNew.bind(this);
     this.handlePrevious = this.handlePrevious.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -33,7 +35,7 @@ export default class Main extends React.Component {
     this.handleDeleteOkBtnModal = this.handleDeleteOkBtnModal.bind(this);
   }
   componentDidMount() {
-    Modal.setAppElement(this.containerElement);
+    Modal.setAppElement(this.refContainer.current);
     this.getListPages();
   }
   async getListPages() {
@@ -62,7 +64,7 @@ export default class Main extends React.Component {
     }
   }
   handleNew() {
-    const pageName = this.newPageName.value;
+    const pageName = this.refInputNewPageName.current.value;
     if (pageName) {
       this.context.router.history.push(`/page/${pageName}`);
     }
@@ -112,7 +114,7 @@ export default class Main extends React.Component {
       <React.Fragment>
         {this.state.getPagesError}
         <p>
-          Create a new page: <input ref={(c) => { this.newPageName = c; }} type="text" placeholder="new page name" />
+          Create a new page: <input ref={this.refInputNewPageName} type="text" placeholder="new page name" />
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
         <ul>
@@ -149,7 +151,7 @@ export default class Main extends React.Component {
       },
     };
     return (
-      <div style={{ margin: '8px' }} ref={(c) => { this.containerElement = c; }}>
+      <div style={{ margin: '8px' }} ref={this.refContainer}>
         <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.handleDeleteCloseModal}
