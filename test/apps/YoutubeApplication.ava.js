@@ -3,7 +3,7 @@ import test from 'ava';
 
 import { shallow, mount } from 'enzyme';
 
-import YoutubeApplication from '../../src/apps/YoutubeApplication';
+import YoutubeApplication, { extractYouTubeVideoID } from '../../src/apps/YoutubeApplication';
 
 function setInputText(wrapper, text) {
   const textbox = wrapper.find('input');
@@ -14,6 +14,17 @@ function setInputText(wrapper, text) {
 function getUrl(wrapper) {
   return wrapper.find('iframe').get(0).props.src;
 }
+
+/** @test {extractYouTubeVideoID} */
+test('extractYouTubeVideoID should extract ID', t => {
+  t.is(extractYouTubeVideoID('https://www.youtube.com/watch?v=V7lqCuoK9Lw'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('https://www.youtube.com/watch?v=V7lqCuoK9Lw&feature=youtu.be&t=1s'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('https://www.youtube.com/watch?feature=youtu.be&t=1s&v=V7lqCuoK9Lw'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('http://www.youtube.com/watch?v=V7lqCuoK9Lw'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('https://youtube.com/watch?v=V7lqCuoK9Lw'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('https://youtu.be/V7lqCuoK9Lw'), 'V7lqCuoK9Lw');
+  t.is(extractYouTubeVideoID('https://youtu.be/V7lqCuoK9Lw?t=1s'), 'V7lqCuoK9Lw');
+});
 
 /** @test {YoutubeApplication} */
 test('YoutubeApplication should render initial state if no data is given', t => {
