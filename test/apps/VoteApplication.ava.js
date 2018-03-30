@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import VoteApplication from '../../src/apps/VoteApplication';
 
@@ -32,7 +32,7 @@ function addVote(wrapper, candidateText) {
 
 /** @test {VoteApplication} */
 test('VoteApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual({}, getVotes(wrapper));
 });
 
@@ -59,9 +59,9 @@ test('VoteApplication should count votes', t => {
   t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
 });
 
-/** @test {VoteApplication#componentWillReceiveProps} */
+/** @test {VoteApplication.getDerivedStateFromProps} */
 test('VoteApplication should be updated by props', t => {
-  const wrapper = shallow(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual({}, getVotes(wrapper));
   const model = new VoteApplication.Model();
   model.addCandidate('c1');

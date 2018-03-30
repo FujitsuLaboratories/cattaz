@@ -28,16 +28,13 @@ class DateModel {
 }
 
 export default class DateApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const date = DateModel.deserialize(nextProps.data);
+    return { date };
+  }
+  constructor() {
     super();
     this.handleUpdateDate = this.handleUpdateDate.bind(this);
-    this.state = { date: DateModel.deserialize(props.data) };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const date = DateModel.deserialize(newProps.data);
-      this.setState({ date });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.date.equals(nextState.date);
@@ -68,6 +65,8 @@ export default class DateApplication extends React.Component {
 DateApplication.Model = DateModel;
 
 DateApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

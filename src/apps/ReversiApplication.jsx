@@ -22,6 +22,10 @@ const lastCellStyle = clone(cellStyle);
 lastCellStyle.backgroundColor = 'MediumSlateBlue';
 
 export default class ReversiApplication extends React.Component {
+  static getDerivedStateFromProps(nextProps) {
+    const model = ReversiModel.deserialize(nextProps.data);
+    return { model };
+  }
   static toStoneText(stoneValue) {
     switch (stoneValue) {
       case RM.StoneBlack:
@@ -32,17 +36,10 @@ export default class ReversiApplication extends React.Component {
         return '';
     }
   }
-  constructor(props) {
+  constructor() {
     super();
-    this.state = { model: ReversiModel.deserialize(props.data) };
     this.handlePlaceStone = this.handlePlaceStone.bind(this);
     this.handlePass = this.handlePass.bind(this);
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const model = ReversiModel.deserialize(newProps.data);
-      this.setState({ model });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.model.equals(nextState.model);
@@ -97,6 +94,8 @@ export default class ReversiApplication extends React.Component {
 }
 
 ReversiApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

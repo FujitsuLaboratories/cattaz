@@ -2,13 +2,13 @@ import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import DateApplication from '../../src/apps/DateApplication';
 
 /** @test {DateApplication} */
 test('DateApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
   t.is('Date and time: ', wrapper.text());
 });
 
@@ -27,15 +27,12 @@ test('DateApplication should display current time after clicking button', t => {
   }
 });
 
-/** @test {DateApplication#componentWillReceiveProps} */
+/** @test {DateApplication.getDerivedStateFromProps} */
 test('DateApplication should be updated by props', t => {
-  const wrapper = shallow(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
   t.is('Date and time: ', wrapper.text());
   const model = new DateApplication.Model();
   model.updateDate('2017-01-02');
   wrapper.setProps({ data: model.serialize() });
   t.is('Date and time: 2017-01-02', wrapper.text());
-  const oldModel = wrapper.state('date');
-  wrapper.setProps({ data: model.serialize() });
-  t.is(oldModel, wrapper.state('date'), 'should not replace state if same data is given');
 });

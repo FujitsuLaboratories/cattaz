@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import fill from 'lodash/fill';
 import range from 'lodash/range';
@@ -21,7 +21,7 @@ function setText(wrapper, index, text) {
 
 /** @test {MandalaApplication} */
 test('MandalaApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual(fill(new Array(9), ''), getTexts(wrapper));
 });
 
@@ -35,9 +35,9 @@ test('MandalaApplication should accept changes in textarea', t => {
   t.deepEqual(['s0', '', '', '', 's4', '', '', '', 's8'], getTexts(wrapper));
 });
 
-/** @test {MandalaApplication#componentWillReceiveProps} */
+/** @test {MandalaApplication.getDerivedStateFromProps} */
 test('MandalaApplication should be updated by props', t => {
-  const wrapper = shallow(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual(fill(new Array(9), ''), getTexts(wrapper));
   const model = new MandalaApplication.Model();
   for (let i = 0; i < 9; i += 1) {
@@ -45,7 +45,4 @@ test('MandalaApplication should be updated by props', t => {
   }
   wrapper.setProps({ data: model.serialize() });
   t.deepEqual(range(9).map(n => `s${n}`), getTexts(wrapper));
-  const oldModel = wrapper.state('mandala');
-  wrapper.setProps({ data: model.serialize() });
-  t.is(oldModel, wrapper.state('mandala'), 'should not replace state if same data is given');
 });

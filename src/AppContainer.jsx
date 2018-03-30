@@ -2,21 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class AppContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.children.props.data !== newProps.children.props.data) {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState && prevState.error && prevState.data !== nextProps.children.props.data) {
       // data from textarea has changed. It may resolve an issue in the application.
-      this.setState({ error: null, info: null });
+      return { error: null, info: null };
     }
+    return null;
   }
   componentDidCatch(error, info) {
-    this.setState({ error, info });
+    this.setState({
+      error,
+      info,
+      // Eslint does not support React 16.3
+      // eslint-disable-next-line react/no-unused-state
+      data: this.props.children.props.data,
+    });
   }
   render() {
-    if (this.state.error) {
+    if (this.state && this.state.error) {
       const className = this.props.active ? 'appContainer error activeApp' : 'appContainer error';
       return (
         <div className={className}>

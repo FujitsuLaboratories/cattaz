@@ -17,9 +17,9 @@ export default class Page extends React.Component {
       this.loadDoc(this.props.match.params.page);
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.doc && nextProps.match.params.page !== this.props.match.params.page) {
-      this.loadDoc(nextProps.match.params.page);
+  componentDidUpdate(prevProps) {
+    if (this.props.doc && this.props.match.params.page !== prevProps.match.params.page) {
+      this.loadDoc(this.props.match.params.page);
     }
   }
   async loadDoc(pageName) {
@@ -28,7 +28,7 @@ export default class Page extends React.Component {
       this.setState({ docText: `There is no document named '${pageName}'` });
       return;
     }
-    this.setState({ docText: null });
+    this.setState({ docText: `loading ${pageName}...` });
     const res = await window.fetch(mdFileName);
     const text = await res.text();
     this.setState({ docText: text });

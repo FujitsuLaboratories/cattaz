@@ -27,10 +27,8 @@ HelloApplication.propTypes = {
   `HelloApplication` extracts username from `data` object set it as a state to handle synchronization and render it below the text input on app view.
 
   ```js
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      this.setState({ name: newProps.data });
-    }
+  static getDerivedStateFromProps(nextProps) {
+    return { name: nextProps.data };
   }
   ...
   <div key="message">{this.state.name ? `Hello, ${this.state.name}` : 'Input your name'}</div>

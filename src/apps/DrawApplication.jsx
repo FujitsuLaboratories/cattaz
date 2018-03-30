@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Yaml from 'js-yaml';
+import clone from 'lodash/clone';
 import isEqual from 'lodash/isEqual';
 
 class DrawModel {
@@ -34,20 +35,16 @@ class DrawModel {
 }
 
 export default class DrawApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const draw = DrawModel.deserialize(nextProps.data);
+    return { draw, elected: draw.elected };
+  }
+  constructor() {
     super();
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleStartStop = this.handleStartStop.bind(this);
     this.drawRun = this.drawRun.bind(this);
-    const tmpDrawModel = DrawModel.deserialize(props.data);
-    this.state = { draw: tmpDrawModel, start: false, elected: tmpDrawModel.elected };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const tmpDraw = DrawModel.deserialize(newProps.data);
-      this.setState({ draw: tmpDraw, elected: tmpDraw.elected });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.draw.equals(nextState.draw) || this.state.elected !== nextState.elected || this.state.start !== nextState.start;
@@ -58,7 +55,9 @@ export default class DrawApplication extends React.Component {
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    this.state.draw.addCandidate(value);
+    const newModel = clone(this.state.draw);
+    newModel.addCandidate(value);
+    this.setState({ draw: newModel });
     this.forceUpdate();
     this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
   }
@@ -110,6 +109,8 @@ export default class DrawApplication extends React.Component {
 DrawApplication.Model = DrawModel;
 
 DrawApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

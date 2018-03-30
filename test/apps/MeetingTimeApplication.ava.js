@@ -2,7 +2,7 @@ import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import MeetingTimeApplication from '../../src/apps/MeetingTimeApplication';
 
@@ -26,7 +26,7 @@ function clickEnd(wrapper) {
 
 /** @test {MeetingTimeApplication} */
 test('MeetingTimeApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
   t.is('', getDurationText(wrapper));
   t.false(hasStart(wrapper));
   t.false(hasEnd(wrapper));
@@ -60,9 +60,9 @@ test('MeetingTimeApplication should render duration if both start and end are gi
   }
 });
 
-/** @test {MeetingTimeApplication#componentWillReceiveProps} */
+/** @test {MeetingTimeApplication.getDerivedStateFromProps} */
 test('MeetingTimeApplication should be updated by props', t => {
-  const wrapper = shallow(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
   t.is('', getDurationText(wrapper));
   const model = new MeetingTimeApplication.Model();
   model.updateStartTime({

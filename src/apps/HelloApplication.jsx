@@ -2,16 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class HelloApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    return { name: nextProps.data };
+  }
+  constructor() {
     super();
     this.refInput = React.createRef();
     this.handleEdit = this.handleEdit.bind(this);
-    this.state = { name: props.data };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      this.setState({ name: newProps.data });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return this.state.name !== nextState.name;
@@ -31,6 +28,8 @@ export default class HelloApplication extends React.Component {
 }
 
 HelloApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

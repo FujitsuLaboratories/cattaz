@@ -33,16 +33,13 @@ class MandalaModel {
 }
 
 export default class MandalaApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const mandala = MandalaModel.deserialize(nextProps.data);
+    return { mandala };
+  }
+  constructor() {
     super();
     this.handleCellChange = this.handleCellChange.bind(this);
-    this.state = { mandala: MandalaModel.deserialize(props.data) };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const mandala = MandalaModel.deserialize(newProps.data);
-      this.setState({ mandala });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.mandala.equals(nextState.mandala);
@@ -79,6 +76,8 @@ export default class MandalaApplication extends React.Component {
 MandalaApplication.Model = MandalaModel;
 
 MandalaApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

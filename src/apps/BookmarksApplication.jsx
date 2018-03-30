@@ -94,24 +94,21 @@ class BookmarksModel {
 }
 
 export default class BookmarksApplication extends React.Component {
+  static getDerivedStateFromProps(nextProps) {
+    const bookmarks = BookmarksModel.deserialize(nextProps.data);
+    return { bookmarks };
+  }
   static getDateBeforeDays(days) {
     const date = new Date();
     date.setDate(date.getDate() - days); // Automatically calculate month
     return date;
   }
-  constructor(props) {
+  constructor() {
     super();
     this.refInputName = React.createRef();
     this.refInputLink = React.createRef();
     this.handleAdd = this.handleAdd.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.state = { bookmarks: BookmarksModel.deserialize(props.data) };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const bookmarks = BookmarksModel.deserialize(newProps.data);
-      this.setState({ bookmarks });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.bookmarks.equals(nextState.bookmarks);
@@ -154,6 +151,8 @@ export default class BookmarksApplication extends React.Component {
 BookmarksApplication.Model = BookmarksModel;
 
 BookmarksApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

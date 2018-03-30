@@ -35,18 +35,15 @@ class VoteModel {
 }
 
 export default class VoteApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const vote = VoteModel.deserialize(nextProps.data);
+    return { vote };
+  }
+  constructor() {
     super();
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
-    this.state = { vote: VoteModel.deserialize(props.data), errorMessage: '' };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const vote = VoteModel.deserialize(newProps.data);
-      this.setState({ vote });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.vote.equals(nextState.vote) || this.state.errorMessage !== nextState.errorMessage;
@@ -84,6 +81,8 @@ export default class VoteApplication extends React.Component {
 VoteApplication.Model = VoteModel;
 
 VoteApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

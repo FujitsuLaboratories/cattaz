@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import VoteHelpfulApplication from '../../src/apps/VoteHelpfulApplication';
 
@@ -28,7 +28,7 @@ function voteNo(wrapper) {
 
 /** @test {VoteHelpfulApplication} */
 test('VoteHelpfulApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
   t.true(hasVoteButtons(wrapper));
   t.false(hasBar(wrapper));
 });
@@ -54,9 +54,9 @@ test('VoteHelpfulApplication should hide buttons and show bars after voting', t 
   t.deepEqual(['50%', '1', '1', '50%'], getBarTexts(wrapper));
 });
 
-/** @test {VoteHelpfulApplication#componentWillReceiveProps} */
+/** @test {VoteHelpfulApplication.getDerivedStateFromProps} */
 test('VoteHelpfulApplication should be updated by props', t => {
-  const wrapper = shallow(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
   t.true(hasVoteButtons(wrapper));
   t.false(hasBar(wrapper));
   const model = new VoteHelpfulApplication.Model();

@@ -32,19 +32,16 @@ class VoteHelpfulModel {
 }
 
 export default class VoteHelpfulApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const vote = VoteHelpfulModel.deserialize(nextProps.data);
+    return { vote };
+  }
+  constructor() {
     super();
     this.handleAddVote = this.handleAddVote.bind(this);
-    this.state = { vote: VoteHelpfulModel.deserialize(props.data), voted: false };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const vote = VoteHelpfulModel.deserialize(newProps.data);
-      this.setState({ vote });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
-    return !this.state.vote.equals(nextState.vote.map) || this.state.voted !== nextState.voted;
+    return !this.state.vote.equals(nextState.vote) || this.state.voted !== nextState.voted;
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
@@ -128,6 +125,8 @@ export default class VoteHelpfulApplication extends React.Component {
 VoteHelpfulApplication.Model = VoteHelpfulModel;
 
 VoteHelpfulApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

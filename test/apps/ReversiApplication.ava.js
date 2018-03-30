@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import * as RM from '../../src/apps/ReversiModel';
 import ReversiApplication from '../../src/apps/ReversiApplication';
@@ -24,7 +24,7 @@ function getButton(wrapper, positionLabel) {
 
 /** @test {ReversiApplication} */
 test('ReversiApplication should render initial cells if no data is given', t => {
-  const wrapper = shallow(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([2, 2], extractStoneCounts(wrapper));
 });
 
@@ -36,9 +36,9 @@ test('ReversiApplication should place stones', t => {
   t.is(getButton(wrapper, 'c4').length, 0, 'button should be disappeared');
 });
 
-/** @test {ReversiApplication#componentWillReceiveProps} */
+/** @test {ReversiApplication.getDerivedStateFromProps} */
 test('ReversiApplication should be updated by props', t => {
-  const wrapper = shallow(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([2, 2], extractStoneCounts(wrapper));
   const model = new Model();
   model.addStep(Black, 3, 2);

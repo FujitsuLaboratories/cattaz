@@ -98,9 +98,9 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.socket.on('clientCursor', this.handleClientCursor);
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      this.refEditor.current.editor.setValue(nextProps.value);
+  componentDidUpdate(prevProps) {
+    if (this.props.value !== prevProps.value) {
+      this.refEditor.current.editor.setValue(this.props.value);
     }
   }
   componentWillUnmount() {

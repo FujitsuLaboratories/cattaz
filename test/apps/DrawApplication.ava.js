@@ -2,7 +2,7 @@ import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import DrawApplication from '../../src/apps/DrawApplication';
 
@@ -27,7 +27,7 @@ function pressStartStop(wrapper) {
 
 /** @test {DrawApplication} */
 test('DrawApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
   t.is('', getDisplayed(wrapper));
@@ -78,9 +78,9 @@ test('DrawApplication should display candidates in randomly when it is in draw s
   }
 });
 
-/** @test {DrawApplication#componentWillReceiveProps} */
+/** @test {DrawApplication.getDerivedStateFromProps} */
 test('DrawApplication should be updated by props', t => {
-  const wrapper = shallow(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
   t.is('', getDisplayed(wrapper));

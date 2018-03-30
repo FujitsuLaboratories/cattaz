@@ -34,7 +34,7 @@ test('AppContainer should render error message if there is an error', t => {
   });
 });
 
-/** @test {AppContainer#componentWillReceiveProps} */
+/** @test {AppContainer.getDerivedStateFromProps} */
 test('AppContainer should recover from error after valid data is given', t => {
   t.notThrows(() => {
     const wrapper = mount(<AppContainer><ErrorApplication data="even" appContext={appContext} /></AppContainer>);
