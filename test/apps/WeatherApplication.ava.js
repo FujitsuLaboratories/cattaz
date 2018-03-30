@@ -2,7 +2,7 @@ import React from 'react';
 import test from 'ava';
 import 'whatwg-fetch';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import sinon from 'sinon';
 
 import WeatherApplication from '../../src/apps/WeatherApplication';
@@ -24,13 +24,13 @@ function setCityAndSubmit(wrapper, city) {
 
 /** @test {WeatherApplication} */
 test('WeatherApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
   t.falsy(getResult(wrapper));
 });
 
 /** @test {WeatherApplication} */
 test('WeatherApplication should render initial state if an empty yaml object is given', t => {
-  const wrapper = shallow(<WeatherApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<WeatherApplication data="{}" onEdit={() => {}} appContext={{}} />);
   t.falsy(getResult(wrapper));
 });
 
@@ -175,9 +175,9 @@ test.cb('WeatherApplication should display error if there is an error on request
 });
 
 
-/** @test {WeatherApplication#componentWillReceiveProps} */
+/** @test {WeatherApplication.getDerivedStateFromProps} */
 test('WeatherApplication should be updated by props', t => {
-  const wrapper = shallow(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
   t.falsy(getResult(wrapper));
   const model = new WeatherApplication.Model();
   model.setWeather({

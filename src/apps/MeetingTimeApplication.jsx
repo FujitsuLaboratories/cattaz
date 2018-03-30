@@ -83,18 +83,14 @@ class MeetingTimeModel {
 }
 
 export default class MeetingTimeApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const time = MeetingTimeModel.deserialize(nextProps.data);
+    return { time };
+  }
+  constructor() {
     super();
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
-    const setTime = MeetingTimeModel.deserialize(props.data);
-    this.state = { time: setTime };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const setTime = MeetingTimeModel.deserialize(newProps.data);
-      this.setState({ time: setTime });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.time.equals(nextState.time);
@@ -134,6 +130,8 @@ export default class MeetingTimeApplication extends React.Component {
 MeetingTimeApplication.Model = MeetingTimeModel;
 
 MeetingTimeApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

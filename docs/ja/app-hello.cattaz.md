@@ -27,10 +27,8 @@ HelloApplication.propTypes = {
   `HelloApplication`は、`data`オブジェクトからユーザ名を抽出し、それを同期処理するためにstateにセットし、アプリケーションのテキスト入力ボックスの下にレンダリングします。
 
   ```js
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      this.setState({ name: newProps.data });
-    }
+  static getDerivedStateFromProps(nextProps) {
+    return { name: nextProps.data };
   }
   ...
   <div key="message">{this.state.name ? `Hello, ${this.state.name}` : 'Input your name'}</div>

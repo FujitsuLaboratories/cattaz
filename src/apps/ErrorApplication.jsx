@@ -2,15 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class ErrorApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    return { data: nextProps.data };
+  }
+  constructor() {
     super();
     this.handleStartRaisingError = this.handleStartRaisingError.bind(this);
-    this.state = { data: props.data };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      this.setState({ data: newProps.data });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return this.state.data !== nextState.data;

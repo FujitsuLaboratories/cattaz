@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import KPTApplication from '../../src/apps/KPTApplication';
 
@@ -42,7 +42,7 @@ function addTry(wrapper, text) {
 
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));
@@ -50,7 +50,7 @@ test('KPTApplication should render initial state if no data is given', t => {
 
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if an empty yaml object is given', t => {
-  const wrapper = shallow(<KPTApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<KPTApplication data="{}" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));
@@ -90,9 +90,9 @@ test('KPTApplication should add try', t => {
   t.deepEqual(['t1'], getTries(wrapper));
 });
 
-/** @test {KPTApplication#componentWillReceiveProps} */
+/** @test {KPTApplication.getDerivedStateFromProps} */
 test('KPTApplication should be updated by props', t => {
-  const wrapper = shallow(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));

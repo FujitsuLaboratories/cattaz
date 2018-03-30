@@ -44,7 +44,11 @@ const cellStyle = {
 };
 
 export default class KPTApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const kpt = KPTModel.deserialize(nextProps.data);
+    return { kpt };
+  }
+  constructor() {
     super();
     this.refInputKeep = React.createRef();
     this.refInputProblem = React.createRef();
@@ -52,13 +56,6 @@ export default class KPTApplication extends React.Component {
     this.handleAddKeep = this.handleAddKeep.bind(this);
     this.handleAddProblem = this.handleAddProblem.bind(this);
     this.handleAddTry = this.handleAddTry.bind(this);
-    this.state = { kpt: KPTModel.deserialize(props.data) };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const kpt = KPTModel.deserialize(newProps.data);
-      this.setState({ kpt });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kpt.equals(nextState.kpt);
@@ -113,6 +110,8 @@ export default class KPTApplication extends React.Component {
 KPTApplication.Model = KPTModel;
 
 KPTApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

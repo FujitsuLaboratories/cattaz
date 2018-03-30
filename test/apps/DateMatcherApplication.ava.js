@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import DateMatcherApplication from '../../src/apps/DateMatcherApplication';
 
@@ -47,7 +47,7 @@ function endEdit(wrapper, attendee) {
 
 /** @test {DateMatcherApplication} */
 test('DateMatcherApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
   t.false(hasTable(wrapper));
 });
 
@@ -107,9 +107,9 @@ test('DateMatcherApplication should set answers', t => {
   t.deepEqual({ a1: { c1: 'x', c2: 'y' }, a2: {} }, wrapper.state().model.attendees);
 });
 
-/** @test {DateMatcherApplication#componentWillReceiveProps} */
+/** @test {DateMatcherApplication.getDerivedStateFromProps} */
 test('DateMatcherApplication should be updated by props', t => {
-  const wrapper = shallow(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
   t.false(hasTable(wrapper));
   const model = new DateMatcherApplication.Model();
   model.setCandidates(['c1', 'c2']);

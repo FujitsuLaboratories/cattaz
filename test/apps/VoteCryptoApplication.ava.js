@@ -2,7 +2,7 @@ import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import VoteCryptoApplication from '../../src/apps/VoteCryptoApplication';
 
@@ -33,7 +33,7 @@ function makeOpen(wrapper) {
 
 /** @test {VoteCryptoApplication} */
 test('VoteCryptoApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
   t.true(hasResultButton(wrapper));
 });
@@ -80,9 +80,9 @@ test('VoteCryptoApplication should render result after open', t => {
   t.false(hasResultButton(wrapper));
 });
 
-/** @test {VoteCryptoApplication#componentWillReceiveProps} */
+/** @test {VoteCryptoApplication.getDerivedStateFromProps} */
 test('VoteCryptoApplication should be updated by props', t => {
-  const wrapper = shallow(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
   t.deepEqual([], getVotes(wrapper));
   t.true(hasResultButton(wrapper));
   const model = new VoteCryptoApplication.Model();

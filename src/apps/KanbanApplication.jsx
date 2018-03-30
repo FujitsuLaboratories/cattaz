@@ -352,7 +352,11 @@ const KanbanTrashDraggable = DropTarget(dndTypes.kanbanCard, trashCardTarget, (c
 }))(KanbanTrash));
 
 class KanbanApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const kanban = KanbanModel.deserialize(nextProps.data);
+    return { kanban };
+  }
+  constructor() {
     super();
     this.refInputList = React.createRef();
     this.handleAddItem = this.handleAddItem.bind(this);
@@ -361,18 +365,12 @@ class KanbanApplication extends React.Component {
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
-    this.state = { kanban: KanbanModel.deserialize(props.data) };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const kanban = KanbanModel.deserialize(newProps.data);
-      this.setState({ kanban });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kanban.equals(nextState.kanban);
   }
   modelUpdated() {
+    this.setState({ kanban: clone(this.state.kanban) });
     this.forceUpdate();
     this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
   }
@@ -445,6 +443,8 @@ class KanbanApplication extends React.Component {
 KanbanApplication.Model = KanbanModel;
 
 KanbanApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

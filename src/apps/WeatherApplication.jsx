@@ -48,17 +48,14 @@ class WeatherModel {
 }
 
 export default class WeatherApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const weather = WeatherModel.deserialize(nextProps.data);
+    return { weather };
+  }
+  constructor() {
     super();
     this.refInputCity = React.createRef();
     this.handleGetWeather = this.handleGetWeather.bind(this);
-    this.state = { weather: WeatherModel.deserialize(props.data), errorMessage: '' };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const weather = WeatherModel.deserialize(newProps.data);
-      this.setState({ weather });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.weather.equals(nextState.weather) || this.state.errorMessage !== nextState.errorMessage;
@@ -106,6 +103,8 @@ export default class WeatherApplication extends React.Component {
 WeatherApplication.Model = WeatherModel;
 
 WeatherApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

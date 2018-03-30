@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Yaml from 'js-yaml';
+import clone from 'lodash/clone';
 import isEqual from 'lodash/isEqual';
 
 class VoteCryptoModel {
   constructor() {
     this.candidates = {};
-    this.openResult = { opened: false };
+    this.opened = false;
   }
   addCandidate(name) {
     if (name in this.candidates) {
@@ -19,7 +20,7 @@ class VoteCryptoModel {
     this.candidates[name] = this.candidates[name] + 1;
   }
   openVoted() {
-    this.openResult.opened = true;
+    this.opened = true;
   }
   equals(other) {
     return isEqual(this, other);
@@ -30,7 +31,7 @@ class VoteCryptoModel {
       // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa#Unicode_strings
       return window.btoa(unescape(encodeURIComponent(plaintext)));
     }
-    const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), openResult: this.openResult };
+    const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), opened: this.opened };
     return Yaml.safeDump(obj);
   }
   static deserialize(str) {
@@ -42,7 +43,7 @@ class VoteCryptoModel {
       const obj = Yaml.safeLoad(str);
       const model = new VoteCryptoModel();
       if (obj.ciphertext) model.candidates = JSON.parse(decrypt(obj.ciphertext));
-      if (obj.openResult) model.openResult = obj.openResult;
+      model.opened = !!obj.opened;
       return model;
     } catch (ex) {
       return new VoteCryptoModel();
@@ -51,19 +52,16 @@ class VoteCryptoModel {
 }
 
 export default class VoteCryptoApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const vote = VoteCryptoModel.deserialize(nextProps.data);
+    return { vote };
+  }
+  constructor() {
     super();
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
     this.handleVotingResult = this.handleVotingResult.bind(this);
-    this.state = { vote: VoteCryptoModel.deserialize(props.data), voteMessage: '', errorMessage: '' };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const vote = VoteCryptoModel.deserialize(newProps.data);
-      this.setState({ vote });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.vote.equals(nextState.vote) || this.state.voteMessage !== nextState.voteMessage || this.state.errorMessage !== nextState.errorMessage;
@@ -71,9 +69,9 @@ export default class VoteCryptoApplication extends React.Component {
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    if (this.state.vote.addCandidate(value)) {
-      this.forceUpdate();
-      this.setState({ errorMessage: '' });
+    const newModel = clone(this.state.vote);
+    if (newModel.addCandidate(value)) {
+      this.setState({ vote: newModel, errorMessage: '' });
       this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
     } else {
       this.setState({ errorMessage: 'Duplicate Candidate' });
@@ -81,23 +79,24 @@ export default class VoteCryptoApplication extends React.Component {
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
-    this.state.vote.addVote(value);
-    this.forceUpdate();
+    const newModel = clone(this.state.vote);
+    newModel.addVote(value);
+    this.setState({ vote: newModel, voteMessage: 'Voted' });
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
-    this.setState({ voteMessage: 'Voted' });
     const self = this;
     setTimeout(() => {
       self.setState({ voteMessage: '' });
     }, 1000);
   }
   handleVotingResult() {
-    this.state.vote.openVoted();
-    this.forceUpdate();
+    const newModel = clone(this.state.vote);
+    newModel.openVoted();
+    this.setState({ vote: newModel });
     this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
   }
   render() {
     let votingResult = '';
-    if (this.state.vote.openResult.opened) {
+    if (this.state.vote.opened) {
       votingResult = Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s}: {this.state.vote.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>));
     } else {
       votingResult = Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>));
@@ -111,7 +110,7 @@ export default class VoteCryptoApplication extends React.Component {
         <ul>
           {votingResult}
         </ul>
-        { this.state.vote.openResult.opened ?
+        { this.state.vote.opened ?
           null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
         }
       </div>);
@@ -121,6 +120,8 @@ export default class VoteCryptoApplication extends React.Component {
 VoteCryptoApplication.Model = VoteCryptoModel;
 
 VoteCryptoApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

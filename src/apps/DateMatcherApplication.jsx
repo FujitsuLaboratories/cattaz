@@ -49,7 +49,11 @@ const cellStyle = {
 };
 
 export default class DateMatcherApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const model = DateMatcherModel.deserialize(nextProps.data);
+    return { model };
+  }
+  constructor() {
     super();
     this.refInputCandidates = React.createRef();
     this.refInputNewAttendee = React.createRef();
@@ -59,13 +63,6 @@ export default class DateMatcherApplication extends React.Component {
     this.handleEndEdit = this.handleEndEdit.bind(this);
     this.handleRemoveAttendee = this.handleRemoveAttendee.bind(this);
     this.handleSetAnswer = this.handleSetAnswer.bind(this);
-    this.state = { model: DateMatcherModel.deserialize(props.data), editing: null };
-  }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const model = DateMatcherModel.deserialize(newProps.data);
-      this.setState({ model });
-    }
   }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.model.equals(nextState.model) || this.state.editing !== nextState.editing;
@@ -174,6 +171,8 @@ export default class DateMatcherApplication extends React.Component {
 DateMatcherApplication.Model = DateMatcherModel;
 
 DateMatcherApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

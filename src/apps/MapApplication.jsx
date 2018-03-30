@@ -36,13 +36,16 @@ class MapModel {
 }
 
 export default class MapApplication extends React.Component {
-  constructor(props) {
+  static getDerivedStateFromProps(nextProps) {
+    const map = MapModel.deserialize(nextProps.data);
+    return { map };
+  }
+  constructor() {
     super();
     this.refInputPlace = React.createRef();
     this.refIframe = React.createRef();
     this.handleSearchPlace = this.handleSearchPlace.bind(this);
     this.handleGetMap = this.handleGetMap.bind(this);
-    this.state = { map: MapModel.deserialize(props.data) };
   }
   componentDidMount() {
     const doc = this.refIframe.current.contentWindow.document;
@@ -138,12 +141,6 @@ export default class MapApplication extends React.Component {
     `);
     doc.close();
   }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      const newMap = MapModel.deserialize(newProps.data);
-      this.setState({ map: newMap });
-    }
-  }
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.map.equals(nextState.map);
   }
@@ -184,6 +181,8 @@ export default class MapApplication extends React.Component {
 }
 
 MapApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

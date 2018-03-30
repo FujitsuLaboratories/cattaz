@@ -23,7 +23,7 @@ test('HelloApplication should render initial state if no data is given', t => {
 
 /** @test {HelloApplication} */
 test('HelloApplication should render name if data is given', t => {
-  const wrapper = shallow(<HelloApplication data="name1" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<HelloApplication data="name1" onEdit={() => {}} appContext={{}} />);
   t.is('Hello, name1', getMessage(wrapper));
 });
 
@@ -37,9 +37,9 @@ test('HelloApplication should render input name', t => {
   t.is('Input your name', getMessage(wrapper));
 });
 
-/** @test {HelloApplication#componentWillReceiveProps} */
+/** @test {HelloApplication.getDerivedStateFromProps} */
 test('HelloApplication should rerender if props change', t => {
-  const wrapper = shallow(<HelloApplication data="name1" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<HelloApplication data="name1" onEdit={() => {}} appContext={{}} />);
   t.is('Hello, name1', getMessage(wrapper));
   wrapper.setProps({ data: 'name2' });
   t.is('Hello, name2', getMessage(wrapper));
