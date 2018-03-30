@@ -354,6 +354,7 @@ const KanbanTrashDraggable = DropTarget(dndTypes.kanbanCard, trashCardTarget, (c
 class KanbanApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputList = React.createRef();
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleAddList = this.handleAddList.bind(this);
     this.handleRemoveList = this.handleRemoveList.bind(this);
@@ -387,8 +388,7 @@ class KanbanApplication extends React.Component {
     }
   }
   handleAddList() {
-    const textbox = this.inputList;
-    const text = textbox.value;
+    const text = this.refInputList.current.value;
     if (text) {
       this.state.kanban.addList(text);
       this.modelUpdated();
@@ -417,6 +417,7 @@ class KanbanApplication extends React.Component {
   renderRow2(index) {
     return (
       <td>
+        {/* TODO find a better way for a new 'ref' API since React 16.3 */}
         <input ref={(c) => { this[`input${index}`] = c; }} type="text" placeholder="Add item" />
         <input type="button" value="Add" data-index={index} onClick={this.handleAddItem} />
       </td>);
@@ -424,7 +425,7 @@ class KanbanApplication extends React.Component {
   render() {
     return (
       <div>
-        <input ref={(c) => { this.inputList = c; }} type="text" placeholder="Add list" />
+        <input ref={this.refInputList} type="text" placeholder="Add list" />
         <input type="button" value="Add list" onClick={this.handleAddList} />
         <KanbanTrashDraggable app={this} />
         <table>

@@ -46,6 +46,9 @@ const cellStyle = {
 export default class KPTApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputKeep = React.createRef();
+    this.refInputProblem = React.createRef();
+    this.refInputTry = React.createRef();
     this.handleAddKeep = this.handleAddKeep.bind(this);
     this.handleAddProblem = this.handleAddProblem.bind(this);
     this.handleAddTry = this.handleAddTry.bind(this);
@@ -60,21 +63,21 @@ export default class KPTApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kpt.equals(nextState.kpt);
   }
-  addItem(input, method) {
-    const { value } = input;
+  addItem(refInput, method) {
+    const { value } = refInput.current;
     if (!value) return;
     method(value);
     this.forceUpdate();
     this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
   }
   handleAddKeep() {
-    this.addItem(this.inputKeep, this.state.kpt.addKeep.bind(this.state.kpt));
+    this.addItem(this.refInputKeep, this.state.kpt.addKeep.bind(this.state.kpt));
   }
   handleAddProblem() {
-    this.addItem(this.inputProblem, this.state.kpt.addProblem.bind(this.state.kpt));
+    this.addItem(this.refInputProblem, this.state.kpt.addProblem.bind(this.state.kpt));
   }
   handleAddTry() {
-    this.addItem(this.inputTry, this.state.kpt.addTry.bind(this.state.kpt));
+    this.addItem(this.refInputTry, this.state.kpt.addTry.bind(this.state.kpt));
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
     return (
@@ -83,7 +86,7 @@ export default class KPTApplication extends React.Component {
         <ul>
           {items.map(s => (<li>{s}</li>))}
           <li key="input">
-            <input ref={(c) => { this[`input${title}`] = c; }} type="text" placeholder={`Add ${title}`} />
+            <input ref={this[`refInput${title}`]} type="text" placeholder={`Add ${title}`} />
             <input type="button" value="Add" onClick={handlerAdd} />
           </li>
         </ul>

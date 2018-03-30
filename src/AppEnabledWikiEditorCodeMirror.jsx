@@ -60,6 +60,7 @@ class OtherClientCursor {
 export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   constructor(props) {
     super();
+    this.refEditor = React.createRef();
     this.state = { hast: WikiParser.convertToCustomHast(WikiParser.parseToHast(props.defaultValue)), onFocus: false, editorPercentage: 50 };
     this.handleResize = this.updateSize.bind(this);
     this.handleSplitResized = this.handleSplitResized.bind(this);
@@ -93,19 +94,19 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           textarea: 'Text',
         },
       });
-      this.y.share.textarea.bindCodeMirror(this.editor.editor);
+      this.y.share.textarea.bindCodeMirror(this.refEditor.current.editor);
       this.socket.on('clientCursor', this.handleClientCursor);
     }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      this.editor.editor.setValue(nextProps.value);
+      this.refEditor.current.editor.setValue(nextProps.value);
     }
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
     if (this.y) {
-      this.y.share.textarea.unbindCodeMirror(this.editor.editor);
+      this.y.share.textarea.unbindCodeMirror(this.refEditor.current.editor);
       this.y.close();
     }
     if (this.socket) {
@@ -118,8 +119,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     const newHeight = actual('height', 'px') - this.props.heightMargin;
     if (newHeight !== this.state.height) {
       this.setState({ height: newHeight });
-      if (this.editor) {
-        this.editor.editor.setSize(null, newHeight);
+      if (this.refEditor.current) {
+        this.refEditor.current.editor.setSize(null, newHeight);
       }
     }
   }
@@ -144,8 +145,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
   handleClientCursor(msg) {
     const client = this.otherClients.get(msg.id);
     if (msg.type === 'update') {
-      if (!this.editor) return;
-      const cm = this.editor.editor;
+      if (!this.refEditor.current) return;
+      const cm = this.refEditor.current.editor;
       if (!client) {
         const newClient = new OtherClientCursor(msg.id);
         this.otherClients.set(msg.id, newClient);
@@ -179,7 +180,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   handleEdit(_, data) {
-    const text = this.editor.editor.getValue();
+    const text = this.refEditor.current.editor.getValue();
     const hastOriginal = WikiParser.parseToHast(text);
     const hast = WikiParser.convertToCustomHast(hastOriginal);
     this.setState({ hast });
@@ -188,7 +189,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
   handleAppEdit(newText, appContext) {
-    const cm = this.editor.editor;
+    const cm = this.refEditor.current.editor;
     const startFencedStr = cm.getLine(appContext.position.start.line - 1);
     const [backticks] = WikiParser.getExtraFencingChars(startFencedStr, newText);
     if (backticks) {
@@ -259,8 +260,8 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       theme: '3024-night',
     };
     return (
-      <SplitPane ref={(c) => { this.spliter = c; }} split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <CodeMirror ref={(c) => { this.editor = c; }} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} onFocus={this.handleFocus} onBlur={this.handleBlur} />
+      <SplitPane split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
+        <CodeMirror ref={this.refEditor} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} onFocus={this.handleFocus} onBlur={this.handleBlur} />
         <div
           style={{
             overflow: 'auto',

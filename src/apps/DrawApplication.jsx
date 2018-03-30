@@ -36,6 +36,7 @@ class DrawModel {
 export default class DrawApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleStartStop = this.handleStartStop.bind(this);
     this.drawRun = this.drawRun.bind(this);
@@ -55,7 +56,7 @@ export default class DrawApplication extends React.Component {
     clearInterval(this.intervalId);
   }
   handleAddCandidate() {
-    const { value } = this.inputCandidate;
+    const { value } = this.refInputCandidate.current;
     if (!value) return;
     this.state.draw.addCandidate(value);
     this.forceUpdate();
@@ -83,7 +84,7 @@ export default class DrawApplication extends React.Component {
     }
     return (
       <div style={{ marginBottom: '50px' }}>
-        <input ref={(input) => { this.inputCandidate = input; }} type="text" placeholder="Add Candidate" />
+        <input ref={this.refInputCandidate} type="text" placeholder="Add Candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div key="candidates">Candidates {JSON.stringify(this.state.draw.candidates)}</div>
         <div key="elected">Elected [{this.state.draw.elected}]</div>

@@ -50,6 +50,7 @@ class WeatherModel {
 export default class WeatherApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputCity = React.createRef();
     this.handleGetWeather = this.handleGetWeather.bind(this);
     this.state = { weather: WeatherModel.deserialize(props.data), errorMessage: '' };
   }
@@ -63,7 +64,7 @@ export default class WeatherApplication extends React.Component {
     return !this.state.weather.equals(nextState.weather) || this.state.errorMessage !== nextState.errorMessage;
   }
   async handleGetWeather() {
-    const city = this.inputCity.value;
+    const city = this.refInputCity.current.value;
     if (!city) return;
     try {
       const response = await window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`);
@@ -85,7 +86,7 @@ export default class WeatherApplication extends React.Component {
   render() {
     return (
       <div>
-        <input ref={(input) => { this.inputCity = input; }} type="text" placeholder="Add City" />
+        <input ref={this.refInputCity} type="text" placeholder="Add City" />
         <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
         <div key="error" style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <div key="result">

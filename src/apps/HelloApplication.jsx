@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 export default class HelloApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInput = React.createRef();
     this.handleEdit = this.handleEdit.bind(this);
     this.state = { name: props.data };
   }
@@ -16,14 +17,14 @@ export default class HelloApplication extends React.Component {
     return this.state.name !== nextState.name;
   }
   handleEdit() {
-    const name = this.input.value;
+    const name = this.refInput.current.value;
     this.setState({ name });
     this.props.onEdit(name, this.props.appContext);
   }
   render() {
     return (
       <div>
-        <div key="input"><input type="text" ref={(c) => { this.input = c; }} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
+        <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
         <div key="message">{this.state.name ? `Hello, ${this.state.name}` : 'Input your name'}</div>
       </div>);
   }

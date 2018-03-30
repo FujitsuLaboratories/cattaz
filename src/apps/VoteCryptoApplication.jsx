@@ -53,6 +53,7 @@ class VoteCryptoModel {
 export default class VoteCryptoApplication extends React.Component {
   constructor(props) {
     super();
+    this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
     this.handleVotingResult = this.handleVotingResult.bind(this);
@@ -68,7 +69,7 @@ export default class VoteCryptoApplication extends React.Component {
     return !this.state.vote.equals(nextState.vote) || this.state.voteMessage !== nextState.voteMessage || this.state.errorMessage !== nextState.errorMessage;
   }
   handleAddCandidate() {
-    const { value } = this.inputCandidate;
+    const { value } = this.refInputCandidate.current;
     if (!value) return;
     if (this.state.vote.addCandidate(value)) {
       this.forceUpdate();
@@ -103,7 +104,7 @@ export default class VoteCryptoApplication extends React.Component {
     }
     return (
       <div style={{ marginBottom: '50px' }}>
-        <input ref={(input) => { this.inputCandidate = input; }} type="text" placeholder="Add Candidate" />
+        <input ref={this.refInputCandidate} type="text" placeholder="Name of candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div style={{ color: '#00529B' }}>{this.state.voteMessage}</div>
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>

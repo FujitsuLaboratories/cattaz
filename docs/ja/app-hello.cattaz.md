@@ -42,12 +42,12 @@ HelloApplication.propTypes = {
 
   ```js
   handleEdit() {
-      const name = this.input.value;
+      const name = this.refInput.current.value;
       this.setState({ name });
       this.props.onEdit(name, this.props.appContext);
   }
   ...
-  <div key="input"><input type="text" ref={(c) => { this.input = c; }} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
+  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
   ```
 
 * `appContext`は、アプリケーションのコンテキストを持つオブジェクトです。これは`onEdit`コールバックの第2引数として使用されます。ユーザは同じページ上のエディタに複数のアプリケーションのfenced code blockを入力でき、`appContext`はその複数のアプリケーション間でコンテンツを判別するのに利用されます。
