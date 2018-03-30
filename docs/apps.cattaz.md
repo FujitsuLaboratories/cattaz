@@ -20,3 +20,4 @@ Cattaz has sevral applications installed.
 |[`vote`](./app-vote)|Poll application. You can create custom choises.|
 |[`votecrypto`](./app-votecrypto)|Similar to [`vote`](./app-vote) but number of votes cannot be read easily.|
 |[`weather`](./app-weather)|Get current weather forecast.|
+|[`youtube`](./app-youtube)|Play YouTube.|
