@@ -1,7 +1,7 @@
 import React from 'react';
 import test from 'ava';
 
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import YoutubeApplication, { extractYouTubeVideoID } from '../../src/apps/YoutubeApplication';
 
@@ -28,13 +28,13 @@ test('extractYouTubeVideoID should extract ID', t => {
 
 /** @test {YoutubeApplication} */
 test('YoutubeApplication should render initial state if no data is given', t => {
-  const wrapper = shallow(<YoutubeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<YoutubeApplication data="" onEdit={() => {}} appContext={{}} />);
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
 });
 
 /** @test {YoutubeApplication} */
 test('YouTubeApplication should render URL if data is given', t => {
-  const wrapper = shallow(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));
 });
 
@@ -50,9 +50,9 @@ test('YoutubeApplication should render input URL', t => {
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
 });
 
-/** @test {YoutubeApplication#componentWillReceiveProps} */
+/** @test {YoutubeApplication.getDerivedStateFromProps} */
 test('YoutubeApplication should rerender if props change', t => {
-  const wrapper = shallow(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mount(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));
   wrapper.setProps({ data: 'https://www.youtube.com/watch?v=vmm9y5bRehQ' });
   t.is('https://www.youtube.com/embed/vmm9y5bRehQ?rel=0', getUrl(wrapper));

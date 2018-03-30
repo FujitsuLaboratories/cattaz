@@ -10,21 +10,19 @@ export function extractYouTubeVideoID(url) {
 }
 
 export default class YoutubeApplication extends React.Component {
-  constructor(props) {
-    super();
-    this.handleEdit = this.handleEdit.bind(this);
-    this.state = { url: props.data };
+  static getDerivedStateFromProps(nextProps) {
+    return { url: nextProps.data };
   }
-  componentWillReceiveProps(newProps) {
-    if (this.props.data !== newProps.data) {
-      this.setState({ url: newProps.data });
-    }
+  constructor() {
+    super();
+    this.refInput = React.createRef();
+    this.handleEdit = this.handleEdit.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {
     return this.state.url !== nextState.url;
   }
   handleEdit() {
-    const url = this.input.value;
+    const url = this.refInput.current.value;
     this.setState({ url });
     this.props.onEdit(url, this.props.appContext);
   }
@@ -34,12 +32,14 @@ export default class YoutubeApplication extends React.Component {
     return (
       <div>
         <iframe width="560" height="315" src={insertUrl} frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen title={id} />
-        <div key="input"><input type="text" style={{ width: '300px' }} ref={(c) => { this.input = c; }} placeholder="YouTube URL" value={this.state.url} onChange={this.handleEdit} /></div>
+        <div key="input"><input type="text" style={{ width: '300px' }} ref={this.refInput} placeholder="YouTube URL" value={this.state.url} onChange={this.handleEdit} /></div>
       </div>);
   }
 }
 
 YoutubeApplication.propTypes = {
+  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
+  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,
