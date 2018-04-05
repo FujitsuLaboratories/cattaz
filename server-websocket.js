@@ -22,7 +22,7 @@ Y.extend(yWebsocketsServer, yMemory);
 const options = minimist(process.argv.slice(2), {
   string: ['port', 'debug', 'db'],
   default: {
-    port: process.env.PORT || '1234',
+    port: process.env.PORT_WEBSOCKET || '1234',
     debug: false,
     db: 'memory',
   },

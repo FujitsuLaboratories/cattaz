@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 
 import logo from '../docs/assets/cattaz.svg';
 
-const url = `http://${window.location.hostname}:1234`;
+const url = `http://${window.location.hostname}:${process.env.PORT_WEBSOCKET}`;
 const timeAgoMinPeriod = 10;
 const pagesListMax = 10;
 

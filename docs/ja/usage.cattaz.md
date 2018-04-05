@@ -14,6 +14,8 @@ yarn start
 
 上記コマンドを実行後、`http://localhost:8080/`にアクセスするとアプリケーションを見ることができます。
 
+デフォルトのポート番号は、Webが8080でWebSocketが1234です。ポート番号を変えるには `yarn start` の代わりに `PORT_WEB=18080 PORT_WEBSOCKET=11234 yarn start` としてください。
+
 ## Docker
 
 ```bash
@@ -22,6 +24,13 @@ docker run -it -p 8080:8080 -p 1234:1234 cattaz
 ```
 
 上記コマンドを実行後、`http://localhost:8080/`にアクセスするとアプリケーションを見ることができます。
+
+ポート番号を変えるには以下の例を参照してください、。
+
+```bash
+docker build . -t cattaz --build-arg PORT_WEBSOCKET=11234
+docker run -it -p 18080:8080 -p 11234:1234 cattaz
+```
 
 ### Docker Compose
 
@@ -32,6 +41,8 @@ docker-compose up
 ```
 
 上記コマンドを実行後、`http://localhost:8080/`にアクセスするとアプリケーションを見ることができます。
+
+ポート番号を変えるには `docker-compose up` の代わりに `PORT_WEB=18080 PORT_WEBSOCKET=11234 docker-compose up` としてください。
 
 ## Amazon EC2 Container Service
 
