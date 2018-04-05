@@ -1,6 +1,7 @@
 /* eslint import/no-extraneous-dependencies: [error, {devDependencies: true}] */
 
 import path from 'path';
+import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -17,6 +18,7 @@ const js = {
   },
   devServer: {
     contentBase: 'build',
+    port: parseInt(process.env.PORT_WEB || '8080', 10),
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
@@ -46,6 +48,9 @@ const js = {
         flatten: true,
       },
     ]),
+    new webpack.DefinePlugin({
+      'process.env.PORT_WEBSOCKET': process.env.PORT_WEBSOCKET || '1234',
+    }),
   ],
   module: {
     rules: [

@@ -2,6 +2,7 @@ FROM node:8.11.0
 
 ARG http_proxy
 ARG https_proxy
+ARG PORT_WEBSOCKET=1234
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
