@@ -13,8 +13,6 @@ export default class AppContainer extends React.Component {
     this.setState({
       error,
       info,
-      // Eslint does not support React 16.3
-      // eslint-disable-next-line react/no-unused-state
       data: this.props.children.props.data,
     });
   }

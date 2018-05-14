@@ -1,4 +1,4 @@
-FROM node:8.11.0
+FROM node:8.11.1
 
 ARG http_proxy
 ARG https_proxy
