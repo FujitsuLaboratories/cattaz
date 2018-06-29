@@ -27,11 +27,10 @@ HelloApplication.propTypes = {
   `HelloApplication`は、`data`オブジェクトからユーザ名を抽出し、それを同期処理するためにstateにセットし、アプリケーションのテキスト入力ボックスの下にレンダリングします。
 
   ```js
-  static getDerivedStateFromProps(nextProps) {
-    return { name: nextProps.data };
+  render() {
+    const name = this.props.data;
+    return <div key="message">{name ? `Hello, ${name}` : 'Input your name'}</div>;
   }
-  ...
-  <div key="message">{this.state.name ? `Hello, ${this.state.name}` : 'Input your name'}</div>
   ```
 
 * `onEdit`は、アプリケーションの状態が変化した時にアプリケーションが呼び出すコールバックです。これは2つの引数を持ちます。第1引数は、fenced code block内に反映する文字列オブジェクトで、第2引数は、`appContext`オブジェクトです。
@@ -40,12 +39,11 @@ HelloApplication.propTypes = {
 
   ```js
   handleEdit() {
-      const name = this.refInput.current.value;
-      this.setState({ name });
-      this.props.onEdit(name, this.props.appContext);
+    const name = this.refInput.current.value;
+    this.props.onEdit(name, this.props.appContext);
   }
   ...
-  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
+  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={name} onChange={this.handleEdit} /></div>
   ```
 
 * `appContext`は、アプリケーションのコンテキストを持つオブジェクトです。これは`onEdit`コールバックの第2引数として使用されます。ユーザは同じページ上のエディタに複数のアプリケーションのfenced code blockを入力でき、`appContext`はその複数のアプリケーション間でコンテンツを判別するのに利用されます。
@@ -57,3 +55,7 @@ Hello applicationを拡張していくことで、新しいアプリケーショ
 * 最初に、 `src/apps/HelloApplication.jsx`をコピーし、`<Your App Name Here>.jsx`のようにファイル名を変更し、`src/apps/`ディレクトリ内に置きます。
 * 同じディレクトリにある`src/apps/index.js`を編集して、`<Your App Name Here>.jsx`をimportし、`export default`にも名前を追加します。
 * Hello applicationの説明を参考に、`<Your App Name Here>.jsx`を編集して、アプリケーションのロジックを実装していきます。
+
+## 複雑なデータの扱い方
+
+[`kpt`](../app-kpt)アプリケーションがデータのシリアライズとデシリアライズの例になります。

@@ -27,11 +27,10 @@ HelloApplication.propTypes = {
   `HelloApplication` extracts username from `data` object set it as a state to handle synchronization and render it below the text input on app view.
 
   ```js
-  static getDerivedStateFromProps(nextProps) {
-    return { name: nextProps.data };
+  render() {
+    const name = this.props.data;
+    return <div key="message">{name ? `Hello, ${name}` : 'Input your name'}</div>;
   }
-  ...
-  <div key="message">{this.state.name ? `Hello, ${this.state.name}` : 'Input your name'}</div>
   ```
 
 * `onEdit` is a callback that applications should call when status of applications changes. It takes two arguments, a string object to be placed into the fenced code block and `appContext` object.
@@ -40,12 +39,11 @@ HelloApplication.propTypes = {
 
   ```js
   handleEdit() {
-      const name = this.refInput.current.value;
-      this.setState({ name });
-      this.props.onEdit(name, this.props.appContext);
+    const name = this.refInput.current.value;
+    this.props.onEdit(name, this.props.appContext);
   }
   ...
-  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={this.state.name} onChange={this.handleEdit} /></div>
+  <div key="input"><input type="text" ref={this.refInput} placeholder="name" value={name} onChange={this.handleEdit} /></div>
   ```
 
 * `appContext` is an object to determine application's context. It will be used for the second argument of `onEdit` callback. Basically user can write multiple instances of apps on same editor and `appContext` will help to separate contents between apps.
@@ -57,3 +55,7 @@ Hello app can be extended to implement your own app logic.
 * First, copy `src/apps/HelloApplication.jsx` and make `<Your App Name Here>.jsx` in `src/apps/` directory.
 * Edit `src/apps/index.js` in same directory to import the `<Your App Name Here>.jsx` and add it to export default.
 * Start editing `<Your App Name Here>.jsx` to implement your app logic as explained for Hello application.
+
+## How to use complex data object
+
+[`kpt`](./app-kpt) application is an example of serialization and deserialzation.
