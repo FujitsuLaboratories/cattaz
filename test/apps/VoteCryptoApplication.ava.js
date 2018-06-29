@@ -1,8 +1,8 @@
-import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { mount } from 'enzyme';
+
+import { mountApp } from '../helper';
 
 import VoteCryptoApplication from '../../src/apps/VoteCryptoApplication';
 
@@ -33,7 +33,7 @@ function makeOpen(wrapper) {
 
 /** @test {VoteCryptoApplication} */
 test('VoteCryptoApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteCryptoApplication);
   t.deepEqual([], getVotes(wrapper));
   t.true(hasResultButton(wrapper));
 });
@@ -42,7 +42,7 @@ test('VoteCryptoApplication should render initial state if no data is given', t 
 test('VoteCryptoApplication should not render result before open', t => {
   const clock = sinon.useFakeTimers();
   try {
-    const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(VoteCryptoApplication);
     t.deepEqual([], getVotes(wrapper));
     t.true(hasResultButton(wrapper));
     addCandidate(wrapper, 'c1');
@@ -65,7 +65,7 @@ test('VoteCryptoApplication should not render result before open', t => {
 
 /** @test {VoteCryptoApplication#handleVotingResult} */
 test('VoteCryptoApplication should render result after open', t => {
-  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteCryptoApplication);
   t.deepEqual([], getVotes(wrapper));
   t.true(hasResultButton(wrapper));
   addCandidate(wrapper, 'c1');
@@ -82,7 +82,7 @@ test('VoteCryptoApplication should render result after open', t => {
 
 /** @test {VoteCryptoApplication.getDerivedStateFromProps} */
 test('VoteCryptoApplication should be updated by props', t => {
-  const wrapper = mount(<VoteCryptoApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteCryptoApplication);
   t.deepEqual([], getVotes(wrapper));
   t.true(hasResultButton(wrapper));
   const model = new VoteCryptoApplication.Model();

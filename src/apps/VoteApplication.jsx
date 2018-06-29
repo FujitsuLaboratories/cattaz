@@ -41,6 +41,7 @@ export default class VoteApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { vote: new VoteModel() };
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);

@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import DateMatcherApplication from '../../src/apps/DateMatcherApplication';
 
@@ -47,13 +46,13 @@ function endEdit(wrapper, attendee) {
 
 /** @test {DateMatcherApplication} */
 test('DateMatcherApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   t.false(hasTable(wrapper));
 });
 
 /** @test {DateMatcherApplication#handleSetCandidates} */
 test('DateMatcherApplication should render empty table after setting candidates', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   setCandidates(wrapper, []);
   t.false(hasTable(wrapper), 'ignore empty');
   setCandidates(wrapper, [' ', '']);
@@ -65,7 +64,7 @@ test('DateMatcherApplication should render empty table after setting candidates'
 
 /** @test {DateMatcherApplication#handleAddAttendee} */
 test('DateMatcherApplication should add an attendee without answers', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   setCandidates(wrapper, ['c1', 'c2']);
   t.deepEqual({}, wrapper.state().model.attendees);
   addAttendee(wrapper, '');
@@ -84,7 +83,7 @@ test('DateMatcherApplication should add an attendee without answers', t => {
 
 /** @test {DateMatcherApplication#handleRemoveAttendee} */
 test('DateMatcherApplication should remove attendee', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   setCandidates(wrapper, ['c1', 'c2']);
   addAttendee(wrapper, 'a1');
   addAttendee(wrapper, 'a2');
@@ -96,7 +95,7 @@ test('DateMatcherApplication should remove attendee', t => {
 
 /** @test {DateMatcherApplication#handleSetAnswer} */
 test('DateMatcherApplication should set answers', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   setCandidates(wrapper, ['c1', 'c2']);
   addAttendee(wrapper, 'a1');
   addAttendee(wrapper, 'a2');
@@ -109,7 +108,7 @@ test('DateMatcherApplication should set answers', t => {
 
 /** @test {DateMatcherApplication.getDerivedStateFromProps} */
 test('DateMatcherApplication should be updated by props', t => {
-  const wrapper = mount(<DateMatcherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateMatcherApplication);
   t.false(hasTable(wrapper));
   const model = new DateMatcherApplication.Model();
   model.setCandidates(['c1', 'c2']);

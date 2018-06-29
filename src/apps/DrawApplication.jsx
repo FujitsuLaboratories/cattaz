@@ -46,6 +46,7 @@ export default class DrawApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { draw: new DrawModel(), start: false, electedTemp: null };
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleStartStop = this.handleStartStop.bind(this);

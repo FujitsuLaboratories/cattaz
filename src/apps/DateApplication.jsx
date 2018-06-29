@@ -34,6 +34,7 @@ export default class DateApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { date: new DateModel() };
     this.handleUpdateDate = this.handleUpdateDate.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {

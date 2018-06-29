@@ -7,6 +7,7 @@ export default class ErrorApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { data: '' };
     this.handleStartRaisingError = this.handleStartRaisingError.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {

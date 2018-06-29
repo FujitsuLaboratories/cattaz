@@ -55,6 +55,7 @@ export default class DateMatcherApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { model: new DateMatcherModel() };
     this.refInputCandidates = React.createRef();
     this.refInputNewAttendee = React.createRef();
     this.handleSetCandidates = this.handleSetCandidates.bind(this);

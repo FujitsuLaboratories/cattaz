@@ -58,6 +58,7 @@ export default class VoteCryptoApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { vote: new VoteCryptoModel() };
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);

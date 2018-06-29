@@ -15,6 +15,7 @@ export default class YoutubeApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { url: '' };
     this.refInput = React.createRef();
     this.handleEdit = this.handleEdit.bind(this);
   }

@@ -1,8 +1,7 @@
-import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import MeetingTimeApplication from '../../src/apps/MeetingTimeApplication';
 
@@ -26,7 +25,7 @@ function clickEnd(wrapper) {
 
 /** @test {MeetingTimeApplication} */
 test('MeetingTimeApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MeetingTimeApplication);
   t.is('', getDurationText(wrapper));
   t.false(hasStart(wrapper));
   t.false(hasEnd(wrapper));
@@ -34,7 +33,7 @@ test('MeetingTimeApplication should render initial state if no data is given', t
 
 /** @test {MeetingTimeApplication#handleUpdateStartTime} */
 test('MeetingTimeApplication should not render duration if no end is given', t => {
-  const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MeetingTimeApplication);
   clickStart(wrapper);
   t.is('', getDurationText(wrapper));
   t.true(hasStart(wrapper));
@@ -45,7 +44,7 @@ test('MeetingTimeApplication should not render duration if no end is given', t =
 test('MeetingTimeApplication should render duration if both start and end are given', t => {
   const clock = sinon.useFakeTimers(new Date(2017, 1, 2, 3, 4, 5).valueOf());
   try {
-    const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(MeetingTimeApplication);
     clickStart(wrapper);
     clock.tick('01:02:00');
     clickEnd(wrapper);
@@ -62,7 +61,7 @@ test('MeetingTimeApplication should render duration if both start and end are gi
 
 /** @test {MeetingTimeApplication.getDerivedStateFromProps} */
 test('MeetingTimeApplication should be updated by props', t => {
-  const wrapper = mount(<MeetingTimeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MeetingTimeApplication);
   t.is('', getDurationText(wrapper));
   const model = new MeetingTimeApplication.Model();
   model.updateStartTime({

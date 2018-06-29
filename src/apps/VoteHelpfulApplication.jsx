@@ -38,6 +38,7 @@ export default class VoteHelpfulApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { vote: new VoteHelpfulModel() };
     this.handleAddVote = this.handleAddVote.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {

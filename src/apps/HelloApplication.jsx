@@ -7,6 +7,7 @@ export default class HelloApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { name: '' };
     this.refInput = React.createRef();
     this.handleEdit = this.handleEdit.bind(this);
   }

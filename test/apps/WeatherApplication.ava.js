@@ -1,9 +1,9 @@
-import React from 'react';
 import test from 'ava';
 import 'whatwg-fetch';
 
-import { mount } from 'enzyme';
 import sinon from 'sinon';
+
+import { mountApp } from '../helper';
 
 import WeatherApplication from '../../src/apps/WeatherApplication';
 
@@ -24,13 +24,13 @@ function setCityAndSubmit(wrapper, city) {
 
 /** @test {WeatherApplication} */
 test('WeatherApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(WeatherApplication);
   t.falsy(getResult(wrapper));
 });
 
 /** @test {WeatherApplication} */
 test('WeatherApplication should render initial state if an empty yaml object is given', t => {
-  const wrapper = mount(<WeatherApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(WeatherApplication);
   t.falsy(getResult(wrapper));
 });
 
@@ -44,7 +44,7 @@ test('WeatherApplication should not get weather if city is not given', t => {
   });
 
   try {
-    const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, '');
     t.false(hasError(wrapper));
@@ -71,7 +71,7 @@ test.cb('WeatherApplication should get weather for kawasaki', t => {
   /* eslint-enable */
 
   try {
-    const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, 'kawasaki');
     setImmediate(() => {
@@ -105,7 +105,7 @@ test.cb('WeatherApplication should display error when no API key is set', t => {
   /* eslint-enable */
 
   try {
-    const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, 'kawasaki');
     setImmediate(() => {
@@ -135,7 +135,7 @@ test.cb('WeatherApplication should not get weather for nonexistant city', t => {
   /* eslint-enable */
 
   try {
-    const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, 'city-that-does-not-exist');
     setImmediate(() => {
@@ -161,7 +161,7 @@ test.cb('WeatherApplication should display error if there is an error on request
   /* eslint-enable */
 
   try {
-    const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, 'kawasaki');
     setImmediate(() => {
@@ -177,7 +177,7 @@ test.cb('WeatherApplication should display error if there is an error on request
 
 /** @test {WeatherApplication.getDerivedStateFromProps} */
 test('WeatherApplication should be updated by props', t => {
-  const wrapper = mount(<WeatherApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(WeatherApplication);
   t.falsy(getResult(wrapper));
   const model = new WeatherApplication.Model();
   model.setWeather({

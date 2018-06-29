@@ -38,6 +38,7 @@ export default class ReversiApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { model: new ReversiModel() };
     this.handlePlaceStone = this.handlePlaceStone.bind(this);
     this.handlePass = this.handlePass.bind(this);
   }

@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import VoteHelpfulApplication from '../../src/apps/VoteHelpfulApplication';
 
@@ -28,14 +27,14 @@ function voteNo(wrapper) {
 
 /** @test {VoteHelpfulApplication} */
 test('VoteHelpfulApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteHelpfulApplication);
   t.true(hasVoteButtons(wrapper));
   t.false(hasBar(wrapper));
 });
 
 /** @test {VoteHelpfulApplication#handleAddVote} */
 test('VoteHelpfulApplication should hide buttons and show bars after voting', t => {
-  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteHelpfulApplication);
   t.true(hasVoteButtons(wrapper));
   t.false(hasBar(wrapper));
   voteYes(wrapper);
@@ -56,7 +55,7 @@ test('VoteHelpfulApplication should hide buttons and show bars after voting', t 
 
 /** @test {VoteHelpfulApplication.getDerivedStateFromProps} */
 test('VoteHelpfulApplication should be updated by props', t => {
-  const wrapper = mount(<VoteHelpfulApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteHelpfulApplication);
   t.true(hasVoteButtons(wrapper));
   t.false(hasBar(wrapper));
   const model = new VoteHelpfulApplication.Model();

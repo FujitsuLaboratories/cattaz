@@ -39,6 +39,7 @@ export default class MandalaApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { mandala: new MandalaModel() };
     this.handleCellChange = this.handleCellChange.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {

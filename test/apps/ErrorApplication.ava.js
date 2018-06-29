@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import ErrorApplication from '../../src/apps/ErrorApplication';
 
@@ -13,21 +12,21 @@ function clickButton(wrapper) {
 /** @test {ErrorApplication} */
 test('ErrorApplication should render without error if odd is given', t => {
   t.notThrows(() => {
-    mount(<ErrorApplication data="odd" onEdit={() => {}} appContext={{}} />);
+    mountApp(ErrorApplication, 'odd');
   });
 });
 
 /** @test {ErrorApplication} */
 test('ErrorApplication should render with error if even is given', t => {
   t.throws(() => {
-    mount(<ErrorApplication data="even" onEdit={() => {}} appContext={{}} />);
+    mountApp(ErrorApplication, 'even');
   });
 });
 
 /** @test {ErrorApplication#handleStartRaisingError} */
 test('ErrorApplication should start raising an error', t => {
   t.notThrows(() => {
-    const wrapper = mount(<ErrorApplication data="odd" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(ErrorApplication, 'odd');
     t.throws(() => {
       clickButton(wrapper);
     });
@@ -37,7 +36,7 @@ test('ErrorApplication should start raising an error', t => {
 /** @test {ErrorApplication.getDerivedStateFromProps} */
 test('ErrorApplication should raise an error if updated text is even', t => {
   t.notThrows(() => {
-    const wrapper = mount(<ErrorApplication data="odd" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(ErrorApplication, 'odd');
     t.throws(() => {
       wrapper.setProp({ data: 'even' });
     });

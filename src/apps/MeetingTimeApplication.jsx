@@ -89,6 +89,7 @@ export default class MeetingTimeApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { time: new MeetingTimeModel() };
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
   }

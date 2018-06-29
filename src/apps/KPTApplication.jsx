@@ -50,6 +50,7 @@ export default class KPTApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { kpt: new KPTModel() };
     this.refInputKeep = React.createRef();
     this.refInputProblem = React.createRef();
     this.refInputTry = React.createRef();

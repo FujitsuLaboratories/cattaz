@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import KPTApplication from '../../src/apps/KPTApplication';
 
@@ -42,7 +41,7 @@ function addTry(wrapper, text) {
 
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication);
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));
@@ -50,7 +49,7 @@ test('KPTApplication should render initial state if no data is given', t => {
 
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if an empty yaml object is given', t => {
-  const wrapper = mount(<KPTApplication data="{}" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication, '{}');
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));
@@ -58,7 +57,7 @@ test('KPTApplication should render initial state if an empty yaml object is give
 
 /** @test {KPTApplication#handleAddKeep} */
 test('KPTApplication should add keep', t => {
-  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication);
   addKeep(wrapper, '');
   t.deepEqual([], getKeeps(wrapper));
   addKeep(wrapper, 'keep1');
@@ -73,7 +72,7 @@ test('KPTApplication should add keep', t => {
 
 /** @test {KPTApplication#handleAddProblem} */
 test('KPTApplication should add problem', t => {
-  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication);
   addProblem(wrapper, '');
   t.deepEqual([], getProblems(wrapper));
   addProblem(wrapper, 'p1');
@@ -83,7 +82,7 @@ test('KPTApplication should add problem', t => {
 
 /** @test {KPTApplication#handleAddTry} */
 test('KPTApplication should add try', t => {
-  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication);
   addTry(wrapper, '');
   t.deepEqual([], getTries(wrapper));
   addTry(wrapper, 't1');
@@ -92,7 +91,7 @@ test('KPTApplication should add try', t => {
 
 /** @test {KPTApplication.getDerivedStateFromProps} */
 test('KPTApplication should be updated by props', t => {
-  const wrapper = mount(<KPTApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(KPTApplication);
   t.deepEqual([], getKeeps(wrapper));
   t.deepEqual([], getProblems(wrapper));
   t.deepEqual([], getTries(wrapper));
