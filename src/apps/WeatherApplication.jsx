@@ -11,19 +11,12 @@ const units = 'metric';
 const iconURL = 'http://openweathermap.org/img/w/';
 
 class WeatherModel {
-  constructor() {
-    this.country = '';
-    this.city = '';
-    this.weather = '';
-    this.icon = '';
-    this.temp = 0;
-  }
-  setWeather(data) {
-    this.country = data.sys.country;
-    this.city = data.name;
-    this.weather = data.weather[0].main;
-    this.icon = data.weather[0].icon;
-    this.temp = data.main.temp;
+  constructor(country = '', city = '', weather = '', icon = '', temp = 0) {
+    this.country = country;
+    this.city = city;
+    this.weather = weather;
+    this.icon = icon;
+    this.temp = temp;
   }
   equals(other) {
     return isEqual(this, other);
@@ -67,10 +60,9 @@ export default class WeatherApplication extends React.Component {
       const response = await window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`);
       const data = await response.json();
       if (data.cod === 200) {
-        this.state.weather.setWeather(data);
-        this.forceUpdate();
-        this.setState({ errorMessage: '' });
-        this.props.onEdit(this.state.weather.serialize(), this.props.appContext);
+        const newWeather = new WeatherModel(data.sys.country, data.name, data.weather[0].main, data.weather[0].icon, data.main.temp);
+        this.setState({ weather: newWeather, errorMessage: '' });
+        this.props.onEdit(newWeather.serialize(), this.props.appContext);
       } else if (data.cod === 401) {
         this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
       } else {

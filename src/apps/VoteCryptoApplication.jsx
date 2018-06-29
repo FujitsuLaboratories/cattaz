@@ -72,7 +72,7 @@ export default class VoteCryptoApplication extends React.Component {
     const newModel = clone(this.state.vote);
     if (newModel.addCandidate(value)) {
       this.setState({ vote: newModel, errorMessage: '' });
-      this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+      this.props.onEdit(newModel.serialize(), this.props.appContext);
     } else {
       this.setState({ errorMessage: 'Duplicate Candidate' });
     }
@@ -82,7 +82,7 @@ export default class VoteCryptoApplication extends React.Component {
     const newModel = clone(this.state.vote);
     newModel.addVote(value);
     this.setState({ vote: newModel, voteMessage: 'Voted' });
-    this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+    this.props.onEdit(newModel.serialize(), this.props.appContext);
     const self = this;
     setTimeout(() => {
       self.setState({ voteMessage: '' });
@@ -92,7 +92,7 @@ export default class VoteCryptoApplication extends React.Component {
     const newModel = clone(this.state.vote);
     newModel.openVoted();
     this.setState({ vote: newModel });
-    this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+    this.props.onEdit(newModel.serialize(), this.props.appContext);
   }
   render() {
     let votingResult = '';

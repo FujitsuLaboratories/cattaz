@@ -18,6 +18,11 @@ class DrawModel {
   equals(other) {
     return isEqual(this, other);
   }
+  clone() {
+    const c = clone(this);
+    c.candidates = clone(this.candidates);
+    return c;
+  }
   serialize() {
     return Yaml.safeDump(this);
   }
@@ -37,7 +42,7 @@ class DrawModel {
 export default class DrawApplication extends React.Component {
   static getDerivedStateFromProps(nextProps) {
     const draw = DrawModel.deserialize(nextProps.data);
-    return { draw, elected: draw.elected };
+    return { draw };
   }
   constructor() {
     super();
@@ -47,7 +52,7 @@ export default class DrawApplication extends React.Component {
     this.drawRun = this.drawRun.bind(this);
   }
   shouldComponentUpdate(newProps, nextState) {
-    return !this.state.draw.equals(nextState.draw) || this.state.elected !== nextState.elected || this.state.start !== nextState.start;
+    return !this.state.draw.equals(nextState.draw) || this.state.electedTemp !== nextState.electedTemp || this.state.start !== nextState.start;
   }
   componentWillUnmount() {
     clearInterval(this.intervalId);
@@ -55,14 +60,13 @@ export default class DrawApplication extends React.Component {
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    const newModel = clone(this.state.draw);
+    const newModel = this.state.draw.clone();
     newModel.addCandidate(value);
     this.setState({ draw: newModel });
-    this.forceUpdate();
-    this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
+    this.props.onEdit(newModel.serialize(), this.props.appContext);
   }
   drawRun() {
-    this.setState({ elected: this.state.draw.candidates[Math.ceil(Math.random() * this.state.draw.candidates.length) - 1] });
+    this.setState({ electedTemp: this.state.draw.candidates[Math.ceil(Math.random() * this.state.draw.candidates.length) - 1] });
   }
   handleStartStop() {
     if (!this.state.start) {
@@ -71,15 +75,18 @@ export default class DrawApplication extends React.Component {
       this.setState({ start: true });
     } else {
       clearInterval(this.intervalId);
-      this.state.draw.setElected(this.state.elected);
-      this.setState({ start: false });
-      this.props.onEdit(this.state.draw.serialize(), this.props.appContext);
+      const newModel = this.state.draw.clone();
+      newModel.setElected(this.state.electedTemp);
+      this.setState({
+        draw: newModel, start: false, electedTemp: null,
+      });
+      this.props.onEdit(newModel.serialize(), this.props.appContext);
     }
   }
   render() {
-    let dispElected = this.state.elected;
-    if (this.state.elected && this.state.elected.length > 10) {
-      dispElected = `${this.state.elected.substr(0, 10)}...`;
+    let dispElected = this.state.electedTemp || this.state.draw.elected;
+    if (dispElected && dispElected.length > 10) {
+      dispElected = `${dispElected.substr(0, 10)}...`;
     }
     return (
       <div style={{ marginBottom: '50px' }}>

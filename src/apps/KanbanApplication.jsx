@@ -17,6 +17,9 @@ class KanbanModelItem {
     const emphasis = repeat('*', this.importance);
     return `${emphasis}${this.name}${emphasis}`;
   }
+  clone() {
+    return clone(this);
+  }
 }
 
 class KanbanModelList {
@@ -44,6 +47,11 @@ class KanbanModelList {
       `* ${this.name}`,
       ...this.items.map(i => `  * ${i.toMarkdown()}`),
     ].join('\n');
+  }
+  clone() {
+    const c = clone(this);
+    c.items = this.items.map(i => i.clone());
+    return c;
   }
 }
 
@@ -79,6 +87,11 @@ class KanbanModel {
   }
   equals(other) {
     return isEqual(this, other);
+  }
+  clone() {
+    const c = clone(this);
+    c.lists = this.lists.map(l => l.clone());
+    return c;
   }
   serialize() {
     return this.lists.map(l => l.toMarkdown()).join('\n');
@@ -358,6 +371,7 @@ class KanbanApplication extends React.Component {
   }
   constructor() {
     super();
+    this.state = { kanban: new KanbanModel() };
     this.refInputList = React.createRef();
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleAddList = this.handleAddList.bind(this);
@@ -369,10 +383,11 @@ class KanbanApplication extends React.Component {
   shouldComponentUpdate(newProps, nextState) {
     return !this.state.kanban.equals(nextState.kanban);
   }
-  modelUpdated() {
-    this.setState({ kanban: clone(this.state.kanban) });
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  updateKanban(updator) {
+    const newKanban = this.state.kanban.clone();
+    updator(newKanban);
+    this.setState({ kanban: newKanban });
+    this.props.onEdit(newKanban.serialize(), this.props.appContext);
   }
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
@@ -380,37 +395,43 @@ class KanbanApplication extends React.Component {
     if (textbox) {
       const text = textbox.value;
       if (text) {
-        this.state.kanban.getListAt(index).addItem(text);
-        this.modelUpdated();
+        this.updateKanban((k) => {
+          k.getListAt(index).addItem(text);
+        });
       }
     }
   }
   handleAddList() {
     const text = this.refInputList.current.value;
     if (text) {
-      this.state.kanban.addList(text);
-      this.modelUpdated();
+      this.updateKanban((k) => {
+        k.addList(text);
+      });
     }
   }
   handleRemoveList(listIndex) {
-    this.state.kanban.removeListAt(listIndex);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.removeListAt(listIndex);
+    });
   }
   handleRemoveItem(itemId) {
-    this.state.kanban.getListAt(itemId.list).removeItemAt(itemId.item);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.getListAt(itemId.list).removeItemAt(itemId.item);
+    });
   }
   handleMoveItem(sourceId, targetId) {
     let targetItemIndex = targetId.item;
     if (targetItemIndex < 0) {
       targetItemIndex = this.state.kanban.getListAt(targetId.list).getLength();
     }
-    this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
+    });
   }
   handleMoveList(sourceId, targetId) {
-    this.state.kanban.moveList(sourceId, targetId);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.moveList(sourceId, targetId);
+    });
   }
   renderRow2(index) {
     return (
