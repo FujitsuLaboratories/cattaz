@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import VoteApplication from '../../src/apps/VoteApplication';
 
@@ -32,13 +31,13 @@ function addVote(wrapper, candidateText) {
 
 /** @test {VoteApplication} */
 test('VoteApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteApplication);
   t.deepEqual({}, getVotes(wrapper));
 });
 
 /** @test {VoteApplication#handleAddCandidate} */
 test('VoteApplication should reject duplicated candidates', t => {
-  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteApplication);
   addCandidate(wrapper, '');
   t.deepEqual({}, getVotes(wrapper));
   addCandidate(wrapper, 'c1');
@@ -49,7 +48,7 @@ test('VoteApplication should reject duplicated candidates', t => {
 
 /** @test {VoteApplication#handleAddVote} */
 test('VoteApplication should count votes', t => {
-  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteApplication);
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
   t.deepEqual({ c1: 0, c2: 0 }, getVotes(wrapper));
@@ -59,9 +58,9 @@ test('VoteApplication should count votes', t => {
   t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
 });
 
-/** @test {VoteApplication.getDerivedStateFromProps} */
+/** @test {VoteApplication#shouldComponentUpdate} */
 test('VoteApplication should be updated by props', t => {
-  const wrapper = mount(<VoteApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(VoteApplication);
   t.deepEqual({}, getVotes(wrapper));
   const model = new VoteApplication.Model();
   model.addCandidate('c1');

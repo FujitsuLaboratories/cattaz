@@ -32,24 +32,27 @@ class VoteHelpfulModel {
 }
 
 export default class VoteHelpfulApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const vote = VoteHelpfulModel.deserialize(nextProps.data);
-    return { vote };
-  }
   constructor() {
     super();
+    this.state = { voted: false };
     this.handleAddVote = this.handleAddVote.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.vote.equals(nextState.vote) || this.state.voted !== nextState.voted;
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) return true;
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = VoteHelpfulModel.deserialize(this.props.data);
+    const newModel = VoteHelpfulModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
-    this.state.vote.addVote(value);
-    this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+    const model = VoteHelpfulModel.deserialize(this.props.data);
+    model.addVote(value);
+    this.props.onEdit(model.serialize(), this.props.appContext);
     this.setState({ voted: true });
   }
   render() {
+    const model = VoteHelpfulModel.deserialize(this.props.data);
     const colors = { No: '#da3d3d', Yes: '#218bce' };
     const styles = {
       button: {
@@ -93,8 +96,8 @@ export default class VoteHelpfulApplication extends React.Component {
       />));
 
     const W = 320;
-    const ny = this.state.vote.candidates.Yes;
-    const nn = this.state.vote.candidates.No;
+    const ny = model.candidates.Yes;
+    const nn = model.candidates.No;
     const wy = ny / (ny + nn);
     const wn = nn / (ny + nn);
 
@@ -114,7 +117,7 @@ export default class VoteHelpfulApplication extends React.Component {
             : buttonElems
         }
         {
-          this.state.vote.candidates.Yes + this.state.vote.candidates.No > 0
+          model.candidates.Yes + model.candidates.No > 0
             ? barElems
             : null
         }
@@ -125,8 +128,6 @@ export default class VoteHelpfulApplication extends React.Component {
 VoteHelpfulApplication.Model = VoteHelpfulModel;
 
 VoteHelpfulApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

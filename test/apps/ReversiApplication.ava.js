@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import * as RM from '../../src/apps/ReversiModel';
 import ReversiApplication from '../../src/apps/ReversiApplication';
@@ -24,21 +23,21 @@ function getButton(wrapper, positionLabel) {
 
 /** @test {ReversiApplication} */
 test('ReversiApplication should render initial cells if no data is given', t => {
-  const wrapper = mount(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(ReversiApplication);
   t.deepEqual([2, 2], extractStoneCounts(wrapper));
 });
 
 /** @test {ReversiApplication#handlePlaceStone} */
 test('ReversiApplication should place stones', t => {
-  const wrapper = mount(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(ReversiApplication);
   getButton(wrapper, 'c4').simulate('click');
   t.deepEqual([4, 1], extractStoneCounts(wrapper));
   t.is(getButton(wrapper, 'c4').length, 0, 'button should be disappeared');
 });
 
-/** @test {ReversiApplication.getDerivedStateFromProps} */
+/** @test {ReversiApplication#shouldComponentUpdate} */
 test('ReversiApplication should be updated by props', t => {
-  const wrapper = mount(<ReversiApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(ReversiApplication);
   t.deepEqual([2, 2], extractStoneCounts(wrapper));
   const model = new Model();
   model.addStep(Black, 3, 2);

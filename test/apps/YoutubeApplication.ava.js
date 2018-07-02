@@ -1,7 +1,6 @@
-import React from 'react';
 import test from 'ava';
 
-import { mount } from 'enzyme';
+import { mountApp } from '../helper';
 
 import YoutubeApplication, { extractYouTubeVideoID } from '../../src/apps/YoutubeApplication';
 
@@ -28,19 +27,19 @@ test('extractYouTubeVideoID should extract ID', t => {
 
 /** @test {YoutubeApplication} */
 test('YoutubeApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<YoutubeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(YoutubeApplication);
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
 });
 
 /** @test {YoutubeApplication} */
 test('YouTubeApplication should render URL if data is given', t => {
-  const wrapper = mount(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(YoutubeApplication, 'https://www.youtube.com/watch?v=V7lqCuoK9Lw');
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));
 });
 
 /** @test {YoutubeApplication} */
 test('YoutubeApplication should render input URL', t => {
-  const wrapper = mount(<YoutubeApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(YoutubeApplication);
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
   setInputText(wrapper, 'https://www.youtube.com/watch?v=V7lqCuoK9Lw');
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));
@@ -50,9 +49,9 @@ test('YoutubeApplication should render input URL', t => {
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
 });
 
-/** @test {YoutubeApplication.getDerivedStateFromProps} */
+/** @test {YoutubeApplication#shouldComponentUpdate} */
 test('YoutubeApplication should rerender if props change', t => {
-  const wrapper = mount(<YoutubeApplication data="https://www.youtube.com/watch?v=V7lqCuoK9Lw" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(YoutubeApplication, 'https://www.youtube.com/watch?v=V7lqCuoK9Lw');
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));
   wrapper.setProps({ data: 'https://www.youtube.com/watch?v=vmm9y5bRehQ' });
   t.is('https://www.youtube.com/embed/vmm9y5bRehQ?rel=0', getUrl(wrapper));

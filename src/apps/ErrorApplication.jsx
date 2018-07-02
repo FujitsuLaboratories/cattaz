@@ -2,26 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class ErrorApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    return { data: nextProps.data };
-  }
   constructor() {
     super();
     this.handleStartRaisingError = this.handleStartRaisingError.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return this.state.data !== nextState.data;
+  shouldComponentUpdate(nextProps) {
+    return this.props.data !== nextProps.data;
   }
   handleStartRaisingError() {
     this.props.onEdit('even', this.props.appContext);
-    this.setState({ data: 'even' });
   }
   render() {
-    const text = (this.state.data && this.state.data.trim()) || '';
+    const text = (this.props.data && this.props.data.trim()) || '';
     if (text.length % 2 === 1) {
       return (
         <div>
-          <p>No error because length of &apos;{this.state.data.trim()}&apos; is odd.</p>
+          <p>No error because length of &apos;{text}&apos; is odd.</p>
           <button onClick={this.handleStartRaisingError}>Start raising an error</button>
         </div>);
     }

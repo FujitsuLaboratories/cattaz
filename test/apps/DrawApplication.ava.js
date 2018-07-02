@@ -1,8 +1,8 @@
-import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { mount } from 'enzyme';
+
+import { mountApp } from '../helper';
 
 import DrawApplication from '../../src/apps/DrawApplication';
 
@@ -27,7 +27,7 @@ function pressStartStop(wrapper) {
 
 /** @test {DrawApplication} */
 test('DrawApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
   t.is('', getDisplayed(wrapper));
@@ -35,7 +35,7 @@ test('DrawApplication should render initial state if no data is given', t => {
 
 /** @test {DrawApplication#handleAddCandidates} */
 test('DrawApplication should render candidates', t => {
-  const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
@@ -49,7 +49,7 @@ test('DrawApplication should render candidates', t => {
 test('DrawApplication should display candidates in randomly when it is in draw status', t => {
   const clock = sinon.useFakeTimers(new Date(2017, 1, 2, 3, 4, 5).valueOf());
   try {
-    const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(DrawApplication);
     addCandidate(wrapper, 'c1');
     addCandidate(wrapper, 'c2');
     addCandidate(wrapper, 'c3');
@@ -78,9 +78,9 @@ test('DrawApplication should display candidates in randomly when it is in draw s
   }
 });
 
-/** @test {DrawApplication.getDerivedStateFromProps} */
+/** @test {DrawApplication#shouldComponentUpdate} */
 test('DrawApplication should be updated by props', t => {
-  const wrapper = mount(<DrawApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
   t.is('', getDisplayed(wrapper));

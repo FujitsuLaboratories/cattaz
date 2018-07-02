@@ -94,10 +94,6 @@ class BookmarksModel {
 }
 
 export default class BookmarksApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const bookmarks = BookmarksModel.deserialize(nextProps.data);
-    return { bookmarks };
-  }
   static getDateBeforeDays(days) {
     const date = new Date();
     date.setDate(date.getDate() - days); // Automatically calculate month
@@ -110,31 +106,35 @@ export default class BookmarksApplication extends React.Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.bookmarks.equals(nextState.bookmarks);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = BookmarksModel.deserialize(this.props.data);
+    const newModel = BookmarksModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleAdd() {
     const name = this.refInputName.current.value;
     const link = this.refInputLink.current.value;
     if (name && link) {
-      if (!this.state.bookmarks.hasBookmark(link)) {
-        this.state.bookmarks.addBookmark(name, link);
-        this.forceUpdate();
-        this.props.onEdit(this.state.bookmarks.serialize(), this.props.appContext);
+      const bookmarks = BookmarksModel.deserialize(this.props.data);
+      if (!bookmarks.hasBookmark(link)) {
+        bookmarks.addBookmark(name, link);
+        this.props.onEdit(bookmarks.serialize(), this.props.appContext);
       }
     }
   }
   handleClick(ev) {
     const link = ev.target.getAttribute('data-link'); // href attribute may be changed by canonicalization
     ev.preventDefault();
-    this.state.bookmarks.addClickCount(link, new Date());
-    this.forceUpdate();
-    this.props.onEdit(this.state.bookmarks.serialize(), this.props.appContext);
+    const bookmarks = BookmarksModel.deserialize(this.props.data);
+    bookmarks.addClickCount(link, new Date());
+    this.props.onEdit(bookmarks.serialize(), this.props.appContext);
     window.open(link, '_blank');
   }
   render() {
     const now = new Date();
-    const scoredBookmarks = this.state.bookmarks.bookmarks.map(b => [b, b.getScore(now)]);
+    const bookmarks = BookmarksModel.deserialize(this.props.data);
+    const scoredBookmarks = bookmarks.bookmarks.map(b => [b, b.getScore(now)]);
     scoredBookmarks.sort((a, b) => b[1] - a[1]);
     return (
       <React.Fragment>
@@ -151,8 +151,6 @@ export default class BookmarksApplication extends React.Component {
 BookmarksApplication.Model = BookmarksModel;
 
 BookmarksApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

@@ -1,17 +1,14 @@
-import React from 'react';
 import test from 'ava';
-
-import { mount } from 'enzyme';
 
 import fill from 'lodash/fill';
 import range from 'lodash/range';
 
+import { mountApp } from '../helper';
+
 import MandalaApplication from '../../src/apps/MandalaApplication';
 
 function getTexts(wrapper) {
-  // TODO how to get textarea's value?
-  // return wrapper.find('textarea').map(t => t.text());
-  return wrapper.state('mandala').block;
+  return wrapper.find('textarea').map(t => t.text());
 }
 function setText(wrapper, index, text) {
   const t = wrapper.find('textarea').at(index);
@@ -21,13 +18,13 @@ function setText(wrapper, index, text) {
 
 /** @test {MandalaApplication} */
 test('MandalaApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MandalaApplication);
   t.deepEqual(fill(new Array(9), ''), getTexts(wrapper));
 });
 
 /** @test {MandalaApplication#handleCellChange} */
 test('MandalaApplication should accept changes in textarea', t => {
-  const wrapper = mount(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MandalaApplication);
   t.deepEqual(fill(new Array(9), ''), getTexts(wrapper));
   setText(wrapper, 0, 's0');
   setText(wrapper, 4, 's4');
@@ -35,9 +32,9 @@ test('MandalaApplication should accept changes in textarea', t => {
   t.deepEqual(['s0', '', '', '', 's4', '', '', '', 's8'], getTexts(wrapper));
 });
 
-/** @test {MandalaApplication.getDerivedStateFromProps} */
+/** @test {MandalaApplication#shouldComponentUpdate} */
 test('MandalaApplication should be updated by props', t => {
-  const wrapper = mount(<MandalaApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(MandalaApplication);
   t.deepEqual(fill(new Array(9), ''), getTexts(wrapper));
   const model = new MandalaApplication.Model();
   for (let i = 0; i < 9; i += 1) {

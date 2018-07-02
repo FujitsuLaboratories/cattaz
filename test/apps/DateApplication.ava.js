@@ -1,14 +1,14 @@
-import React from 'react';
 import test from 'ava';
 
 import sinon from 'sinon';
-import { mount } from 'enzyme';
+
+import { mountApp } from '../helper';
 
 import DateApplication from '../../src/apps/DateApplication';
 
 /** @test {DateApplication} */
 test('DateApplication should render initial state if no data is given', t => {
-  const wrapper = mount(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateApplication);
   t.is('Date and time: ', wrapper.text());
 });
 
@@ -16,7 +16,7 @@ test('DateApplication should render initial state if no data is given', t => {
 test('DateApplication should display current time after clicking button', t => {
   const clock = sinon.useFakeTimers(new Date(2017, 1, 2, 3, 4, 5).valueOf());
   try {
-    const wrapper = mount(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
+    const wrapper = mountApp(DateApplication);
     wrapper.find('input').first().simulate('click');
     t.is('Date and time: 2017-2-2 (Thu) 3:4', wrapper.text());
     clock.tick('01:02:00');
@@ -27,9 +27,9 @@ test('DateApplication should display current time after clicking button', t => {
   }
 });
 
-/** @test {DateApplication.getDerivedStateFromProps} */
+/** @test {DateApplication#shouldComponentUpdate} */
 test('DateApplication should be updated by props', t => {
-  const wrapper = mount(<DateApplication data="" onEdit={() => {}} appContext={{}} />);
+  const wrapper = mountApp(DateApplication);
   t.is('Date and time: ', wrapper.text());
   const model = new DateApplication.Model();
   model.updateDate('2017-01-02');

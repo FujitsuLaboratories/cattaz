@@ -83,41 +83,41 @@ class MeetingTimeModel {
 }
 
 export default class MeetingTimeApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const time = MeetingTimeModel.deserialize(nextProps.data);
-    return { time };
-  }
   constructor() {
     super();
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.time.equals(nextState.time);
-  }
-  updateTime(updater) {
-    const value = getNowTime();
-    updater(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.time.serialize(), this.props.appContext);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = MeetingTimeModel.deserialize(this.props.data);
+    const newModel = MeetingTimeModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleUpdateStartTime() {
-    this.updateTime(this.state.time.updateStartTime.bind(this.state.time));
+    const value = getNowTime();
+    const model = MeetingTimeModel.deserialize(this.props.data);
+    model.updateStartTime(value);
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   handleUpdateEndTime() {
-    this.updateTime(this.state.time.updateEndTime.bind(this.state.time));
+    const value = getNowTime();
+    const model = MeetingTimeModel.deserialize(this.props.data);
+    model.updateEndTime(value);
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   render() {
-    const duration = calculationDuration(this.state.time.startTime, this.state.time.endTime);
+    const time = MeetingTimeModel.deserialize(this.props.data);
+    const duration = calculationDuration(time.startTime, time.endTime);
     const convertDateToString = date => `${date.year}/${date.month}/${date.day} (${date.week}) ${date.hour}:${date.minute}`;
     return (
       <div>
         <div key="start">
-          Start at {convertDateToString(this.state.time.startTime)}&nbsp;
+          Start at {convertDateToString(time.startTime)}&nbsp;
           <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
         </div>
         <div key="end">
-          End at {convertDateToString(this.state.time.endTime)}&nbsp;
+          End at {convertDateToString(time.endTime)}&nbsp;
           <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
         </div>
         <div key="duration">
@@ -130,8 +130,6 @@ export default class MeetingTimeApplication extends React.Component {
 MeetingTimeApplication.Model = MeetingTimeModel;
 
 MeetingTimeApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

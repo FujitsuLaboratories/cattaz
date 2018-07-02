@@ -33,25 +33,25 @@ class MandalaModel {
 }
 
 export default class MandalaApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const mandala = MandalaModel.deserialize(nextProps.data);
-    return { mandala };
-  }
   constructor() {
     super();
     this.handleCellChange = this.handleCellChange.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.mandala.equals(nextState.mandala);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = MandalaModel.deserialize(this.props.data);
+    const newModel = MandalaModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleCellChange(event) {
     const index = parseInt(event.target.getAttribute('data-index'), 10);
     const { value } = event.target;
-    this.state.mandala.changeCell(index, value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.mandala.serialize(), this.props.appContext);
+    const mandala = MandalaModel.deserialize(this.props.data);
+    mandala.changeCell(index, value);
+    this.props.onEdit(mandala.serialize(), this.props.appContext);
   }
   render() {
+    const mandala = MandalaModel.deserialize(this.props.data);
     const blockStyle = {
       display: 'inline-block',
       lineHeight: 0,
@@ -66,7 +66,7 @@ export default class MandalaApplication extends React.Component {
       // borderRadius: 5,
       resize: 'none',
     };
-    const rows = chunk(this.state.mandala.block, LENGTH).map((rowData, rowIndex) =>
+    const rows = chunk(mandala.block, LENGTH).map((rowData, rowIndex) =>
       rowData.map((text, colIndex) =>
         <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />));
     return <div><div style={blockStyle}>{rows.map(row => [row, <br />])}</div></div>;
@@ -76,8 +76,6 @@ export default class MandalaApplication extends React.Component {
 MandalaApplication.Model = MandalaModel;
 
 MandalaApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

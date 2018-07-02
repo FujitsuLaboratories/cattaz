@@ -17,6 +17,9 @@ class KanbanModelItem {
     const emphasis = repeat('*', this.importance);
     return `${emphasis}${this.name}${emphasis}`;
   }
+  clone() {
+    return clone(this);
+  }
 }
 
 class KanbanModelList {
@@ -44,6 +47,11 @@ class KanbanModelList {
       `* ${this.name}`,
       ...this.items.map(i => `  * ${i.toMarkdown()}`),
     ].join('\n');
+  }
+  clone() {
+    const c = clone(this);
+    c.items = this.items.map(i => i.clone());
+    return c;
   }
 }
 
@@ -79,6 +87,11 @@ class KanbanModel {
   }
   equals(other) {
     return isEqual(this, other);
+  }
+  clone() {
+    const c = clone(this);
+    c.lists = this.lists.map(l => l.clone());
+    return c;
   }
   serialize() {
     return this.lists.map(l => l.toMarkdown()).join('\n');
@@ -352,10 +365,6 @@ const KanbanTrashDraggable = DropTarget(dndTypes.kanbanCard, trashCardTarget, (c
 }))(KanbanTrash));
 
 class KanbanApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const kanban = KanbanModel.deserialize(nextProps.data);
-    return { kanban };
-  }
   constructor() {
     super();
     this.refInputList = React.createRef();
@@ -366,13 +375,16 @@ class KanbanApplication extends React.Component {
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.kanban.equals(nextState.kanban);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = KanbanModel.deserialize(this.props.data);
+    const newModel = KanbanModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
-  modelUpdated() {
-    this.setState({ kanban: clone(this.state.kanban) });
-    this.forceUpdate();
-    this.props.onEdit(this.state.kanban.serialize(), this.props.appContext);
+  updateKanban(updator) {
+    const newKanban = KanbanModel.deserialize(this.props.data);
+    updator(newKanban);
+    this.props.onEdit(newKanban.serialize(), this.props.appContext);
   }
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
@@ -380,37 +392,45 @@ class KanbanApplication extends React.Component {
     if (textbox) {
       const text = textbox.value;
       if (text) {
-        this.state.kanban.getListAt(index).addItem(text);
-        this.modelUpdated();
+        this.updateKanban((k) => {
+          k.getListAt(index).addItem(text);
+        });
       }
     }
   }
   handleAddList() {
     const text = this.refInputList.current.value;
     if (text) {
-      this.state.kanban.addList(text);
-      this.modelUpdated();
+      this.updateKanban((k) => {
+        k.addList(text);
+      });
     }
   }
   handleRemoveList(listIndex) {
-    this.state.kanban.removeListAt(listIndex);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.removeListAt(listIndex);
+    });
   }
   handleRemoveItem(itemId) {
-    this.state.kanban.getListAt(itemId.list).removeItemAt(itemId.item);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.getListAt(itemId.list).removeItemAt(itemId.item);
+    });
   }
   handleMoveItem(sourceId, targetId) {
     let targetItemIndex = targetId.item;
     if (targetItemIndex < 0) {
-      targetItemIndex = this.state.kanban.getListAt(targetId.list).getLength();
+      // Item is dropped off outside of any cards, move the item to last
+      const model = KanbanModel.deserialize(this.props.data);
+      targetItemIndex = model.getListAt(targetId.list).getLength();
     }
-    this.state.kanban.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
+    });
   }
   handleMoveList(sourceId, targetId) {
-    this.state.kanban.moveList(sourceId, targetId);
-    this.modelUpdated();
+    this.updateKanban((k) => {
+      k.moveList(sourceId, targetId);
+    });
   }
   renderRow2(index) {
     return (
@@ -421,6 +441,7 @@ class KanbanApplication extends React.Component {
       </td>);
   }
   render() {
+    const model = KanbanModel.deserialize(this.props.data);
     return (
       <div>
         <input ref={this.refInputList} type="text" placeholder="Add list" />
@@ -429,10 +450,10 @@ class KanbanApplication extends React.Component {
         <table>
           <tbody>
             <tr>
-              {this.state.kanban.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} app={this} />)}
+              {model.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} app={this} />)}
             </tr>
             <tr>
-              {this.state.kanban.lists.map((l, i) => this.renderRow2(i))}
+              {model.lists.map((l, i) => this.renderRow2(i))}
             </tr>
           </tbody>
         </table>
@@ -443,8 +464,6 @@ class KanbanApplication extends React.Component {
 KanbanApplication.Model = KanbanModel;
 
 KanbanApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

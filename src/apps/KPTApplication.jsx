@@ -44,10 +44,6 @@ const cellStyle = {
 };
 
 export default class KPTApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const kpt = KPTModel.deserialize(nextProps.data);
-    return { kpt };
-  }
   constructor() {
     super();
     this.refInputKeep = React.createRef();
@@ -57,24 +53,32 @@ export default class KPTApplication extends React.Component {
     this.handleAddProblem = this.handleAddProblem.bind(this);
     this.handleAddTry = this.handleAddTry.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.kpt.equals(nextState.kpt);
-  }
-  addItem(refInput, method) {
-    const { value } = refInput.current;
-    if (!value) return;
-    method(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.kpt.serialize(), this.props.appContext);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = KPTModel.deserialize(this.props.data);
+    const newModel = KPTModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleAddKeep() {
-    this.addItem(this.refInputKeep, this.state.kpt.addKeep.bind(this.state.kpt));
+    const { value } = this.refInputKeep.current;
+    if (!value) return;
+    const kpt = KPTModel.deserialize(this.props.data);
+    kpt.addKeep(value);
+    this.props.onEdit(kpt.serialize(), this.props.appContext);
   }
   handleAddProblem() {
-    this.addItem(this.refInputProblem, this.state.kpt.addProblem.bind(this.state.kpt));
+    const { value } = this.refInputProblem.current;
+    if (!value) return;
+    const kpt = KPTModel.deserialize(this.props.data);
+    kpt.addProblem(value);
+    this.props.onEdit(kpt.serialize(), this.props.appContext);
   }
   handleAddTry() {
-    this.addItem(this.refInputTry, this.state.kpt.addTry.bind(this.state.kpt));
+    const { value } = this.refInputTry.current;
+    if (!value) return;
+    const kpt = KPTModel.deserialize(this.props.data);
+    kpt.addTry(value);
+    this.props.onEdit(kpt.serialize(), this.props.appContext);
   }
   renderCell(title, items, handlerAdd, rowSpan = 1) {
     return (
@@ -90,16 +94,17 @@ export default class KPTApplication extends React.Component {
       </td>);
   }
   render() {
+    const kpt = KPTModel.deserialize(this.props.data);
     return (
       <div>
         <table>
           <tbody>
             <tr>
-              {this.renderCell('Keep', this.state.kpt.keeps, this.handleAddKeep)}
-              {this.renderCell('Try', this.state.kpt.tries, this.handleAddTry, 2)}
+              {this.renderCell('Keep', kpt.keeps, this.handleAddKeep)}
+              {this.renderCell('Try', kpt.tries, this.handleAddTry, 2)}
             </tr>
             <tr>
-              {this.renderCell('Problem', this.state.kpt.problems, this.handleAddProblem)}
+              {this.renderCell('Problem', kpt.problems, this.handleAddProblem)}
             </tr>
           </tbody>
         </table>
@@ -110,8 +115,6 @@ export default class KPTApplication extends React.Component {
 KPTApplication.Model = KPTModel;
 
 KPTApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

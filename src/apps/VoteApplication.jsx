@@ -35,44 +35,46 @@ class VoteModel {
 }
 
 export default class VoteApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const vote = VoteModel.deserialize(nextProps.data);
-    return { vote };
-  }
   constructor() {
     super();
+    this.state = { errorMessage: '' };
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.vote.equals(nextState.vote) || this.state.errorMessage !== nextState.errorMessage;
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) return true;
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = VoteModel.deserialize(this.props.data);
+    const newModel = VoteModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    if (this.state.vote.addCandidate(value)) {
-      this.forceUpdate();
+    const model = VoteModel.deserialize(this.props.data);
+    if (model.addCandidate(value)) {
       this.setState({ errorMessage: '' });
-      this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+      this.props.onEdit(model.serialize(), this.props.appContext);
     } else {
       this.setState({ errorMessage: 'Duplicate Candidates' });
     }
   }
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
-    this.state.vote.addVote(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.vote.serialize(), this.props.appContext);
+    const model = VoteModel.deserialize(this.props.data);
+    model.addVote(value);
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   render() {
+    const model = VoteModel.deserialize(this.props.data);
     return (
       <div style={{ marginBottom: '50px' }}>
         <input ref={this.refInputCandidate} type="text" placeholder="Name of candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
         <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <ul>
-          {Object.keys(this.state.vote.candidates).map(s => (<li key={s}>{s}: {this.state.vote.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
+          {Object.keys(model.candidates).map(s => (<li key={s}>{s}: {model.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
         </ul>
       </div>);
   }
@@ -81,8 +83,6 @@ export default class VoteApplication extends React.Component {
 VoteApplication.Model = VoteModel;
 
 VoteApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,
