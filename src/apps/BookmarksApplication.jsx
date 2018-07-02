@@ -94,11 +94,6 @@ class BookmarksModel {
 }
 
 export default class BookmarksApplication extends React.Component {
-  static getDateBeforeDays(days) {
-    const date = new Date();
-    date.setDate(date.getDate() - days); // Automatically calculate month
-    return date;
-  }
   constructor() {
     super();
     this.refInputName = React.createRef();
@@ -111,6 +106,11 @@ export default class BookmarksApplication extends React.Component {
     const oldModel = BookmarksModel.deserialize(this.props.data);
     const newModel = BookmarksModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
+  }
+  static getDateBeforeDays(days) {
+    const date = new Date();
+    date.setDate(date.getDate() - days); // Automatically calculate month
+    return date;
   }
   handleAdd() {
     const name = this.refInputName.current.value;
