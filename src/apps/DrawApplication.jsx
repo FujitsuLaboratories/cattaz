@@ -40,20 +40,20 @@ class DrawModel {
 }
 
 export default class DrawApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const draw = DrawModel.deserialize(nextProps.data);
-    return { draw };
-  }
   constructor() {
     super();
-    this.state = { draw: new DrawModel(), start: false, electedTemp: null };
+    this.state = { start: false, electedTemp: null };
     this.refInputCandidate = React.createRef();
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleStartStop = this.handleStartStop.bind(this);
     this.drawRun = this.drawRun.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.draw.equals(nextState.draw) || this.state.electedTemp !== nextState.electedTemp || this.state.start !== nextState.start;
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) return true;
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = DrawModel.deserialize(this.props.data);
+    const newModel = DrawModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   componentWillUnmount() {
     clearInterval(this.intervalId);
@@ -61,13 +61,13 @@ export default class DrawApplication extends React.Component {
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    const newModel = this.state.draw.clone();
+    const newModel = DrawModel.deserialize(this.props.data);
     newModel.addCandidate(value);
-    this.setState({ draw: newModel });
     this.props.onEdit(newModel.serialize(), this.props.appContext);
   }
   drawRun() {
-    this.setState({ electedTemp: this.state.draw.candidates[Math.ceil(Math.random() * this.state.draw.candidates.length) - 1] });
+    const draw = DrawModel.deserialize(this.props.data);
+    this.setState({ electedTemp: draw.candidates[Math.ceil(Math.random() * draw.candidates.length) - 1] });
   }
   handleStartStop() {
     if (!this.state.start) {
@@ -76,16 +76,17 @@ export default class DrawApplication extends React.Component {
       this.setState({ start: true });
     } else {
       clearInterval(this.intervalId);
-      const newModel = this.state.draw.clone();
+      const newModel = DrawModel.deserialize(this.props.data);
       newModel.setElected(this.state.electedTemp);
       this.setState({
-        draw: newModel, start: false, electedTemp: null,
+        start: false, electedTemp: null,
       });
       this.props.onEdit(newModel.serialize(), this.props.appContext);
     }
   }
   render() {
-    let dispElected = this.state.electedTemp || this.state.draw.elected;
+    const draw = DrawModel.deserialize(this.props.data);
+    let dispElected = this.state.electedTemp || draw.elected;
     if (dispElected && dispElected.length > 10) {
       dispElected = `${dispElected.substr(0, 10)}...`;
     }
@@ -93,8 +94,8 @@ export default class DrawApplication extends React.Component {
       <div style={{ marginBottom: '50px' }}>
         <input ref={this.refInputCandidate} type="text" placeholder="Add Candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
-        <div key="candidates">Candidates {JSON.stringify(this.state.draw.candidates)}</div>
-        <div key="elected">Elected [{this.state.draw.elected}]</div>
+        <div key="candidates">Candidates {JSON.stringify(draw.candidates)}</div>
+        <div key="elected">Elected [{draw.elected}]</div>
         <div
           key="display"
           style={{
@@ -117,8 +118,6 @@ export default class DrawApplication extends React.Component {
 DrawApplication.Model = DrawModel;
 
 DrawApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

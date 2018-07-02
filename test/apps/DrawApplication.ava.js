@@ -78,7 +78,7 @@ test('DrawApplication should display candidates in randomly when it is in draw s
   }
 });
 
-/** @test {DrawApplication.getDerivedStateFromProps} */
+/** @test {DrawApplication#shouldComponentUpdate} */
 test('DrawApplication should be updated by props', t => {
   const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);

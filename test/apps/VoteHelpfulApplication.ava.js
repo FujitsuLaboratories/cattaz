@@ -53,7 +53,7 @@ test('VoteHelpfulApplication should hide buttons and show bars after voting', t 
   t.deepEqual(['50%', '1', '1', '50%'], getBarTexts(wrapper));
 });
 
-/** @test {VoteHelpfulApplication.getDerivedStateFromProps} */
+/** @test {VoteHelpfulApplication#shouldComponentUpdate} */
 test('VoteHelpfulApplication should be updated by props', t => {
   const wrapper = mountApp(VoteHelpfulApplication);
   t.true(hasVoteButtons(wrapper));

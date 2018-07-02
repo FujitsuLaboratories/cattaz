@@ -35,7 +35,7 @@ test('ReversiApplication should place stones', t => {
   t.is(getButton(wrapper, 'c4').length, 0, 'button should be disappeared');
 });
 
-/** @test {ReversiApplication.getDerivedStateFromProps} */
+/** @test {ReversiApplication#shouldComponentUpdate} */
 test('ReversiApplication should be updated by props', t => {
   const wrapper = mountApp(ReversiApplication);
   t.deepEqual([2, 2], extractStoneCounts(wrapper));

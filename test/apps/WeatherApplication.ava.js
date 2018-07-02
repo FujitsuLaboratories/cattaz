@@ -108,11 +108,11 @@ test.cb('WeatherApplication should display error when no API key is set', t => {
     const wrapper = mountApp(WeatherApplication);
     t.falsy(getResult(wrapper));
     setCityAndSubmit(wrapper, 'kawasaki');
-    setImmediate(() => {
+    setTimeout(() => {
       t.true(hasError(wrapper));
       t.is(1, calls);
       t.end();
-    });
+    }, 100);
   } finally {
     fetch.restore();
   }
@@ -175,26 +175,11 @@ test.cb('WeatherApplication should display error if there is an error on request
 });
 
 
-/** @test {WeatherApplication.getDerivedStateFromProps} */
+/** @test {WeatherApplication#shouldComponentUpdate} */
 test('WeatherApplication should be updated by props', t => {
   const wrapper = mountApp(WeatherApplication);
   t.falsy(getResult(wrapper));
-  const model = new WeatherApplication.Model();
-  model.setWeather({
-    sys: {
-      country: 'JP',
-    },
-    name: 'Kawasaki',
-    weather: [
-      {
-        main: 'Rain',
-        icon: '10d',
-      },
-    ],
-    main: {
-      temp: 14,
-    },
-  });
+  const model = new WeatherApplication.Model('JP', 'Kawasaki', 'Rain', '10d', 14);
   wrapper.setProps({ data: model.serialize() });
   t.truthy(getResult(wrapper));
 });

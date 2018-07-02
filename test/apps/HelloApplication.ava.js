@@ -36,7 +36,7 @@ test('HelloApplication should render input name', t => {
   t.is('Input your name', getMessage(wrapper));
 });
 
-/** @test {HelloApplication} */
+/** @test {HelloApplication#shouldComponentUpdate} */
 test('HelloApplication should rerender if props change', t => {
   const wrapper = mountApp(HelloApplication, 'name1');
   t.is('Hello, name1', getMessage(wrapper));

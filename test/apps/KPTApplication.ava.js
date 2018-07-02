@@ -89,7 +89,7 @@ test('KPTApplication should add try', t => {
   t.deepEqual(['t1'], getTries(wrapper));
 });
 
-/** @test {KPTApplication} */
+/** @test {KPTApplication#shouldComponentUpdate} */
 test('KPTApplication should be updated by props', t => {
   const wrapper = mountApp(KPTApplication);
   t.deepEqual([], getKeeps(wrapper));

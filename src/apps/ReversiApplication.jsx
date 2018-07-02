@@ -22,10 +22,6 @@ const lastCellStyle = clone(cellStyle);
 lastCellStyle.backgroundColor = 'MediumSlateBlue';
 
 export default class ReversiApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const model = ReversiModel.deserialize(nextProps.data);
-    return { model };
-  }
   static toStoneText(stoneValue) {
     switch (stoneValue) {
       case RM.StoneBlack:
@@ -38,42 +34,45 @@ export default class ReversiApplication extends React.Component {
   }
   constructor() {
     super();
-    this.state = { model: new ReversiModel() };
     this.handlePlaceStone = this.handlePlaceStone.bind(this);
     this.handlePass = this.handlePass.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.model.equals(nextState.model);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = ReversiModel.deserialize(this.props.data);
+    const newModel = ReversiModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handlePlaceStone(ev) {
     const button = ev.target;
     const x = parseInt(button.getAttribute('data-x'), 10);
     const y = parseInt(button.getAttribute('data-y'), 10);
-    this.state.model.addStep(this.state.model.nextTurn, x, y);
-    this.forceUpdate();
-    this.props.onEdit(this.state.model.serialize(), this.props.appContext);
+    const model = ReversiModel.deserialize(this.props.data);
+    model.addStep(model.nextTurn, x, y);
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   handlePass() {
-    this.state.model.skipTurn();
-    this.forceUpdate();
-    this.props.onEdit(this.state.model.serialize(), this.props.appContext);
+    const model = ReversiModel.deserialize(this.props.data);
+    model.skipTurn();
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
-  toCell(stoneValue, x, y) {
+  toCell(model, stoneValue, x, y) {
     if (stoneValue === RM.StoneNone) {
       const label = `${String.fromCharCode(0x61 + x)}${y + 1}`;
       return <td style={cellStyle}><button onClick={this.handlePlaceStone} data-x={x} data-y={y}>{label}</button></td>;
     }
-    const lastStep = this.state.model.steps[this.state.model.steps.length - 1];
-    const isLastPos = lastStep.x === x && lastStep.y === y && this.state.model.steps.length > 4;
+    const lastStep = model.steps[model.steps.length - 1];
+    const isLastPos = lastStep.x === x && lastStep.y === y && model.steps.length > 4;
     const style = isLastPos ? lastCellStyle : cellStyle;
     return <td style={style}>{ReversiApplication.toStoneText(stoneValue)}</td>;
   }
   render() {
-    const cells = this.state.model.getCells();
-    const counts = this.state.model.getStoneCounts();
+    const model = ReversiModel.deserialize(this.props.data);
+    const cells = model.getCells();
+    const counts = model.getStoneCounts();
     const rows = cells.map((r, x) => (
       <tr>
-        {r.map((c, y) => this.toCell(c, x, y))}
+        {r.map((c, y) => this.toCell(model, c, x, y))}
       </tr>));
     return (
       <div>
@@ -82,7 +81,7 @@ export default class ReversiApplication extends React.Component {
             const style = {
               padding: '0 0.4em',
             };
-            if (c === this.state.model.nextTurn) {
+            if (c === model.nextTurn) {
               style.borderBottom = '4px solid MediumSlateBlue';
             }
             return <span style={style}>{ReversiApplication.toStoneText(c)}{counts[c]}</span>;
@@ -95,8 +94,6 @@ export default class ReversiApplication extends React.Component {
 }
 
 ReversiApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

@@ -33,7 +33,7 @@ test('ErrorApplication should start raising an error', t => {
   });
 });
 
-/** @test {ErrorApplication.getDerivedStateFromProps} */
+/** @test {ErrorApplication#shouldComponentUpdate} */
 test('ErrorApplication should raise an error if updated text is even', t => {
   t.notThrows(() => {
     const wrapper = mountApp(ErrorApplication, 'odd');

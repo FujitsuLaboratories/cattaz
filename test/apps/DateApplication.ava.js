@@ -27,7 +27,7 @@ test('DateApplication should display current time after clicking button', t => {
   }
 });
 
-/** @test {DateApplication.getDerivedStateFromProps} */
+/** @test {DateApplication#shouldComponentUpdate} */
 test('DateApplication should be updated by props', t => {
   const wrapper = mountApp(DateApplication);
   t.is('Date and time: ', wrapper.text());

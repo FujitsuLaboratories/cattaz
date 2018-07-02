@@ -59,7 +59,7 @@ test('MeetingTimeApplication should render duration if both start and end are gi
   }
 });
 
-/** @test {MeetingTimeApplication.getDerivedStateFromProps} */
+/** @test {MeetingTimeApplication#shouldComponentUpdate} */
 test('MeetingTimeApplication should be updated by props', t => {
   const wrapper = mountApp(MeetingTimeApplication);
   t.is('', getDurationText(wrapper));

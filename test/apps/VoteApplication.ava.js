@@ -58,7 +58,7 @@ test('VoteApplication should count votes', t => {
   t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
 });
 
-/** @test {VoteApplication.getDerivedStateFromProps} */
+/** @test {VoteApplication#shouldComponentUpdate} */
 test('VoteApplication should be updated by props', t => {
   const wrapper = mountApp(VoteApplication);
   t.deepEqual({}, getVotes(wrapper));

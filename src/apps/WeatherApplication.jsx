@@ -41,18 +41,18 @@ class WeatherModel {
 }
 
 export default class WeatherApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const weather = WeatherModel.deserialize(nextProps.data);
-    return { weather };
-  }
   constructor() {
     super();
-    this.state = { weather: new WeatherModel() };
+    this.state = { errorMessage: '' };
     this.refInputCity = React.createRef();
     this.handleGetWeather = this.handleGetWeather.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.weather.equals(nextState.weather) || this.state.errorMessage !== nextState.errorMessage;
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) return true;
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = WeatherModel.deserialize(this.props.data);
+    const newModel = WeatherModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   async handleGetWeather() {
     const city = this.refInputCity.current.value;
@@ -62,7 +62,7 @@ export default class WeatherApplication extends React.Component {
       const data = await response.json();
       if (data.cod === 200) {
         const newWeather = new WeatherModel(data.sys.country, data.name, data.weather[0].main, data.weather[0].icon, data.main.temp);
-        this.setState({ weather: newWeather, errorMessage: '' });
+        this.setState({ errorMessage: '' });
         this.props.onEdit(newWeather.serialize(), this.props.appContext);
       } else if (data.cod === 401) {
         this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
@@ -74,18 +74,19 @@ export default class WeatherApplication extends React.Component {
     }
   }
   render() {
+    const weather = WeatherModel.deserialize(this.props.data);
     return (
       <div>
         <input ref={this.refInputCity} type="text" placeholder="Add City" />
         <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
         <div key="error" style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
         <div key="result">
-          { this.state.weather.city ? [
-            `City: ${this.state.weather.city}, ${this.state.weather.country}`,
+          { weather.city ? [
+            `City: ${weather.city}, ${weather.country}`,
             <br />,
-            `Weather: ${this.state.weather.weather}`,
-            <img src={`${iconURL}${this.state.weather.icon}.png`} alt={this.state.weather.weather} width="24px" />,
-            `Temperature: ${this.state.weather.temp}℃`,
+            `Weather: ${weather.weather}`,
+            <img src={`${iconURL}${weather.icon}.png`} alt={weather.weather} width="24px" />,
+            `Temperature: ${weather.temp}℃`,
           ] : null
           }
         </div>
@@ -96,8 +97,6 @@ export default class WeatherApplication extends React.Component {
 WeatherApplication.Model = WeatherModel;
 
 WeatherApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

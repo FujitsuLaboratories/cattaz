@@ -365,13 +365,8 @@ const KanbanTrashDraggable = DropTarget(dndTypes.kanbanCard, trashCardTarget, (c
 }))(KanbanTrash));
 
 class KanbanApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const kanban = KanbanModel.deserialize(nextProps.data);
-    return { kanban };
-  }
   constructor() {
     super();
-    this.state = { kanban: new KanbanModel() };
     this.refInputList = React.createRef();
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleAddList = this.handleAddList.bind(this);
@@ -380,13 +375,15 @@ class KanbanApplication extends React.Component {
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.kanban.equals(nextState.kanban);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = KanbanModel.deserialize(this.props.data);
+    const newModel = KanbanModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   updateKanban(updator) {
-    const newKanban = this.state.kanban.clone();
+    const newKanban = KanbanModel.deserialize(this.props.data);
     updator(newKanban);
-    this.setState({ kanban: newKanban });
     this.props.onEdit(newKanban.serialize(), this.props.appContext);
   }
   handleAddItem(ev) {
@@ -422,7 +419,9 @@ class KanbanApplication extends React.Component {
   handleMoveItem(sourceId, targetId) {
     let targetItemIndex = targetId.item;
     if (targetItemIndex < 0) {
-      targetItemIndex = this.state.kanban.getListAt(targetId.list).getLength();
+      // Item is dropped off outside of any cards, move the item to last
+      const model = KanbanModel.deserialize(this.props.data);
+      targetItemIndex = model.getListAt(targetId.list).getLength();
     }
     this.updateKanban((k) => {
       k.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
@@ -442,6 +441,7 @@ class KanbanApplication extends React.Component {
       </td>);
   }
   render() {
+    const model = KanbanModel.deserialize(this.props.data);
     return (
       <div>
         <input ref={this.refInputList} type="text" placeholder="Add list" />
@@ -450,10 +450,10 @@ class KanbanApplication extends React.Component {
         <table>
           <tbody>
             <tr>
-              {this.state.kanban.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} app={this} />)}
+              {model.lists.map((l, i) => <KanbanListDraggable model={l} listIndex={i} app={this} />)}
             </tr>
             <tr>
-              {this.state.kanban.lists.map((l, i) => this.renderRow2(i))}
+              {model.lists.map((l, i) => this.renderRow2(i))}
             </tr>
           </tbody>
         </table>
@@ -464,8 +464,6 @@ class KanbanApplication extends React.Component {
 KanbanApplication.Model = KanbanModel;
 
 KanbanApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

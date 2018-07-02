@@ -49,7 +49,7 @@ test('YoutubeApplication should render input URL', t => {
   t.is('https://www.youtube.com/embed/?rel=0', getUrl(wrapper));
 });
 
-/** @test {YoutubeApplication.getDerivedStateFromProps} */
+/** @test {YoutubeApplication#shouldComponentUpdate} */
 test('YoutubeApplication should rerender if props change', t => {
   const wrapper = mountApp(YoutubeApplication, 'https://www.youtube.com/watch?v=V7lqCuoK9Lw');
   t.is('https://www.youtube.com/embed/V7lqCuoK9Lw?rel=0', getUrl(wrapper));

@@ -80,7 +80,7 @@ test('VoteCryptoApplication should render result after open', t => {
   t.false(hasResultButton(wrapper));
 });
 
-/** @test {VoteCryptoApplication.getDerivedStateFromProps} */
+/** @test {VoteCryptoApplication#shouldComponentUpdate} */
 test('VoteCryptoApplication should be updated by props', t => {
   const wrapper = mountApp(VoteCryptoApplication);
   t.deepEqual([], getVotes(wrapper));

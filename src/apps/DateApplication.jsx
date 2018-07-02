@@ -28,17 +28,15 @@ class DateModel {
 }
 
 export default class DateApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const date = DateModel.deserialize(nextProps.data);
-    return { date };
-  }
   constructor() {
     super();
-    this.state = { date: new DateModel() };
     this.handleUpdateDate = this.handleUpdateDate.bind(this);
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.date.equals(nextState.date);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = DateModel.deserialize(this.props.data);
+    const newModel = DateModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
   handleUpdateDate() {
     const date = new Date();
@@ -50,14 +48,15 @@ export default class DateApplication extends React.Component {
     const hour = date.getHours();
     const minutes = date.getMinutes();
     const value = `${year}-${month}-${day} (${enWeek[week]}) ${hour}:${minutes}`;
-    this.state.date.updateDate(value);
-    this.forceUpdate();
-    this.props.onEdit(this.state.date.serialize(), this.props.appContext);
+    const newModel = new DateModel();
+    newModel.updateDate(value);
+    this.props.onEdit(newModel.serialize(), this.props.appContext);
   }
   render() {
+    const date = DateModel.deserialize(this.props.data);
     return (
       <div>
-        Date and time: {this.state.date.date}
+        Date and time: {date.date}
         <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
       </div>);
   }
@@ -66,8 +65,6 @@ export default class DateApplication extends React.Component {
 DateApplication.Model = DateModel;
 
 DateApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,

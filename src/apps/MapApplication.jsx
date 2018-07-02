@@ -36,10 +36,6 @@ class MapModel {
 }
 
 export default class MapApplication extends React.Component {
-  static getDerivedStateFromProps(nextProps) {
-    const map = MapModel.deserialize(nextProps.data);
-    return { map };
-  }
   constructor() {
     super();
     this.refInputPlace = React.createRef();
@@ -141,12 +137,17 @@ export default class MapApplication extends React.Component {
     `);
     doc.close();
   }
-  shouldComponentUpdate(newProps, nextState) {
-    return !this.state.map.equals(nextState.map);
+  shouldComponentUpdate(nextProps) {
+    if (this.props.data === nextProps.data) return false;
+    const oldModel = MapModel.deserialize(this.props.data);
+    const newModel = MapModel.deserialize(nextProps.data);
+    return !oldModel.equals(newModel);
   }
-  componentDidUpdate(prevProps, prevState /* , prevContext */) {
-    if (!this.state.map.equals(prevState.map)) {
-      this.refIframe.current.contentWindow.postMessage({ type: 'setCoordinate', value: this.state.map }, window.location.origin);
+  componentDidUpdate(prevProps) {
+    const oldModel = MapModel.deserialize(prevProps.data);
+    const newModel = MapModel.deserialize(this.props.data);
+    if (!newModel.equals(oldModel)) {
+      this.refIframe.current.contentWindow.postMessage({ type: 'setCoordinate', value: newModel }, window.location.origin);
     }
   }
   handleSearchPlace() {
@@ -156,8 +157,9 @@ export default class MapApplication extends React.Component {
   }
   handleGetMap() {
     this.refIframe.current.contentWindow.postMessage({ type: 'getMapNotification' }, window.location.origin);
-    this.state.map.setCoordinate(this.refIframe.current.contentWindow.latlng);
-    this.props.onEdit(this.state.map.serialize(), this.props.appContext);
+    const model = MapModel.deserialize(this.props.data);
+    model.setCoordinate(this.refIframe.current.contentWindow.latlng);
+    this.props.onEdit(model.serialize(), this.props.appContext);
   }
   render() {
     let apiKeyErrorMessage = '';
@@ -168,7 +170,7 @@ export default class MapApplication extends React.Component {
       <div>
         <div>
           <div style={{ color: '#ba000d' }}>{apiKeyErrorMessage}</div>
-          <input ref={this.refInputPlace} type="text" placeholder="Add Place" />
+          <input ref={this.refInputPlace} type="text" placeholder="Place to search" />
           <input type="button" value="Search" onClick={this.handleSearchPlace} />
           <input type="button" value="Get Marker" onClick={this.handleGetMap} />
         </div>
@@ -181,8 +183,6 @@ export default class MapApplication extends React.Component {
 }
 
 MapApplication.propTypes = {
-  // https://github.com/yannickcr/eslint-plugin-react/issues/1751
-  // eslint-disable-next-line react/no-unused-prop-types
   data: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   appContext: PropTypes.shape({}).isRequired,
