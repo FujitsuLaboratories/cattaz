@@ -39,11 +39,10 @@ function findFlippablesInDirection(cells, x, y, color, directionX, directionY) {
 }
 function findFlippables(cells, x, y, color) {
   const directions = [-1, 0, 1];
-  return flatMap(directions, directionX =>
-    flatMap(directions, (directionY) => {
-      if (directionX === 0 && directionY === 0) return [];
-      return findFlippablesInDirection(cells, x, y, color, directionX, directionY);
-    }));
+  return flatMap(directions, directionX => flatMap(directions, (directionY) => {
+    if (directionX === 0 && directionY === 0) return [];
+    return findFlippablesInDirection(cells, x, y, color, directionX, directionY);
+  }));
 }
 
 export default class ReversiModel {
@@ -51,6 +50,7 @@ export default class ReversiModel {
     this.steps = clone(initialStones);
     this.nextTurn = StoneBlack;
   }
+
   addStep(stone, x, y) {
     if (this.nextTurn !== stone) {
       throw new Error('Not your turn');
@@ -62,9 +62,11 @@ export default class ReversiModel {
     this.steps.push({ stone, x, y });
     this.toggleTurn();
   }
+
   skipTurn() {
     this.toggleTurn();
   }
+
   toggleTurn() {
     switch (this.nextTurn) {
       case StoneBlack:
@@ -77,6 +79,7 @@ export default class ReversiModel {
         throw new Error('should not reach here');
     }
   }
+
   getCells() {
     const cells = range(Size).map(() => {
       const arr = new Array(Size);
@@ -92,6 +95,7 @@ export default class ReversiModel {
     });
     return cells;
   }
+
   getStoneCounts() {
     const cells = this.getCells();
     const counts = {
@@ -106,15 +110,18 @@ export default class ReversiModel {
     });
     return counts;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump({
       steps: this.steps,
       nextTurn: this.nextTurn,
     });
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);

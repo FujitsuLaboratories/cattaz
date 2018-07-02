@@ -12,16 +12,20 @@ class MapModel {
     this.lat = initCoordinate.lat;
     this.lng = initCoordinate.lng;
   }
+
   setCoordinate(latlng) {
     this.lat = latlng.lat;
     this.lng = latlng.lng;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -38,12 +42,16 @@ class MapModel {
 export default class MapApplication extends React.Component {
   constructor() {
     super();
+    this.state = { errorMessage: '' };
     this.refInputPlace = React.createRef();
     this.refIframe = React.createRef();
     this.handleSearchPlace = this.handleSearchPlace.bind(this);
     this.handleGetMap = this.handleGetMap.bind(this);
   }
+
   componentDidMount() {
+    const { data } = this.props;
+    const map = MapModel.deserialize(data);
     const doc = this.refIframe.current.contentWindow.document;
     doc.open();
     doc.write(`
@@ -74,8 +82,8 @@ export default class MapApplication extends React.Component {
           var map;
           var marker;
           var geocoder;
-          var latlng = { lat: ${this.state.map.lat}, lng: ${this.state.map.lng}};
-          var oldLatlng = { lat: ${this.state.map.lat}, lng: ${this.state.map.lng}}; 
+          var latlng = { lat: ${map.lat}, lng: ${map.lng}};
+          var oldLatlng = { lat: ${map.lat}, lng: ${map.lng}}; 
           function initMap() {
             var googleLatLng = new google.maps.LatLng(latlng);
             geocoder = new google.maps.Geocoder();
@@ -137,31 +145,40 @@ export default class MapApplication extends React.Component {
     `);
     doc.close();
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = MapModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = MapModel.deserialize(data);
     const newModel = MapModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   componentDidUpdate(prevProps) {
+    const { data } = this.props;
     const oldModel = MapModel.deserialize(prevProps.data);
-    const newModel = MapModel.deserialize(this.props.data);
+    const newModel = MapModel.deserialize(data);
     if (!newModel.equals(oldModel)) {
       this.refIframe.current.contentWindow.postMessage({ type: 'setCoordinate', value: newModel }, window.location.origin);
     }
   }
+
   handleSearchPlace() {
     const address = this.refInputPlace.current.value;
     if (!address) return;
     this.refIframe.current.contentWindow.postMessage({ type: 'searchPlace', value: address }, window.location.origin);
   }
+
   handleGetMap() {
     this.refIframe.current.contentWindow.postMessage({ type: 'getMapNotification' }, window.location.origin);
-    const model = MapModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = MapModel.deserialize(data);
     model.setCoordinate(this.refIframe.current.contentWindow.latlng);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   render() {
+    const { errorMessage } = this.state;
     let apiKeyErrorMessage = '';
     if (!googlemapsApiKey) {
       apiKeyErrorMessage = 'No API KEY. Please change to your own Google Maps API KEY in [../apikey/apikey.js].';
@@ -169,15 +186,21 @@ export default class MapApplication extends React.Component {
     return (
       <div>
         <div>
-          <div style={{ color: '#ba000d' }}>{apiKeyErrorMessage}</div>
+          <div style={{ color: '#ba000d' }}>
+            {apiKeyErrorMessage}
+          </div>
           <input ref={this.refInputPlace} type="text" placeholder="Place to search" />
           <input type="button" value="Search" onClick={this.handleSearchPlace} />
           <input type="button" value="Get Marker" onClick={this.handleGetMap} />
         </div>
         <iframe ref={this.refIframe} width="400" height="430" frameBorder="0" marginHeight="0" marginWidth="0" scrolling="no" title="map">
-          <p>Your browser does not support iframes.</p>
+          <p>
+            Your browser does not support iframes.
+          </p>
         </iframe>
-        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <div style={{ color: '#D8000C' }}>
+          {errorMessage}
+        </div>
       </div>);
   }
 }

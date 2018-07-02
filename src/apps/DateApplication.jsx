@@ -6,15 +6,19 @@ class DateModel {
   constructor() {
     this.date = '';
   }
+
   updateDate(str) {
     this.date = str;
   }
+
   equals(other) {
     return this.date === other.date;
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -32,12 +36,15 @@ export default class DateApplication extends React.Component {
     super();
     this.handleUpdateDate = this.handleUpdateDate.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = DateModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = DateModel.deserialize(data);
     const newModel = DateModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleUpdateDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -48,15 +55,18 @@ export default class DateApplication extends React.Component {
     const hour = date.getHours();
     const minutes = date.getMinutes();
     const value = `${year}-${month}-${day} (${enWeek[week]}) ${hour}:${minutes}`;
+    const { onEdit, appContext } = this.props;
     const newModel = new DateModel();
     newModel.updateDate(value);
-    this.props.onEdit(newModel.serialize(), this.props.appContext);
+    onEdit(newModel.serialize(), appContext);
   }
+
   render() {
-    const date = DateModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const date = DateModel.deserialize(data);
     return (
       <div>
-        Date and time: {date.date}
+        {`Date and time: ${date.date}`}
         <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
       </div>);
   }

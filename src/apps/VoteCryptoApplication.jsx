@@ -8,6 +8,7 @@ class VoteCryptoModel {
     this.candidates = {};
     this.opened = false;
   }
+
   addCandidate(name) {
     if (name in this.candidates) {
       return false;
@@ -15,15 +16,19 @@ class VoteCryptoModel {
     this.candidates[name] = 0;
     return true;
   }
+
   addVote(name) {
     this.candidates[name] = this.candidates[name] + 1;
   }
+
   openVoted() {
     this.opened = true;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     function encrypt(plaintext) {
       // plaintext to base64
@@ -33,6 +38,7 @@ class VoteCryptoModel {
     const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), opened: this.opened };
     return Yaml.safeDump(obj);
   }
+
   static deserialize(str) {
     function decrypt(ciphertext) {
       // base64 to plaintext
@@ -59,59 +65,88 @@ export default class VoteCryptoApplication extends React.Component {
     this.handleAddVote = this.handleAddVote.bind(this);
     this.handleVotingResult = this.handleVotingResult.bind(this);
   }
+
   shouldComponentUpdate(nextProps, nextState) {
+    const { data } = this.props;
     if (!isEqual(this.state, nextState)) return true;
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = VoteCryptoModel.deserialize(this.props.data);
+    if (data === nextProps.data) return false;
+    const oldModel = VoteCryptoModel.deserialize(data);
     const newModel = VoteCryptoModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    const model = VoteCryptoModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = VoteCryptoModel.deserialize(data);
     if (model.addCandidate(value)) {
       this.setState({ errorMessage: '' });
-      this.props.onEdit(model.serialize(), this.props.appContext);
+      onEdit(model.serialize(), appContext);
     } else {
       this.setState({ errorMessage: 'Duplicate Candidate' });
     }
   }
+
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
-    const model = VoteCryptoModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = VoteCryptoModel.deserialize(data);
     model.addVote(value);
     this.setState({ voteMessage: 'Voted' });
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
     const self = this;
     setTimeout(() => {
       self.setState({ voteMessage: '' });
     }, 1000);
   }
+
   handleVotingResult() {
-    const model = VoteCryptoModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = VoteCryptoModel.deserialize(data);
     model.openVoted();
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   render() {
-    const model = VoteCryptoModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const model = VoteCryptoModel.deserialize(data);
+    const { voteMessage, errorMessage } = this.state;
     let votingResult = '';
     if (model.opened) {
-      votingResult = Object.keys(model.candidates).map(s => (<li key={s}>{s}: {model.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>));
+      votingResult = Object.keys(model.candidates).map(s => (
+        <li key={s}>
+          {s}
+          {': '}
+          {model.candidates[s]}
+          {' '}
+          <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} />
+        </li>
+      ));
     } else {
-      votingResult = Object.keys(model.candidates).map(s => (<li key={s}>{s} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>));
+      votingResult = Object.keys(model.candidates).map(s => (
+        <li key={s}>
+          {s}
+          {' '}
+          <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} />
+        </li>
+      ));
     }
     return (
       <div style={{ marginBottom: '50px' }}>
         <input ref={this.refInputCandidate} type="text" placeholder="Name of candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
-        <div style={{ color: '#00529B' }}>{this.state.voteMessage}</div>
-        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <div style={{ color: '#00529B' }}>
+          {voteMessage}
+        </div>
+        <div style={{ color: '#D8000C' }}>
+          {errorMessage}
+        </div>
         <ul>
           {votingResult}
         </ul>
-        { model.opened ?
-          null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
+        { model.opened
+          ? null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
         }
       </div>);
   }

@@ -22,6 +22,7 @@ class Bookmark {
     this.link = link;
     this.clicks = new Map(clicks);
   }
+
   addClickCount(datetime) {
     const utcDateValue = toUTCDateValue(datetime);
     if (this.clicks.has(utcDateValue)) {
@@ -34,6 +35,7 @@ class Bookmark {
       }
     }
   }
+
   getScore(datetime) {
     const msec = fromUTCDateValue(toUTCDateValue(datetime)).getTime();
     return [...this.clicks.entries()].reduce((prevValue, currentValue) => {
@@ -42,6 +44,7 @@ class Bookmark {
       return prevValue + (count / (dateDiff + 1));
     }, 0);
   }
+
   toSerializable() {
     return {
       name: this.name,
@@ -49,6 +52,7 @@ class Bookmark {
       clicks: [...this.clicks.entries()],
     };
   }
+
   static fromDeserialized(obj) {
     return new Bookmark(obj.name, obj.link, obj.clicks);
   }
@@ -58,27 +62,33 @@ class BookmarksModel {
   constructor() {
     this.bookmarks = [];
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump({
       bookmarks: this.bookmarks.map(b => b.toSerializable()),
     });
   }
+
   addBookmark(name, link) {
     this.bookmarks.push(new Bookmark(name, link));
   }
+
   hasBookmark(link) {
     const bookmark = this.bookmarks.find(b => b.link === link);
     return !!bookmark;
   }
+
   addClickCount(link, datetime) {
     const bookmark = this.bookmarks.find(b => b.link === link);
     if (bookmark) {
       bookmark.addClickCount(datetime);
     }
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -101,49 +111,65 @@ export default class BookmarksApplication extends React.Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = BookmarksModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = BookmarksModel.deserialize(data);
     const newModel = BookmarksModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   static getDateBeforeDays(days) {
     const date = new Date();
     date.setDate(date.getDate() - days); // Automatically calculate month
     return date;
   }
+
   handleAdd() {
     const name = this.refInputName.current.value;
     const link = this.refInputLink.current.value;
     if (name && link) {
-      const bookmarks = BookmarksModel.deserialize(this.props.data);
+      const { data, onEdit, appContext } = this.props;
+      const bookmarks = BookmarksModel.deserialize(data);
       if (!bookmarks.hasBookmark(link)) {
         bookmarks.addBookmark(name, link);
-        this.props.onEdit(bookmarks.serialize(), this.props.appContext);
+        onEdit(bookmarks.serialize(), appContext);
       }
     }
   }
+
   handleClick(ev) {
     const link = ev.target.getAttribute('data-link'); // href attribute may be changed by canonicalization
     ev.preventDefault();
-    const bookmarks = BookmarksModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const bookmarks = BookmarksModel.deserialize(data);
     bookmarks.addClickCount(link, new Date());
-    this.props.onEdit(bookmarks.serialize(), this.props.appContext);
+    onEdit(bookmarks.serialize(), appContext);
     window.open(link, '_blank');
   }
+
   render() {
     const now = new Date();
-    const bookmarks = BookmarksModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const bookmarks = BookmarksModel.deserialize(data);
     const scoredBookmarks = bookmarks.bookmarks.map(b => [b, b.getScore(now)]);
     scoredBookmarks.sort((a, b) => b[1] - a[1]);
     return (
       <React.Fragment>
         <ol>
-          {scoredBookmarks.map(b => <li key={b[0].link}><a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>{b[0].name}</a></li>)}
+          {scoredBookmarks.map(b => (
+            <li key={b[0].link}>
+              <a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>
+                {b[0].name}
+              </a>
+            </li>))}
         </ol>
         <input type="text" ref={this.refInputName} placeholder="name" />
         <input type="text" ref={this.refInputLink} placeholder="link" />
-        <button onClick={this.handleAdd}>Add bookmark</button>
+        <button onClick={this.handleAdd} type="button">
+          Add bookmark
+        </button>
       </React.Fragment>);
   }
 }

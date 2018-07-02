@@ -6,6 +6,7 @@ class VoteModel {
   constructor() {
     this.candidates = {};
   }
+
   addCandidate(name) {
     if (name in this.candidates) {
       return false;
@@ -13,15 +14,19 @@ class VoteModel {
     this.candidates[name] = 0;
     return true;
   }
+
   addVote(name) {
     this.candidates[name] = this.candidates[name] + 1;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return JSON.stringify(this, null, 2);
   }
+
   static deserialize(str) {
     try {
       const obj = JSON.parse(str);
@@ -42,39 +47,58 @@ export default class VoteApplication extends React.Component {
     this.handleAddCandidate = this.handleAddCandidate.bind(this);
     this.handleAddVote = this.handleAddVote.bind(this);
   }
+
   shouldComponentUpdate(nextProps, nextState) {
+    const { data } = this.props;
     if (!isEqual(this.state, nextState)) return true;
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = VoteModel.deserialize(this.props.data);
+    if (data === nextProps.data) return false;
+    const oldModel = VoteModel.deserialize(data);
     const newModel = VoteModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleAddCandidate() {
     const { value } = this.refInputCandidate.current;
     if (!value) return;
-    const model = VoteModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = VoteModel.deserialize(data);
     if (model.addCandidate(value)) {
       this.setState({ errorMessage: '' });
-      this.props.onEdit(model.serialize(), this.props.appContext);
+      onEdit(model.serialize(), appContext);
     } else {
       this.setState({ errorMessage: 'Duplicate Candidates' });
     }
   }
+
   handleAddVote(event) {
     const value = event.target.getAttribute('data-index');
-    const model = VoteModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = VoteModel.deserialize(data);
     model.addVote(value);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   render() {
-    const model = VoteModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const model = VoteModel.deserialize(data);
+    const { errorMessage } = this.state;
     return (
       <div style={{ marginBottom: '50px' }}>
         <input ref={this.refInputCandidate} type="text" placeholder="Name of candidate" />
         <input type="button" value="Add Candidate" onClick={this.handleAddCandidate} />
-        <div style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <div style={{ color: '#D8000C' }}>
+          {errorMessage}
+        </div>
         <ul>
-          {Object.keys(model.candidates).map(s => (<li key={s}>{s}: {model.candidates[s]} <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} /></li>))}
+          {Object.keys(model.candidates).map(s => (
+            <li key={s}>
+              {s}
+              {': '}
+              {model.candidates[s]}
+              {' '}
+              <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} />
+            </li>
+          ))}
         </ul>
       </div>);
   }

@@ -10,26 +10,33 @@ class DateMatcherModel {
     this.candidates = [];
     this.attendees = {};
   }
+
   setCandidates(candidates) {
     this.candidates = candidates;
   }
+
   addAttendee(name) {
     if (!this.attendees[name]) {
       this.attendees[name] = {};
     }
   }
+
   removeAttendee(name) {
     delete this.attendees[name];
   }
+
   setAnswer(name, candidate, value) {
     this.attendees[name][candidate] = value;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -61,91 +68,122 @@ export default class DateMatcherApplication extends React.Component {
     this.handleRemoveAttendee = this.handleRemoveAttendee.bind(this);
     this.handleSetAnswer = this.handleSetAnswer.bind(this);
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(this.state, nextState)) return true;
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = DateMatcherModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = DateMatcherModel.deserialize(data);
     const newModel = DateMatcherModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleSetCandidates() {
     const { value } = this.refInputCandidates.current;
     if (!value) return;
     const candidates = uniq(value.split('\n').map(s => s.trim()).filter(s => s));
     if (candidates.length === 0) return;
+    const { onEdit, appContext } = this.props;
     const model = new DateMatcherModel();
     model.setCandidates(candidates);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   handleAddAttendee() {
     const { value } = this.refInputNewAttendee.current;
     if (!value) return;
     const attendeeName = value.trim();
     if (!attendeeName) return;
-    const model = DateMatcherModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = DateMatcherModel.deserialize(data);
     model.addAttendee(attendeeName);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
     this.setState({ editing: attendeeName });
   }
+
   handleSetAnswer(ev) {
     const input = ev.target;
     if (!input) return;
     const attendee = input.getAttribute('data-attendee');
     const candidate = input.getAttribute('data-candidate');
     const answer = input.value;
-    const model = DateMatcherModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = DateMatcherModel.deserialize(data);
     model.setAnswer(attendee, candidate, answer);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   handleStartEdit(ev) {
     const targetElement = ev.target;
     if (!targetElement) return;
     const attendeeName = targetElement.getAttribute('data-attendee');
     this.setState({ editing: attendeeName });
   }
+
   handleEndEdit() {
     this.setState({ editing: null });
   }
+
   handleRemoveAttendee(ev) {
     const targetElement = ev.target;
     if (!targetElement) return;
     const attendeeName = targetElement.getAttribute('data-attendee');
-    const model = DateMatcherModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = DateMatcherModel.deserialize(data);
     model.removeAttendee(attendeeName);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
     this.setState({ editing: null });
   }
+
   renderAdmin() {
     return (
       <div>
         <textarea ref={this.refInputCandidates} />
-        <p>Fill meeting time candidates for each line.</p>
-        <button onClick={this.handleSetCandidates}>Start date matching</button>
+        <p>
+          Fill meeting time candidates for each line.
+        </p>
+        <button onClick={this.handleSetCandidates} type="button">
+          Start date matching
+        </button>
       </div>);
   }
+
   renderAnswers(model) {
+    const { editing } = this.state;
     const header = (
       <tr>
         <th />
-        {model.candidates.map(s => <th style={cellStyle}>{s}</th>)}
+        {model.candidates.map(s => (
+          <th style={cellStyle}>
+            {s}
+          </th>
+        ))}
       </tr>);
     const attendees = Object.keys(model.attendees).map((attendeeName) => {
       const ans = model.attendees[attendeeName] || {};
-      const isEditingRow = attendeeName === this.state.editing;
+      const isEditingRow = attendeeName === editing;
       return (
         <tr key={attendeeName}>
           <th style={cellStyle}>
             {attendeeName}
-            {isEditingRow ?
-              [
-                <button data-attendee={attendeeName} onClick={this.handleEndEdit}>End edit</button>,
-                <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee}>Remove</button>,
-              ] : <button data-attendee={attendeeName} onClick={this.handleStartEdit}>Edit</button>}
+            {isEditingRow
+              ? [
+                <button data-attendee={attendeeName} onClick={this.handleEndEdit} type="button">
+                  End edit
+                </button>,
+                <button data-attendee={attendeeName} onClick={this.handleRemoveAttendee} type="button">
+                  Remove
+                </button>,
+              ] : (
+                <button data-attendee={attendeeName} onClick={this.handleStartEdit} type="button">
+                  Edit
+                </button>
+              )}
           </th>
           {model.candidates.map(s => (
             <td key={s} style={cellStyle}>
-              {isEditingRow ?
-                <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
+              {isEditingRow
+                ? <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
                 : ans[s]}
             </td>))}
         </tr>);
@@ -153,17 +191,25 @@ export default class DateMatcherApplication extends React.Component {
     return (
       <div>
         <table style={{ borderCollapse: 'collapse' }}>
-          <thead>{header}</thead>
-          <tbody>{attendees}</tbody>
+          <thead>
+            {header}
+          </thead>
+          <tbody>
+            {attendees}
+          </tbody>
         </table>
         <p>
           <input ref={this.refInputNewAttendee} type="text" placeholder="attenndee name" />
-          <button onClick={this.handleAddAttendee}>Add attendee</button>
+          <button onClick={this.handleAddAttendee} type="button">
+            Add attendee
+          </button>
         </p>
       </div>);
   }
+
   render() {
-    const model = DateMatcherModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const model = DateMatcherModel.deserialize(data);
     if (model.candidates.length === 0) {
       return this.renderAdmin();
     }

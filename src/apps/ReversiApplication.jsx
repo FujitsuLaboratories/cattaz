@@ -32,42 +32,62 @@ export default class ReversiApplication extends React.Component {
         return '';
     }
   }
+
   constructor() {
     super();
     this.handlePlaceStone = this.handlePlaceStone.bind(this);
     this.handlePass = this.handlePass.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = ReversiModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = ReversiModel.deserialize(data);
     const newModel = ReversiModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handlePlaceStone(ev) {
     const button = ev.target;
     const x = parseInt(button.getAttribute('data-x'), 10);
     const y = parseInt(button.getAttribute('data-y'), 10);
-    const model = ReversiModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = ReversiModel.deserialize(data);
     model.addStep(model.nextTurn, x, y);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   handlePass() {
-    const model = ReversiModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = ReversiModel.deserialize(data);
     model.skipTurn();
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   toCell(model, stoneValue, x, y) {
     if (stoneValue === RM.StoneNone) {
       const label = `${String.fromCharCode(0x61 + x)}${y + 1}`;
-      return <td style={cellStyle}><button onClick={this.handlePlaceStone} data-x={x} data-y={y}>{label}</button></td>;
+      return (
+        <td style={cellStyle}>
+          <button onClick={this.handlePlaceStone} data-x={x} data-y={y} type="button">
+            {label}
+          </button>
+        </td>
+      );
     }
     const lastStep = model.steps[model.steps.length - 1];
     const isLastPos = lastStep.x === x && lastStep.y === y && model.steps.length > 4;
     const style = isLastPos ? lastCellStyle : cellStyle;
-    return <td style={style}>{ReversiApplication.toStoneText(stoneValue)}</td>;
+    return (
+      <td style={style}>
+        {ReversiApplication.toStoneText(stoneValue)}
+      </td>
+    );
   }
+
   render() {
-    const model = ReversiModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const model = ReversiModel.deserialize(data);
     const cells = model.getCells();
     const counts = model.getStoneCounts();
     const rows = cells.map((r, x) => (
@@ -84,11 +104,22 @@ export default class ReversiApplication extends React.Component {
             if (c === model.nextTurn) {
               style.borderBottom = '4px solid MediumSlateBlue';
             }
-            return <span style={style}>{ReversiApplication.toStoneText(c)}{counts[c]}</span>;
+            return (
+              <span style={style}>
+                {ReversiApplication.toStoneText(c)}
+                {counts[c]}
+              </span>
+            );
           })}
-          <button onClick={this.handlePass}>Pass</button>
+          <button onClick={this.handlePass} type="button">
+            Pass
+          </button>
         </p>
-        <table style={tableStyle}><tbody>{rows}</tbody></table>
+        <table style={tableStyle}>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
       </div>);
   }
 }

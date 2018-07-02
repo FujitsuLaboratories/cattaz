@@ -13,10 +13,12 @@ class KanbanModelItem {
     this.name = name;
     this.importance = importance;
   }
+
   toMarkdown() {
     const emphasis = repeat('*', this.importance);
     return `${emphasis}${this.name}${emphasis}`;
   }
+
   clone() {
     return clone(this);
   }
@@ -27,27 +29,34 @@ class KanbanModelList {
     this.name = name;
     this.items = [];
   }
+
   addItem(text, importance = 0) {
     this.items.push(new KanbanModelItem(text, importance));
   }
+
   insertItem(index, item) {
     this.items.splice(index, 0, item);
   }
+
   getLength() {
     return this.items.length;
   }
+
   getItemAt(index) {
     return this.items[index];
   }
+
   removeItemAt(index) {
     this.items.splice(index, 1);
   }
+
   toMarkdown() {
     return [
       `* ${this.name}`,
       ...this.items.map(i => `  * ${i.toMarkdown()}`),
     ].join('\n');
   }
+
   clone() {
     const c = clone(this);
     c.items = this.items.map(i => i.clone());
@@ -59,43 +68,54 @@ class KanbanModel {
   constructor() {
     this.lists = [];
   }
+
   addList(str) {
     this.lists.push(new KanbanModelList(str));
   }
+
   getLength() {
     return this.lists.length;
   }
+
   getListAt(index) {
     return this.lists[index];
   }
+
   removeListAt(index) {
     this.lists.splice(index, 1);
   }
+
   insertList(index, list) {
     this.lists.splice(index, 0, list);
   }
+
   moveItem(fromListIndex, fromItemIndex, toListIndex, toItemIndex) {
     const fromList = this.getListAt(fromListIndex);
     const item = fromList.getItemAt(fromItemIndex);
     fromList.removeItemAt(fromItemIndex);
     this.getListAt(toListIndex).insertItem(toItemIndex, item);
   }
+
   moveList(fromListIndex, toListIndex) {
     const fromList = this.getListAt(fromListIndex);
     this.removeListAt(fromListIndex);
     this.insertList(toListIndex, fromList);
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   clone() {
     const c = clone(this);
     c.lists = this.lists.map(l => l.clone());
     return c;
   }
+
   serialize() {
     return this.lists.map(l => l.toMarkdown()).join('\n');
   }
+
   static deserialize(str) {
     try {
       const reList = /^[*-]\s*(.*)$/;
@@ -173,25 +193,28 @@ const dndTypes = {
 
 const cardSource = {
   beginDrag(props) {
+    const { itemId, app } = props;
     return {
-      itemId: props.itemId,
-      app: props.app,
+      itemId,
+      app,
     };
   },
 };
 const cardTarget = {
   canDrop(props, monitor) {
+    const { app } = props;
     const sourceApp = monitor.getItem().app;
-    const targetApp = props.app;
+    const targetApp = app;
     return sourceApp === targetApp;
   },
   drop(props, monitor /* , component */) {
+    const { itemId, app } = props;
     const dragItemId = monitor.getItem().itemId;
-    const hoverItemId = props.itemId;
+    const hoverItemId = itemId;
     if (isEqual(dragItemId, hoverItemId)) {
       return;
     }
-    props.app.handleMoveItem(dragItemId, hoverItemId);
+    app.handleMoveItem(dragItemId, hoverItemId);
   },
 };
 
@@ -203,7 +226,10 @@ function renderKanbanCardText(text) {
     if (lastLinkIndex < matchLink.index) {
       children.push(text.substring(lastLinkIndex, matchLink.index));
     }
-    children.push(<a href={matchLink[2]}>{matchLink[1]}</a>);
+    children.push((
+      <a href={matchLink[2]}>
+        {matchLink[1]}
+      </a>));
     lastLinkIndex = regexLink.lastIndex;
   }
   if (lastLinkIndex < text.length) {
@@ -213,15 +239,18 @@ function renderKanbanCardText(text) {
 }
 
 const KanbanCard = (props) => {
-  let style = cardStyles[props.model.importance];
-  if (props.isDragging) {
+  const {
+    model, isDragging, connectDragSource, connectDropTarget,
+  } = props;
+  let style = cardStyles[model.importance];
+  if (isDragging) {
     style = assign(clone(style), {
       opacity: 0.5,
     });
   }
-  return props.connectDragSource(props.connectDropTarget((
+  return connectDragSource(connectDropTarget((
     <span style={style}>
-      {renderKanbanCardText(props.model.name)}
+      {renderKanbanCardText(model.name)}
     </span>)));
 };
 KanbanCard.propTypes = {
@@ -247,8 +276,9 @@ const KanbanCardDraggable = DropTarget(dndTypes.kanbanCard, cardTarget, connect 
 
 const listCardTarget = {
   canDrop(props, monitor) {
+    const { app } = props;
     const sourceApp = monitor.getItem().app;
-    const targetApp = props.app;
+    const targetApp = app;
     return sourceApp === targetApp;
   },
   drop(props, monitor /* , component */) {
@@ -256,42 +286,52 @@ const listCardTarget = {
     if (hasDroppedOnChild) {
       return;
     }
+    const { listIndex, app } = props;
     const dragItemId = monitor.getItem().itemId;
-    const hoverListIndex = props.listIndex;
-    props.app.handleMoveItem(dragItemId, { list: hoverListIndex, item: -1 });
+    const hoverListIndex = listIndex;
+    app.handleMoveItem(dragItemId, { list: hoverListIndex, item: -1 });
   },
 };
 
 const listSource = {
   beginDrag(props) {
+    const { listIndex, app } = props;
     return {
-      listIndex: props.listIndex,
-      app: props.app,
+      listIndex,
+      app,
     };
   },
 };
 const listTarget = {
   canDrop(props, monitor) {
+    const { app } = props;
     const sourceApp = monitor.getItem().app;
-    const targetApp = props.app;
+    const targetApp = app;
     return sourceApp === targetApp;
   },
   drop(props, monitor /* , component */) {
+    const { listIndex, app } = props;
     const dragListIndex = monitor.getItem().listIndex;
-    const hoverListIndex = props.listIndex;
+    const hoverListIndex = listIndex;
     if (isEqual(dragListIndex, hoverListIndex)) {
       return;
     }
-    props.app.handleMoveList(dragListIndex, hoverListIndex);
+    app.handleMoveList(dragListIndex, hoverListIndex);
   },
 };
 
-const KanbanList = props => (
-  props.connectDropTarget(props.connectDropTarget2(props.connectDragSource((
-    <td style={props.isDragging ? listDraggingStyle : listStyle}>
-      <div style={listTitleStyle}>{props.model.name}</div>
-      {props.model.items.map((s, i) => <KanbanCardDraggable model={s} itemId={{ list: props.listIndex, item: i }} app={props.app} />)}
-    </td>)))));
+const KanbanList = (props) => {
+  const {
+    connectDropTarget, connectDropTarget2, connectDragSource, isDragging, model, listIndex, app,
+  } = props;
+  return connectDropTarget(connectDropTarget2(connectDragSource((
+    <td style={isDragging ? listDraggingStyle : listStyle}>
+      <div style={listTitleStyle}>
+        {model.name}
+      </div>
+      {model.items.map((s, i) => <KanbanCardDraggable model={s} itemId={{ list: listIndex, item: i }} app={app} />)}
+    </td>))));
+};
 KanbanList.propTypes = {
   model: PropTypes.instanceOf(KanbanModelList).isRequired,
   listIndex: PropTypes.number.isRequired,
@@ -324,29 +364,39 @@ const trashActiveStyle = assign(clone(trashInactiveStyle), {
 });
 const trashCardTarget = {
   canDrop(props, monitor) {
+    const { app } = props;
     const sourceApp = monitor.getItem().app;
-    const targetApp = props.app;
+    const targetApp = app;
     return sourceApp === targetApp;
   },
   drop(props, monitor /* , component */) {
+    const { app } = props;
     const dragItemId = monitor.getItem().itemId;
-    props.app.handleRemoveItem(dragItemId);
+    app.handleRemoveItem(dragItemId);
   },
 };
 const trashListTarget = {
   canDrop(props, monitor) {
+    const { app } = props;
     const sourceApp = monitor.getItem().app;
-    const targetApp = props.app;
+    const targetApp = app;
     return sourceApp === targetApp;
   },
   drop(props, monitor /* , component */) {
+    const { app } = props;
     const dragListIndex = monitor.getItem().listIndex;
-    props.app.handleRemoveList(dragListIndex);
+    app.handleRemoveList(dragListIndex);
   },
 };
-const KanbanTrash = props => props.connectDropTargetC(props.connectDropTargetL((
-  <span style={props.isOverC || props.isOverL ? trashActiveStyle : trashInactiveStyle}>Drop here to remove</span>
-)));
+const KanbanTrash = (props) => {
+  const {
+    connectDropTargetC, connectDropTargetL, isOverC, isOverL,
+  } = props;
+  return connectDropTargetC(connectDropTargetL((
+    <span style={isOverC || isOverL ? trashActiveStyle : trashInactiveStyle}>
+      Drop here to remove
+    </span>)));
+};
 KanbanTrash.propTypes = {
   // eslint-disable-next-line no-use-before-define
   app: PropTypes.instanceOf(KanbanApplication).isRequired,
@@ -375,17 +425,22 @@ class KanbanApplication extends React.Component {
     this.handleMoveItem = this.handleMoveItem.bind(this);
     this.handleMoveList = this.handleMoveList.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = KanbanModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = KanbanModel.deserialize(data);
     const newModel = KanbanModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   updateKanban(updator) {
-    const newKanban = KanbanModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const newKanban = KanbanModel.deserialize(data);
     updator(newKanban);
-    this.props.onEdit(newKanban.serialize(), this.props.appContext);
+    onEdit(newKanban.serialize(), appContext);
   }
+
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
     const textbox = this[`input${index}`];
@@ -398,6 +453,7 @@ class KanbanApplication extends React.Component {
       }
     }
   }
+
   handleAddList() {
     const text = this.refInputList.current.value;
     if (text) {
@@ -406,32 +462,38 @@ class KanbanApplication extends React.Component {
       });
     }
   }
+
   handleRemoveList(listIndex) {
     this.updateKanban((k) => {
       k.removeListAt(listIndex);
     });
   }
+
   handleRemoveItem(itemId) {
     this.updateKanban((k) => {
       k.getListAt(itemId.list).removeItemAt(itemId.item);
     });
   }
+
   handleMoveItem(sourceId, targetId) {
     let targetItemIndex = targetId.item;
     if (targetItemIndex < 0) {
       // Item is dropped off outside of any cards, move the item to last
-      const model = KanbanModel.deserialize(this.props.data);
+      const { data } = this.props;
+      const model = KanbanModel.deserialize(data);
       targetItemIndex = model.getListAt(targetId.list).getLength();
     }
     this.updateKanban((k) => {
       k.moveItem(sourceId.list, sourceId.item, targetId.list, targetItemIndex);
     });
   }
+
   handleMoveList(sourceId, targetId) {
     this.updateKanban((k) => {
       k.moveList(sourceId, targetId);
     });
   }
+
   renderRow2(index) {
     return (
       <td>
@@ -440,8 +502,10 @@ class KanbanApplication extends React.Component {
         <input type="button" value="Add" data-index={index} onClick={this.handleAddItem} />
       </td>);
   }
+
   render() {
-    const model = KanbanModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const model = KanbanModel.deserialize(data);
     return (
       <div>
         <input ref={this.refInputList} type="text" placeholder="Add list" />

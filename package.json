@@ -60,7 +60,7 @@
     "esdoc-jsx-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-airbnb": "^17.0.0",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-ava": "^4.5.1",
     "eslint-plugin-import": "^2.13.0",

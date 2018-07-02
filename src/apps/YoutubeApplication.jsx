@@ -15,21 +15,28 @@ export default class YoutubeApplication extends React.Component {
     this.refInput = React.createRef();
     this.handleEdit = this.handleEdit.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    return this.props.data !== nextProps.data;
+    const { data } = this.props;
+    return data !== nextProps.data;
   }
+
   handleEdit() {
+    const { onEdit, appContext } = this.props;
     const url = this.refInput.current.value;
-    this.props.onEdit(url, this.props.appContext);
+    onEdit(url, appContext);
   }
+
   render() {
-    const url = this.props.data;
-    const id = extractYouTubeVideoID(url);
+    const { data } = this.props;
+    const id = extractYouTubeVideoID(data);
     const insertUrl = `https://www.youtube.com/embed/${id}?rel=0`;
     return (
       <div>
         <iframe width="560" height="315" src={insertUrl} frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen title={id} />
-        <div key="input"><input type="text" style={{ width: '300px' }} ref={this.refInput} placeholder="YouTube URL" value={url} onChange={this.handleEdit} /></div>
+        <div key="input">
+          <input type="text" style={{ width: '300px' }} ref={this.refInput} placeholder="YouTube URL" value={data} onChange={this.handleEdit} />
+        </div>
       </div>);
   }
 }

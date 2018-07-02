@@ -57,18 +57,23 @@ class MeetingTimeModel {
       year: '????', month: '??', day: '??', week: '?', hour: '??', minute: '??',
     };
   }
+
   updateStartTime(obj) {
     this.startTime = obj;
   }
+
   updateEndTime(str) {
     this.endTime = str;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -88,40 +93,50 @@ export default class MeetingTimeApplication extends React.Component {
     this.handleUpdateStartTime = this.handleUpdateStartTime.bind(this);
     this.handleUpdateEndTime = this.handleUpdateEndTime.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = MeetingTimeModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = MeetingTimeModel.deserialize(data);
     const newModel = MeetingTimeModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleUpdateStartTime() {
     const value = getNowTime();
-    const model = MeetingTimeModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = MeetingTimeModel.deserialize(data);
     model.updateStartTime(value);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   handleUpdateEndTime() {
     const value = getNowTime();
-    const model = MeetingTimeModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const model = MeetingTimeModel.deserialize(data);
     model.updateEndTime(value);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
   }
+
   render() {
-    const time = MeetingTimeModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const time = MeetingTimeModel.deserialize(data);
     const duration = calculationDuration(time.startTime, time.endTime);
     const convertDateToString = date => `${date.year}/${date.month}/${date.day} (${date.week}) ${date.hour}:${date.minute}`;
     return (
       <div>
         <div key="start">
-          Start at {convertDateToString(time.startTime)}&nbsp;
+          {`Start at ${convertDateToString(time.startTime)}`}
+          &nbsp;
           <input type="button" value="Refresh Start" onClick={this.handleUpdateStartTime} />
         </div>
         <div key="end">
-          End at {convertDateToString(time.endTime)}&nbsp;
+          {`End at ${convertDateToString(time.endTime)}`}
+          &nbsp;
           <input type="button" value="Refresh End" onClick={this.handleUpdateEndTime} />
         </div>
         <div key="duration">
-          Duration of a meeting: {duration}
+          {`Duration of a meeting: ${duration}`}
         </div>
       </div>);
   }

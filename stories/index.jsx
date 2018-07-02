@@ -15,13 +15,18 @@ storiesOf('CodeMirror', module)
   .add('sync in room2', () => <AppEnabledWikiEditorCodeMirror defaultValue="syncing with room2" roomName="room2" />);
 
 function WikiNavigationPage(props) {
+  const { name } = props;
   return (
     <div>
       <div>
-        <a href="#dummy" onClick={linkTo('Wiki navigation', 'index')}><img src={logo} alt="cattaz" width="100" height="33" /></a>
-        <span style={{ margin: '0em 1em', verticalAlign: 'top', fontSize: '24px' }}>{props.name}</span>
+        <a href="#dummy" onClick={linkTo('Wiki navigation', 'index')}>
+          <img src={logo} alt="cattaz" width="100" height="33" />
+        </a>
+        <span style={{ margin: '0em 1em', verticalAlign: 'top', fontSize: '24px' }}>
+          {name}
+        </span>
       </div>
-      <AppEnabledWikiEditorCodeMirror defaultValue="syncing..." roomName={props.name} heightMargin={33 + 4} />
+      <AppEnabledWikiEditorCodeMirror defaultValue="syncing..." roomName={name} heightMargin={33 + 4} />
     </div>);
 }
 WikiNavigationPage.propTypes = {
@@ -31,14 +36,28 @@ WikiNavigationPage.propTypes = {
 storiesOf('Wiki navigation', module)
   .add('index', () => (
     <div>
-      <h1><img src={logo} alt="cattaz" width="640" /></h1>
-      <h2>List of pages</h2>
+      <h1>
+        <img src={logo} alt="cattaz" width="640" />
+      </h1>
+      <h2>
+        List of pages
+      </h2>
       <ul>
-        <li><a href="#dummy" onClick={linkTo('Wiki navigation', 'page1')}>page1</a></li>
-        <li><a href="#dummy" onClick={linkTo('Wiki navigation', 'page2')}>page2</a></li>
+        <li>
+          <a href="#dummy" onClick={linkTo('Wiki navigation', 'page1')}>
+            page1
+          </a>
+        </li>
+        <li>
+          <a href="#dummy" onClick={linkTo('Wiki navigation', 'page2')}>
+            page2
+          </a>
+        </li>
       </ul>
       <div>
-        Create a new page: <input type="text" placeholder="new page name" /><input type="button" value="Create" onClick={linkTo('Wiki navigation', 'page3')} />
+        Create a new page:
+        <input type="text" placeholder="new page name" />
+        <input type="button" value="Create" onClick={linkTo('Wiki navigation', 'page3')} />
       </div>
     </div>))
   .add('page1', () => <WikiNavigationPage name="page1" />)

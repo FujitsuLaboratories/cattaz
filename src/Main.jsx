@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import HashRouter from 'react-router-dom/HashRouter';
 import RouterLink from 'react-router-dom/Link';
 import TimeAgo from 'react-timeago';
 import Modal from 'react-modal';
@@ -34,10 +33,12 @@ export default class Main extends React.Component {
     this.handleDeleteCloseModal = this.handleDeleteCloseModal.bind(this);
     this.handleDeleteOkBtnModal = this.handleDeleteOkBtnModal.bind(this);
   }
+
   componentDidMount() {
     Modal.setAppElement(this.refContainer.current);
     this.getListPages();
   }
+
   async getListPages() {
     try {
       const response = await window.fetch(`${url}/pages`, {
@@ -63,19 +64,25 @@ export default class Main extends React.Component {
       this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
     }
   }
+
   handleNew() {
     const pageName = this.refInputNewPageName.current.value;
     if (pageName) {
-      this.context.router.history.push(`/page/${pageName}`);
+      const { router } = this.context;
+      router.history.push(`/page/${pageName}`);
     }
   }
+
   handleDeleteOpenModal(e) {
     this.setState({ modalIsOpen: true, deletePageName: e.target.id });
   }
+
   handleDeleteCloseModal() {
     this.setState({ modalIsOpen: false, deleteErrorMsg: '' });
   }
+
   async handleDeleteOkBtnModal() {
+    const { deletePageName } = this.state;
     try {
       const res = await window.fetch(`${url}/deletePage`, {
         method: 'POST',
@@ -83,7 +90,7 @@ export default class Main extends React.Component {
           Accept: 'application/json',
           'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: this.state.deletePageName,
+        body: deletePageName,
       });
       const data = await res.json();
       if (data.status === 'SUCCESS') {
@@ -98,39 +105,75 @@ export default class Main extends React.Component {
   }
 
   handlePrevious() {
-    this.setState({ currentPageNum: this.state.currentPageNum - 1 });
+    const { currentPageNum } = this.state;
+    this.setState({ currentPageNum: currentPageNum - 1 });
   }
+
   handleNext() {
-    this.setState({ currentPageNum: this.state.currentPageNum + 1 });
+    const { currentPageNum } = this.state;
+    this.setState({ currentPageNum: currentPageNum + 1 });
   }
+
   renderListPages() {
+    const { pages, currentPageNum, getPagesError } = this.state;
     const metadataStyle = {
       margin: '0 0 0 0.5em',
       color: 'grey',
     };
-    const totalPageCount = Math.ceil(this.state.pages.length / pagesListMax);
-    const currentPages = this.state.pages.slice((this.state.currentPageNum - 1) * pagesListMax, this.state.currentPageNum * pagesListMax);
+    const totalPageCount = Math.ceil(pages.length / pagesListMax);
+    const currentPages = pages.slice((currentPageNum - 1) * pagesListMax, currentPageNum * pagesListMax);
     return (
       <React.Fragment>
-        {this.state.getPagesError}
+        {getPagesError}
         <p>
-          Create a new page: <input ref={this.refInputNewPageName} type="text" placeholder="new page name" />
+          Create a new page:
+          {' '}
+          <input ref={this.refInputNewPageName} type="text" placeholder="new page name" />
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
         <ul>
           {currentPages.map(p => (
             <li key={p.page}>
-              <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>{decodeURIComponent(p.page)}</RouterLink>
-              <span style={metadataStyle}>(created: <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />, modified: <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />, active: {p.active})</span>
-              <button className="deleteBtn" onClick={this.handleDeleteOpenModal} id={p.page}>Delete</button>
+              <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>
+                {decodeURIComponent(p.page)}
+              </RouterLink>
+              <span style={metadataStyle}>
+                (created:
+                {' '}
+                <TimeAgo date={p.created} minPeriod={timeAgoMinPeriod} />
+                , modified:
+                {' '}
+                <TimeAgo date={p.modified} minPeriod={timeAgoMinPeriod} />
+                , active:
+                {' '}
+                {p.active}
+                )
+              </span>
+              <button className="deleteBtn" onClick={this.handleDeleteOpenModal} id={p.page} type="button">
+                Delete
+              </button>
             </li>))}
         </ul>
-        {this.state.currentPageNum > 1 ? <button type="button" onClick={this.handlePrevious}>Prev</button> : null}
-        {this.state.pages.length > pagesListMax ? <span>&nbsp;Page:{this.state.currentPageNum}&nbsp;</span> : null}
-        {this.state.currentPageNum < totalPageCount ? <button type="button" onClick={this.handleNext}>Next</button> : null}
+        {currentPageNum > 1 ? (
+          <button type="button" onClick={this.handlePrevious}>
+            Prev
+          </button>
+        ) : null}
+        {pages.length > pagesListMax ? (
+          <span>
+            {`&nbsp;Page: ${currentPageNum}&nbsp;`}
+          </span>
+        ) : null}
+        {currentPageNum < totalPageCount ? (
+          <button type="button" onClick={this.handleNext}>
+            Next
+          </button>
+        ) : null}
       </React.Fragment>);
   }
+
   render() {
+    const { modalIsOpen, deletePageName, deleteErrorMsg } = this.state;
     const modalStyles = {
       wrapper: {
         content: {
@@ -153,41 +196,116 @@ export default class Main extends React.Component {
     return (
       <div style={{ margin: '8px' }} ref={this.refContainer}>
         <Modal
-          isOpen={this.state.modalIsOpen}
+          isOpen={modalIsOpen}
           onRequestClose={this.handleDeleteCloseModal}
           style={modalStyles.wrapper}
           contentLabel="Delete page"
         >
-          <div>Do you really want to delete?</div>
-          <div style={modalStyles.pageName}>&quot;{this.state.deletePageName}&quot;</div>
-          {this.state.deleteErrorMsg !== '' ? <div style={modalStyles.error}>{this.state.deleteErrorMsg}</div> : null}
-          <button className="deleteCancelBtnModal" onClick={this.handleDeleteCloseModal}>Cancel</button>
-          <button className="deleteOkBtnModal" onClick={this.handleDeleteOkBtnModal}>OK</button>
+          <div>
+            Do you really want to delete?
+          </div>
+          <div style={modalStyles.pageName}>
+            &quot;
+            {deletePageName}
+            &quot;
+          </div>
+          {deleteErrorMsg !== '' ? (
+            <div style={modalStyles.error}>
+              {deleteErrorMsg}
+            </div>
+          ) : null}
+          <button className="deleteCancelBtnModal" onClick={this.handleDeleteCloseModal} type="button">
+            Cancel
+          </button>
+          <button className="deleteOkBtnModal" onClick={this.handleDeleteOkBtnModal} type="button">
+            OK
+          </button>
         </Modal>
-        <h1><img src={logo} alt="cattaz" width="640" /></h1>
-        <h2>List of pages</h2>
+        <h1>
+          <img src={logo} alt="cattaz" width="640" />
+        </h1>
+        <h2>
+          List of pages
+        </h2>
         {this.renderListPages()}
-        <h2>Documentation</h2>
+        <h2>
+          Documentation
+        </h2>
         <ul>
-          <li><RouterLink to="/doc/index">Index</RouterLink> (<RouterLink to="/doc/ja/index">日本語</RouterLink>)</li>
-          <li><RouterLink to="/doc/usage">Usage</RouterLink> (<RouterLink to="/doc/ja/usage">日本語</RouterLink>)</li>
-          <li>List of sample applications
+          <li>
+            <RouterLink to="/doc/index">
+              Index
+            </RouterLink>
+            {' '}
+            (
+            <RouterLink to="/doc/ja/index">
+              日本語
+            </RouterLink>
+            )
+          </li>
+          <li>
+            <RouterLink to="/doc/usage">
+              Usage
+            </RouterLink>
+            {' '}
+            (
+            <RouterLink to="/doc/ja/usage">
+              日本語
+            </RouterLink>
+            )
+          </li>
+          <li>
+            List of sample applications
             <ul>
-              <li><RouterLink to="/doc/app-hello">Hello</RouterLink> (<RouterLink to="/doc/ja/app-hello">日本語</RouterLink>)</li>
-              <li><RouterLink to="/doc/app-kanban">Kanban</RouterLink></li>
-              <li><RouterLink to="/doc/apps">and more</RouterLink></li>
+              <li>
+                <RouterLink to="/doc/app-hello">
+                  Hello
+                </RouterLink>
+                {' '}
+                (
+                <RouterLink to="/doc/ja/app-hello">
+                  日本語
+                </RouterLink>
+                )
+              </li>
+              <li>
+                <RouterLink to="/doc/app-kanban">
+                  Kanban
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/doc/apps">
+                  and more
+                </RouterLink>
+              </li>
             </ul>
           </li>
         </ul>
-        <h2>License</h2>
+        <h2>
+          License
+        </h2>
         <ul>
-          <li><a href="LICENSE.txt">The MIT License</a>. Source code is available on <a href="https://github.com/FujitsuLaboratories/cattaz">GitHub</a>.</li>
-          <li><a href="licenses.txt">Attibution notice for third party software</a></li>
+          <li>
+            <a href="LICENSE.txt">
+              The MIT License
+            </a>
+            . Source code is available on
+            {' '}
+            <a href="https://github.com/FujitsuLaboratories/cattaz">
+              GitHub
+            </a>
+            .
+          </li>
+          <li>
+            <a href="licenses.txt">
+              Attibution notice for third party software
+            </a>
+          </li>
         </ul>
       </div>
     );
   }
 }
 Main.contextTypes = {
-  router: PropTypes.shape(HashRouter.propTypes).isRequired,
+  router: PropTypes.shape({ history: PropTypes.shape({ push: PropTypes.func }) }).isRequired,
 };

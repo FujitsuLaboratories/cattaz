@@ -18,12 +18,15 @@ class WeatherModel {
     this.icon = icon;
     this.temp = temp;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -47,13 +50,16 @@ export default class WeatherApplication extends React.Component {
     this.refInputCity = React.createRef();
     this.handleGetWeather = this.handleGetWeather.bind(this);
   }
+
   shouldComponentUpdate(nextProps, nextState) {
+    const { data } = this.props;
     if (!isEqual(this.state, nextState)) return true;
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = WeatherModel.deserialize(this.props.data);
+    if (data === nextProps.data) return false;
+    const oldModel = WeatherModel.deserialize(data);
     const newModel = WeatherModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   async handleGetWeather() {
     const city = this.refInputCity.current.value;
     if (!city) return;
@@ -61,9 +67,10 @@ export default class WeatherApplication extends React.Component {
       const response = await window.fetch(`${baseURL}?q=${city}&units=${units}&appid=${openWeatherMapApiKey}`);
       const data = await response.json();
       if (data.cod === 200) {
+        const { onEdit, appContext } = this.props;
         const newWeather = new WeatherModel(data.sys.country, data.name, data.weather[0].main, data.weather[0].icon, data.main.temp);
         this.setState({ errorMessage: '' });
-        this.props.onEdit(newWeather.serialize(), this.props.appContext);
+        onEdit(newWeather.serialize(), appContext);
       } else if (data.cod === 401) {
         this.setState({ errorMessage: `Get Weather Error [ ${data.message} Please change to your own OpenWeatherMap API KEY in [../apikey/apikey.js].]` });
       } else {
@@ -73,13 +80,18 @@ export default class WeatherApplication extends React.Component {
       this.setState({ errorMessage: `Get Weather Error [ ${e} ]` });
     }
   }
+
   render() {
-    const weather = WeatherModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const { errorMessage } = this.state;
+    const weather = WeatherModel.deserialize(data);
     return (
       <div>
         <input ref={this.refInputCity} type="text" placeholder="Add City" />
         <input type="button" value="Get Current Weather" onClick={this.handleGetWeather} />
-        <div key="error" style={{ color: '#D8000C' }}>{this.state.errorMessage}</div>
+        <div key="error" style={{ color: '#D8000C' }}>
+          {errorMessage}
+        </div>
         <div key="result">
           { weather.city ? [
             `City: ${weather.city}, ${weather.country}`,

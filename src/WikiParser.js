@@ -26,6 +26,7 @@ export default class WikiParser {
     if (position.line === region.end.line && position.column > region.end.column) return false;
     return true;
   }
+
   /**
    * Parse Markdown string to hast
    * @param {!string} markdown
@@ -36,6 +37,7 @@ export default class WikiParser {
     const hast = toHast(mdast);
     return hast;
   }
+
   /**
    * Convert fenced code block in hast to application
    * @param {!object} hast Hast object
@@ -73,6 +75,7 @@ export default class WikiParser {
     cloned.properties.position = JSON.stringify(hast.position);
     return cloned;
   }
+
   /**
    * Render custom Hast
    * @param {object} customHast
@@ -139,6 +142,7 @@ export default class WikiParser {
     }
     return toH(h, rootNode);
   }
+
   /**
    * @param {!string} appText
    * @returns {string}
@@ -148,6 +152,7 @@ export default class WikiParser {
     if (appText[appText.length - 1] !== '\n') return appText;
     return appText.substring(0, appText.length - 1);
   }
+
   /**
    * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block
    * @param {!string} appText
@@ -158,6 +163,7 @@ export default class WikiParser {
     const indent = repeat(' ', originalAppLocation.start.column - 1);
     return appText.split('\n').map(l => `${indent}${l}`).join('\n');
   }
+
   /**
    * @param {!string} startFencingStr
    * @param {!string} appText
@@ -175,6 +181,7 @@ export default class WikiParser {
     const diffFencingLen = Math.max((maxSymbols - originalFencing.length) + 1, 0);
     return [repeat(fencingChar, diffFencingLen), originalFencing];
   }
+
   /**
    * @param {!string} originalText
    * @param {!object} originalAppLocation The location (https://github.com/wooorm/unist#location) of fenced code block

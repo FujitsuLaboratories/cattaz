@@ -10,15 +10,19 @@ class VoteHelpfulModel {
       No: 0,
     };
   }
+
   addVote(name) {
     this.candidates[name] = this.candidates[name] + 1;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -37,22 +41,29 @@ export default class VoteHelpfulApplication extends React.Component {
     this.state = { voted: false };
     this.handleAddVote = this.handleAddVote.bind(this);
   }
+
   shouldComponentUpdate(nextProps, nextState) {
+    const { data } = this.props;
     if (!isEqual(this.state, nextState)) return true;
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = VoteHelpfulModel.deserialize(this.props.data);
+    if (data === nextProps.data) return false;
+    const oldModel = VoteHelpfulModel.deserialize(data);
     const newModel = VoteHelpfulModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleAddVote(event) {
+    const { data, onEdit, appContext } = this.props;
     const value = event.target.getAttribute('data-index');
-    const model = VoteHelpfulModel.deserialize(this.props.data);
+    const model = VoteHelpfulModel.deserialize(data);
     model.addVote(value);
-    this.props.onEdit(model.serialize(), this.props.appContext);
+    onEdit(model.serialize(), appContext);
     this.setState({ voted: true });
   }
+
   render() {
-    const model = VoteHelpfulModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const { voted } = this.state;
+    const model = VoteHelpfulModel.deserialize(data);
     const colors = { No: '#da3d3d', Yes: '#218bce' };
     const styles = {
       button: {
@@ -103,17 +114,30 @@ export default class VoteHelpfulApplication extends React.Component {
 
     const barElems = (
       <div style={{ marginTop: '10px', textAlign: 'center', width: `${(2 * 200) + (4 * 10)}px` }}>
-        <span style={styles.barLabel}>{Math.round(wy * 100)}%</span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: (ny / (ny + nn)) * W })}>{ny}</span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: (nn / (ny + nn)) * W })}>{nn}</span>
-        <span style={styles.barLabel}>{Math.round(wn * 100)}%</span>
+        <span style={styles.barLabel}>
+          {Math.round(wy * 100)}
+          %
+        </span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: (ny / (ny + nn)) * W })}>
+          {ny}
+        </span>
+        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: (nn / (ny + nn)) * W })}>
+          {nn}
+        </span>
+        <span style={styles.barLabel}>
+          {Math.round(wn * 100)}
+          %
+        </span>
       </div>);
 
     return (
       <div>
         {
-          this.state.voted
-            ? <p style={styles.message}>Thank you for contribution!</p>
+          voted
+            ? (
+              <p style={styles.message}>
+                Thank you for contribution!
+              </p>)
             : buttonElems
         }
         {

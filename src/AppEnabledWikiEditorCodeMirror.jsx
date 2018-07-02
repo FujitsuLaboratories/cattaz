@@ -32,6 +32,7 @@ class OtherClientCursor {
     }
     this.color = `#${ColorConvert.hsv.hex(hue, 100, 100)}`;
   }
+
   updateCursor(cursorPos, cm) {
     this.removeCursor();
     const svgSize = 8;
@@ -49,6 +50,7 @@ class OtherClientCursor {
     svg.appendChild(polyline);
     this.marker = cm.setBookmark(cursorPos, { widget: svg, insertLeft: true });
   }
+
   removeCursor() {
     if (this.marker) {
       this.marker.clear();
@@ -73,11 +75,13 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.handleBlur = this.handleBlur.bind(this);
     this.otherClients = new Map();
   }
+
   async componentDidMount() {
     window.addEventListener('resize', this.handleResize);
     this.updateHeight();
     this.updateWidth();
-    if (this.props.roomName) {
+    const { roomName } = this.props;
+    if (roomName) {
       this.socket = io(`http://${window.location.hostname}:${process.env.PORT_WEBSOCKET}`);
       this.socket.on('activeUser', this.handleActiveUser);
       this.y = await Y({
@@ -88,7 +92,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
           name: 'websockets-client',
           socket: this.socket,
           // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
-          room: encodeURIComponent(this.props.roomName),
+          room: encodeURIComponent(roomName),
         },
         share: {
           textarea: 'Text',
@@ -98,11 +102,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.socket.on('clientCursor', this.handleClientCursor);
     }
   }
+
   componentDidUpdate(prevProps) {
-    if (this.props.value !== prevProps.value) {
-      this.refEditor.current.editor.setValue(this.props.value);
+    const { value } = this.props;
+    if (value !== prevProps.value) {
+      this.refEditor.current.editor.setValue(value);
     }
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false);
     if (this.y) {
@@ -115,33 +122,42 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.socket.disconnect();
     }
   }
+
   updateHeight() {
-    const newHeight = actual('height', 'px') - this.props.heightMargin;
-    if (newHeight !== this.state.height) {
+    const { heightMargin } = this.props;
+    const { height } = this.state;
+    const newHeight = actual('height', 'px') - heightMargin;
+    if (newHeight !== height) {
       this.setState({ height: newHeight });
       if (this.refEditor.current) {
         this.refEditor.current.editor.setSize(null, newHeight);
       }
     }
   }
+
   updateWidth() {
+    const { editorPercentage, width } = this.state;
     const vw = actual('width', 'px');
-    let newWidth = (vw * (this.state.editorPercentage / 100)) - resizerMargin;
+    let newWidth = (vw * (editorPercentage / 100)) - resizerMargin;
     if (newWidth < 0) {
       newWidth = 0;
     }
     const previewWidth = vw - newWidth - (2 * resizerMargin) - 1;
-    if (newWidth !== this.state.width) {
+    if (newWidth !== width) {
       this.setState({ width: newWidth, previewWidth });
     }
   }
+
   updateSize() {
     this.updateWidth();
     this.updateHeight();
   }
+
   handleActiveUser(userNum) {
-    this.props.onActiveUser(userNum);
+    const { onActiveUser } = this.props;
+    onActiveUser(userNum);
   }
+
   handleClientCursor(msg) {
     const client = this.otherClients.get(msg.id);
     if (msg.type === 'update') {
@@ -161,24 +177,29 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       }
     }
   }
+
   sendCursorMsg(type, cursorPos) {
+    const { roomName } = this.props;
     if (this.socket) {
       const cursorMsg = {
         type,
-        room: this.props.roomName,
+        room: roomName,
         cursorPos,
       };
       this.socket.emit('clientCursor', cursorMsg);
     }
   }
+
   handleSplitResized(newSize) {
+    const { editorPercentage } = this.state;
     const viewportWidth = actual('width', 'px');
     const newPercentage = (100.0 * newSize) / viewportWidth;
-    if (newPercentage !== this.state.editorPercentage) {
+    if (newPercentage !== editorPercentage) {
       this.setState({ editorPercentage: newPercentage });
       this.updateWidth();
     }
   }
+
   handleEdit(_, data) {
     const text = this.refEditor.current.editor.getValue();
     const hastOriginal = WikiParser.parseToHast(text);
@@ -188,6 +209,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       this.sendCursorMsg('update', { line: data.from.line, ch: data.from.ch });
     }
   }
+
   handleAppEdit(newText, appContext) {
     const cm = this.refEditor.current.editor;
     const startFencedStr = cm.getLine(appContext.position.start.line - 1);
@@ -242,17 +264,25 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
     this.sendCursorMsg('update', { line: appContext.position.start.line - 1, ch: (appContext.position.start.column - 1) });
   }
+
   handleCursor(editor, data) {
     // Code-mirror counts lines and columns from zero.
     this.setState({ cursorPosition: { line: data.line + 1, column: data.ch + 1 } });
   }
+
   handleFocus() {
     this.setState({ onFocus: true });
   }
+
   handleBlur() {
     this.setState({ onFocus: false });
   }
+
   render() {
+    const {
+      width, height, previewWidth, hast, onFocus, cursorPosition,
+    } = this.state;
+    const { defaultValue } = this.props;
     const cmOptions = {
       mode: 'markdown',
       lineNumbers: true,
@@ -260,23 +290,24 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
       theme: '3024-night',
     };
     return (
-      <SplitPane split="vertical" size={this.state.width + resizerMargin} onChange={this.handleSplitResized}>
-        <CodeMirror ref={this.refEditor} value={this.props.defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} onFocus={this.handleFocus} onBlur={this.handleBlur} />
+      <SplitPane split="vertical" size={width + resizerMargin} onChange={this.handleSplitResized}>
+        <CodeMirror ref={this.refEditor} value={defaultValue} options={cmOptions} onChange={this.handleEdit} onCursor={this.handleCursor} onFocus={this.handleFocus} onBlur={this.handleBlur} />
         <div
           style={{
             overflow: 'auto',
-            width: this.state.previewWidth,
-            height: this.state.height,
+            width: previewWidth,
+            height,
             paddingLeft: resizerMargin,
           }}
           className="markdown-body"
         >
-          {WikiParser.renderCustomHast(this.state.hast, { onEdit: this.handleAppEdit, cursorPosition: this.state.onFocus ? this.state.cursorPosition : null })}
+          {WikiParser.renderCustomHast(hast, { onEdit: this.handleAppEdit, cursorPosition: onFocus ? cursorPosition : null })}
         </div>
       </SplitPane>
     );
   }
 }
+
 AppEnabledWikiEditorCodeMirror.propTypes = {
   onActiveUser: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,

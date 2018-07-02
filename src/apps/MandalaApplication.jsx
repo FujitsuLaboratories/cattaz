@@ -11,15 +11,19 @@ class MandalaModel {
   constructor() {
     this.block = fill(new Array(LENGTH * LENGTH), '');
   }
+
   changeCell(index, value) {
     this.block[index] = value;
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -37,21 +41,27 @@ export default class MandalaApplication extends React.Component {
     super();
     this.handleCellChange = this.handleCellChange.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = MandalaModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = MandalaModel.deserialize(data);
     const newModel = MandalaModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleCellChange(event) {
     const index = parseInt(event.target.getAttribute('data-index'), 10);
     const { value } = event.target;
-    const mandala = MandalaModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const mandala = MandalaModel.deserialize(data);
     mandala.changeCell(index, value);
-    this.props.onEdit(mandala.serialize(), this.props.appContext);
+    onEdit(mandala.serialize(), appContext);
   }
+
   render() {
-    const mandala = MandalaModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const mandala = MandalaModel.deserialize(data);
     const blockStyle = {
       display: 'inline-block',
       lineHeight: 0,
@@ -66,10 +76,13 @@ export default class MandalaApplication extends React.Component {
       // borderRadius: 5,
       resize: 'none',
     };
-    const rows = chunk(mandala.block, LENGTH).map((rowData, rowIndex) =>
-      rowData.map((text, colIndex) =>
-        <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />));
-    return <div><div style={blockStyle}>{rows.map(row => [row, <br />])}</div></div>;
+    const rows = chunk(mandala.block, LENGTH).map((rowData, rowIndex) => rowData.map((text, colIndex) => <textarea data-index={(rowIndex * LENGTH) + colIndex} style={cellStyle} value={text} onChange={this.handleCellChange} />));
+    return (
+      <div>
+        <div style={blockStyle}>
+          {rows.map(row => [row, <br />])}
+        </div>
+      </div>);
   }
 }
 

@@ -12,16 +12,21 @@ export default class Page extends React.Component {
     this.state = { activeUser: 0 };
     this.handleActiveUserDisp = this.handleActiveUserDisp.bind(this);
   }
+
   componentDidMount() {
-    if (this.props.doc) {
-      this.loadDoc(this.props.match.params.page);
+    const { doc, match } = this.props;
+    if (doc) {
+      this.loadDoc(match.params.page);
     }
   }
+
   componentDidUpdate(prevProps) {
-    if (this.props.doc && this.props.match.params.page !== prevProps.match.params.page) {
-      this.loadDoc(this.props.match.params.page);
+    const { doc, match } = this.props;
+    if (doc && match.params.page !== prevProps.match.params.page) {
+      this.loadDoc(match.params.page);
     }
   }
+
   async loadDoc(pageName) {
     const mdFileName = docs[pageName];
     if (!mdFileName) {
@@ -33,14 +38,17 @@ export default class Page extends React.Component {
     const text = await res.text();
     this.setState({ docText: text });
   }
+
   handleActiveUserDisp(userNum) {
     this.setState({ activeUser: userNum });
   }
+
   render() {
-    const pageName = this.props.match.params.page;
-    const roomName = this.props.doc ? null : pageName;
-    const defaultValue = this.props.doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
-    const { docText } = this.state;
+    const { doc, match } = this.props;
+    const pageName = match.params.page;
+    const roomName = doc ? null : pageName;
+    const defaultValue = doc ? `loading ${pageName}...` : `syncing with ${pageName}...`;
+    const { docText, activeUser } = this.state;
     const style = {
       header: {
         height: 33 + 4, display: 'flex', flexFlow: 'row', alignItems: 'center', margin: 0, padding: 7, backgroundColor: '#F1F1F1',
@@ -62,12 +70,20 @@ export default class Page extends React.Component {
       <React.Fragment>
         <div style={style.header}>
           <div style={style.headerLeft}>
-            <RouterLink to="/"><img src={logo} alt="cattaz" width="118" height="33" style={style.img} /></RouterLink>
-            <div style={style.pageName}>{pageName}</div>
+            <RouterLink to="/">
+              <img src={logo} alt="cattaz" width="118" height="33" style={style.img} />
+            </RouterLink>
+            <div style={style.pageName}>
+              {pageName}
+            </div>
           </div>
-          {this.state.activeUser > 0 ? <div style={style.active}>(active: {this.state.activeUser})</div> : null}
+          {activeUser > 0 ? (
+            <div style={style.active}>
+              {`(active: ${activeUser})`}
+            </div>)
+            : null}
         </div>
-        <AppEnabledWikiEditor key={this.props.doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={style.header.height + (style.header.padding * 2)} onActiveUser={this.handleActiveUserDisp} />
+        <AppEnabledWikiEditor key={doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={style.header.height + (style.header.padding * 2)} onActiveUser={this.handleActiveUserDisp} />
       </React.Fragment>);
   }
 }

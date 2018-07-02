@@ -9,21 +9,27 @@ class KPTModel {
     this.problems = [];
     this.tries = [];
   }
+
   addKeep(str) {
     this.keeps.push(str);
   }
+
   addProblem(str) {
     this.problems.push(str);
   }
+
   addTry(str) {
     this.tries.push(str);
   }
+
   equals(other) {
     return isEqual(this, other);
   }
+
   serialize() {
     return Yaml.safeDump(this);
   }
+
   static deserialize(str) {
     try {
       const obj = Yaml.safeLoad(str);
@@ -53,39 +59,54 @@ export default class KPTApplication extends React.Component {
     this.handleAddProblem = this.handleAddProblem.bind(this);
     this.handleAddTry = this.handleAddTry.bind(this);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.data === nextProps.data) return false;
-    const oldModel = KPTModel.deserialize(this.props.data);
+    const { data } = this.props;
+    if (data === nextProps.data) return false;
+    const oldModel = KPTModel.deserialize(data);
     const newModel = KPTModel.deserialize(nextProps.data);
     return !oldModel.equals(newModel);
   }
+
   handleAddKeep() {
     const { value } = this.refInputKeep.current;
     if (!value) return;
-    const kpt = KPTModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const kpt = KPTModel.deserialize(data);
     kpt.addKeep(value);
-    this.props.onEdit(kpt.serialize(), this.props.appContext);
+    onEdit(kpt.serialize(), appContext);
   }
+
   handleAddProblem() {
     const { value } = this.refInputProblem.current;
     if (!value) return;
-    const kpt = KPTModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const kpt = KPTModel.deserialize(data);
     kpt.addProblem(value);
-    this.props.onEdit(kpt.serialize(), this.props.appContext);
+    onEdit(kpt.serialize(), appContext);
   }
+
   handleAddTry() {
     const { value } = this.refInputTry.current;
     if (!value) return;
-    const kpt = KPTModel.deserialize(this.props.data);
+    const { data, onEdit, appContext } = this.props;
+    const kpt = KPTModel.deserialize(data);
     kpt.addTry(value);
-    this.props.onEdit(kpt.serialize(), this.props.appContext);
+    onEdit(kpt.serialize(), appContext);
   }
+
   renderCell(title, items, handlerAdd, rowSpan = 1) {
     return (
       <td rowSpan={rowSpan} style={cellStyle}>
-        <h2>{title}</h2>
+        <h2>
+          {title}
+        </h2>
         <ul>
-          {items.map(s => (<li>{s}</li>))}
+          {items.map(s => (
+            <li>
+              {s}
+            </li>
+          ))}
           <li key="input">
             <input ref={this[`refInput${title}`]} type="text" placeholder={`Add ${title}`} />
             <input type="button" value="Add" onClick={handlerAdd} />
@@ -93,8 +114,10 @@ export default class KPTApplication extends React.Component {
         </ul>
       </td>);
   }
+
   render() {
-    const kpt = KPTModel.deserialize(this.props.data);
+    const { data } = this.props;
+    const kpt = KPTModel.deserialize(data);
     return (
       <div>
         <table>
