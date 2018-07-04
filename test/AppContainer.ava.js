@@ -19,7 +19,7 @@ test('AppContainer should render its child if there is no error', t => {
   t.notThrows(() => {
     const wrapper = mount((
       <AppContainer>
-        <ErrorApplication data="odd" />
+        <ErrorApplication data="odd" onEdit={() => {}} appContext={appContext} />
       </AppContainer>));
     t.true(wrapper.find('ErrorApplication').exists());
   });
@@ -30,7 +30,7 @@ test('AppContainer should render error message if there is an error', t => {
   t.notThrows(() => {
     const wrapper = mount((
       <AppContainer>
-        <ErrorApplication data="even" appContext={appContext} />
+        <ErrorApplication data="even" onEdit={() => {}} appContext={appContext} />
       </AppContainer>));
     const text = wrapper.text();
     t.true(text.indexOf('Failed to run an application \'error\'') >= 0, 'contain app name');
@@ -45,7 +45,7 @@ test('AppContainer should recover from error after valid data is given', t => {
   t.notThrows(() => {
     const wrapper = mount((
       <AppContainer>
-        <ErrorApplication data="even" appContext={appContext} />
+        <ErrorApplication data="even" onEdit={() => {}} appContext={appContext} />
       </AppContainer>));
     t.false(wrapper.find('ErrorApplication').exists());
     wrapper.setProps({ children: <ErrorApplication data="odd" appContext={appContext} /> });

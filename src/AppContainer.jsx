@@ -53,5 +53,8 @@ export default class AppContainer extends React.Component {
 }
 AppContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  active: PropTypes.bool.isRequired,
+  active: PropTypes.bool,
+};
+AppContainer.defaultProps = {
+  active: false,
 };
