@@ -6,7 +6,6 @@ services:
       args:
         http_proxy: ${http_proxy}
         https_proxy: ${https_proxy}
-        PORT_WEBSOCKET: ${PORT_WEBSOCKET:-1234}
+        PORT: ${PORT:-8080}
     ports:
-      - "${PORT_WEBSOCKET:-1234}:1234"
-      - "${PORT_WEB:-8080}:8080"
+      - "${PORT:-8080}:8080"

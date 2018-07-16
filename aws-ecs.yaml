@@ -97,10 +97,6 @@ Resources:
       VpcId: !Ref Vpc
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: 1234
-        ToPort: 1234
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
         FromPort: 80
         ToPort: 8080
         CidrIp: 0.0.0.0/0
@@ -110,10 +106,6 @@ Resources:
       GroupDescription: ECS Allowed Ports
       VpcId: !Ref Vpc
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 1234
-          ToPort: 1234
-          CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 8080
           ToPort: 8080
@@ -131,9 +123,6 @@ Resources:
       Listeners:
       - LoadBalancerPort: 80
         InstancePort: 8080
-        Protocol: HTTP
-      - LoadBalancerPort: 1234
-        InstancePort: 1234
         Protocol: TCP
       HealthCheck:
         Target: HTTP:8080/
@@ -184,9 +173,6 @@ Resources:
         Memory: 256
         Name: cattaz-container
         PortMappings:
-        - ContainerPort: 1234
-          HostPort: 1234
-          Protocol: tcp
         - ContainerPort: 8080
           HostPort: 8080
           Protocol: tcp
@@ -198,10 +184,6 @@ Resources:
       TaskDefinition: !Ref EcsTaskDef
       DesiredCount: 1
       LoadBalancers:
-      ## Due to the limitation of CloudFormation and ECS, cannot add two load balancers. But it works.
-      # - ContainerName: cattaz-container
-      #   ContainerPort: 1234
-      #   LoadBalancerName: !Ref EcsElasticLoadBalancer
       - ContainerName: cattaz-container
         ContainerPort: 8080
         LoadBalancerName: !Ref EcsElasticLoadBalancer

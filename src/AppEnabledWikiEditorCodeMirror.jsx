@@ -82,7 +82,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.updateWidth();
     const { roomName } = this.props;
     if (roomName) {
-      this.socket = io(`http://${window.location.hostname}:${process.env.PORT_WEBSOCKET || '1234'}`);
+      this.socket = io(`http://${window.location.hostname}:${process.env.PORT || '8080'}`);
       this.socket.on('activeUser', this.handleActiveUser);
       this.y = await Y({
         db: {

@@ -5,7 +5,7 @@ set -o pipefail
 
 # env vars: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, ECS_CLUSTER, ECS_SERVICE, ECS_REPO
 
-docker build . -t test
+docker build . -t test --build-arg PORT=80
 
 awsAccountId=$(aws sts get-caller-identity | sed s/\"/\\n/g | grep "^[0-9]*$")
 
@@ -25,7 +25,6 @@ task=$(printf '[{
   "memory": 256,
   "cpu": 0,
   "portMappings": [
-    { "containerPort": 1234, "hostPort": 1234 },
     { "containerPort": 8080, "hostPort": 8080 }
   ]
 }]' $imageName)

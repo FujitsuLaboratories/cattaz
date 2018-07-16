@@ -20,7 +20,7 @@ Y.extend(yWebsocketsServer, yMemory);
 const isProduction = process.env.NODE_ENV === 'production';
 const serverMode = process.env.SERVER_MODE;
 
-const port = Number.parseInt(process.env.PORT_WEBSOCKET || '1234', 10);
+const port = Number.parseInt(process.env.PORT || '8080', 10);
 const app = express();
 const server = http.createServer(app);
 const io = socketIo.listen(server);

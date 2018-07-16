@@ -49,7 +49,7 @@ const js = {
       },
     ]),
     new webpack.DefinePlugin({
-      'process.env.PORT_WEBSOCKET': process.env.PORT_WEBSOCKET || '1234',
+      'process.env.PORT': process.env.PORT || '8080',
     }),
     ...(isProduction ? [] : [
       new webpack.HotModuleReplacementPlugin(),
