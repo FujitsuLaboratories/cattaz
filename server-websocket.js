@@ -18,6 +18,7 @@ import crypto from 'crypto';
 Y.extend(yWebsocketsServer, yMemory);
 
 const isProduction = process.env.NODE_ENV === 'production';
+const serverMode = process.env.SERVER_MODE;
 
 const port = Number.parseInt(process.env.PORT_WEBSOCKET || '1234', 10);
 const app = express();
@@ -173,18 +174,26 @@ io.on('connection', (socket) => {
   });
 });
 
-if (isProduction) {
-  app.use(express.static('build'));
-} else {
-  /* eslint-disable global-require, import/no-extraneous-dependencies */
-  const webpackConfig = require('./webpack.config.babel.js').default;
-  const webpack = require('webpack');
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-  /* eslint-enable global-require */
-  const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler));
-  app.use(webpackHotMiddleware(compiler));
+switch (serverMode) {
+  case 'storybook':
+    break;
+  case 'landingpage':
+    app.use(express.static('.'));
+    break;
+  default:
+    if (isProduction) {
+      app.use(express.static('build'));
+    } else {
+      /* eslint-disable global-require, import/no-extraneous-dependencies */
+      const webpackConfig = require('./webpack.config.babel.js').default;
+      const webpack = require('webpack');
+      const webpackDevMiddleware = require('webpack-dev-middleware');
+      const webpackHotMiddleware = require('webpack-hot-middleware');
+      /* eslint-enable global-require */
+      const compiler = webpack(webpackConfig);
+      app.use(webpackDevMiddleware(compiler));
+      app.use(webpackHotMiddleware(compiler));
+    }
 }
 
 server.listen(port, () => {
