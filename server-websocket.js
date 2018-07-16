@@ -8,7 +8,6 @@ import Y from 'yjs';
 import yWebsocketsServer from 'y-websockets-server';
 import yMemory from 'y-memory';
 
-import minimist from 'minimist';
 import socketIo from 'socket.io';
 import http from 'http';
 import Router from 'router';
@@ -19,16 +18,9 @@ import crypto from 'crypto';
 
 Y.extend(yWebsocketsServer, yMemory);
 
-const options = minimist(process.argv.slice(2), {
-  string: ['port', 'debug', 'db'],
-  default: {
-    port: process.env.PORT_WEBSOCKET || '1234',
-    debug: false,
-    db: 'memory',
-  },
-});
+const isProduction = process.env.NODE_ENV === 'production';
 
-const port = Number.parseInt(options.port, 10);
+const port = Number.parseInt(process.env.PORT_WEBSOCKET || '1234', 10);
 const router = Router();
 const server = http.createServer((req, res) => {
   router(req, res, finalhandler(req, res));
@@ -43,7 +35,7 @@ function getInstanceOfY(room) {
   if (yInstances[room] == null) {
     yInstances[room] = Y({
       db: {
-        name: options.db,
+        name: 'memory',
         dir: 'y-leveldb-databases',
         namespace: room,
       },
@@ -52,7 +44,7 @@ function getInstanceOfY(room) {
         // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
         room: encodeURIComponent(room),
         io,
-        debug: !!options.debug,
+        debug: !isProduction,
       },
       share: {},
     });
