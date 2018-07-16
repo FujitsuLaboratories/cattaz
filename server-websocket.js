@@ -8,10 +8,9 @@ import Y from 'yjs';
 import yWebsocketsServer from 'y-websockets-server';
 import yMemory from 'y-memory';
 
+import express from 'express';
 import socketIo from 'socket.io';
 import http from 'http';
-import Router from 'router';
-import finalhandler from 'finalhandler';
 import bodyParser from 'body-parser';
 import clone from 'lodash/clone';
 import crypto from 'crypto';
@@ -21,12 +20,10 @@ Y.extend(yWebsocketsServer, yMemory);
 const isProduction = process.env.NODE_ENV === 'production';
 
 const port = Number.parseInt(process.env.PORT_WEBSOCKET || '1234', 10);
-const router = Router();
-const server = http.createServer((req, res) => {
-  router(req, res, finalhandler(req, res));
-});
-router.use(bodyParser.text());
+const app = express();
+const server = http.createServer(app);
 const io = socketIo.listen(server);
+const bodyParserText = bodyParser.text();
 
 const yInstances = {};
 const metadata = {};
@@ -67,7 +64,7 @@ function getSha1Hash(plaintext) {
   return sha1.digest('hex');
 }
 
-router.get('/pages', (req, res) => {
+app.get('/pages', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(Object.keys(metadata).map((k) => {
@@ -81,7 +78,7 @@ router.get('/pages', (req, res) => {
   })));
 });
 
-router.post('/deletePage', async (req, res) => {
+app.post('/deletePage', bodyParserText, async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   const room = req.body;
