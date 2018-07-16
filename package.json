@@ -22,6 +22,7 @@
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.1",
+    "react-hot-loader": "^4.3.3",
     "react-modal": "^3.4.5",
     "react-router-dom": "^4.3.1",
     "react-split-pane": "^0.1.81",
@@ -78,7 +79,8 @@
     "source-map-explorer": "^1.5.0",
     "webpack": "^4.14.0",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-middleware": "^3.1.3",
+    "webpack-hot-middleware": "^2.22.2"
   },
   "scripts": {
     "clean": "rimraf build storybook-static .nyc_output coverage esdoc",
@@ -93,10 +95,9 @@
     "build:storybook": "cross-env NODE_ENV=production build-storybook",
     "storybook": "cross-env NODE_ENV=development run-p -l server:storybook server:websocket-dev",
     "landingpage": "cross-env NODE_ENV=production run-p -l server:landingpage server:websocket",
-    "start": "cross-env NODE_ENV=development run-p -l server:devserver server:websocket-dev",
+    "start": "cross-env NODE_ENV=development babel-watch server-websocket.js",
     "server": "cross-env NODE_ENV=production babel-node server-websocket.js",
     "server:storybook": "start-storybook -p 6006",
-    "server:devserver": "webpack-dev-server --mode development --progress --colors --config webpack.config.babel.js",
     "server:websocket": "babel-node server-websocket.js",
     "server:websocket-dev": "babel-watch server-websocket.js",
     "server:landingpage": "http-server",

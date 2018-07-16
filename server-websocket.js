@@ -175,6 +175,16 @@ io.on('connection', (socket) => {
 
 if (isProduction) {
   app.use(express.static('build'));
+} else {
+  /* eslint-disable global-require, import/no-extraneous-dependencies */
+  const webpackConfig = require('./webpack.config.babel.js').default;
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  /* eslint-enable global-require */
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler));
 }
 
 server.listen(port, () => {

@@ -2,6 +2,9 @@
   "presets": [
     "env", "react"
   ],
+  "plugins": [
+    "react-hot-loader/babel"
+  ],
   "env": {
     "test": {
       "plugins": ["istanbul"]
