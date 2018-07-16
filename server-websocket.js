@@ -173,6 +173,10 @@ io.on('connection', (socket) => {
   });
 });
 
+if (isProduction) {
+  app.use(express.static('build'));
+}
+
 server.listen(port, () => {
   console.log(`Running y-websockets-server on port ${port}`);
 });
