@@ -8,33 +8,23 @@ import Y from 'yjs';
 import yWebsocketsServer from 'y-websockets-server';
 import yMemory from 'y-memory';
 
-import minimist from 'minimist';
+import express from 'express';
 import socketIo from 'socket.io';
 import http from 'http';
-import Router from 'router';
-import finalhandler from 'finalhandler';
 import bodyParser from 'body-parser';
 import clone from 'lodash/clone';
 import crypto from 'crypto';
 
 Y.extend(yWebsocketsServer, yMemory);
 
-const options = minimist(process.argv.slice(2), {
-  string: ['port', 'debug', 'db'],
-  default: {
-    port: process.env.PORT_WEBSOCKET || '1234',
-    debug: false,
-    db: 'memory',
-  },
-});
+const isProduction = process.env.NODE_ENV === 'production';
+const serverMode = process.env.SERVER_MODE;
 
-const port = Number.parseInt(options.port, 10);
-const router = Router();
-const server = http.createServer((req, res) => {
-  router(req, res, finalhandler(req, res));
-});
-router.use(bodyParser.text());
+const port = Number.parseInt(process.env.PORT || '8080', 10);
+const app = express();
+const server = http.createServer(app);
 const io = socketIo.listen(server);
+const bodyParserText = bodyParser.text();
 
 const yInstances = {};
 const metadata = {};
@@ -43,7 +33,7 @@ function getInstanceOfY(room) {
   if (yInstances[room] == null) {
     yInstances[room] = Y({
       db: {
-        name: options.db,
+        name: 'memory',
         dir: 'y-leveldb-databases',
         namespace: room,
       },
@@ -52,7 +42,7 @@ function getInstanceOfY(room) {
         // TODO: Will be solved in future https://github.com/y-js/y-websockets-server/commit/2c8588904a334631cb6f15d8434bb97064b59583#diff-e6a5b42b2f7a26c840607370aed5301a
         room: encodeURIComponent(room),
         io,
-        debug: !!options.debug,
+        debug: !isProduction,
       },
       share: {},
     });
@@ -75,7 +65,7 @@ function getSha1Hash(plaintext) {
   return sha1.digest('hex');
 }
 
-router.get('/pages', (req, res) => {
+app.get('/pages', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(Object.keys(metadata).map((k) => {
@@ -89,7 +79,7 @@ router.get('/pages', (req, res) => {
   })));
 });
 
-router.post('/deletePage', async (req, res) => {
+app.post('/deletePage', bodyParserText, async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   const room = req.body;
@@ -183,6 +173,28 @@ io.on('connection', (socket) => {
     }
   });
 });
+
+switch (serverMode) {
+  case 'storybook':
+    break;
+  case 'landingpage':
+    app.use(express.static('.'));
+    break;
+  default:
+    if (isProduction) {
+      app.use(express.static('build'));
+    } else {
+      /* eslint-disable global-require, import/no-extraneous-dependencies */
+      const webpackConfig = require('./webpack.config.babel.js').default;
+      const webpack = require('webpack');
+      const webpackDevMiddleware = require('webpack-dev-middleware');
+      const webpackHotMiddleware = require('webpack-hot-middleware');
+      /* eslint-enable global-require */
+      const compiler = webpack(webpackConfig);
+      app.use(webpackDevMiddleware(compiler));
+      app.use(webpackHotMiddleware(compiler));
+    }
+}
 
 server.listen(port, () => {
   console.log(`Running y-websockets-server on port ${port}`);

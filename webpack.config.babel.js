@@ -7,18 +7,18 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const js = {
+  mode: isProduction ? 'production' : 'development',
   entry: [
     'babel-polyfill',
     'whatwg-fetch',
     './src/index.jsx',
+    ...(isProduction ? [] : [
+      'webpack-hot-middleware/client',
+    ]),
   ],
   output: {
     path: path.resolve('build'),
     filename: 'bundle.js',
-  },
-  devServer: {
-    contentBase: 'build',
-    port: parseInt(process.env.PORT_WEB || '8080', 10),
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
@@ -49,8 +49,11 @@ const js = {
       },
     ]),
     new webpack.DefinePlugin({
-      'process.env.PORT_WEBSOCKET': process.env.PORT_WEBSOCKET || '1234',
+      'process.env.PORT': process.env.PORT || '8080',
     }),
+    ...(isProduction ? [] : [
+      new webpack.HotModuleReplacementPlugin(),
+    ]),
   ],
   module: {
     rules: [

@@ -82,7 +82,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     this.updateWidth();
     const { roomName } = this.props;
     if (roomName) {
-      this.socket = io(`http://${window.location.hostname}:${process.env.PORT_WEBSOCKET}`);
+      this.socket = io(`http://${window.location.hostname}:${process.env.PORT || '8080'}`);
       this.socket.on('activeUser', this.handleActiveUser);
       this.y = await Y({
         db: {
@@ -155,7 +155,7 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
 
   handleActiveUser(userNum) {
     const { onActiveUser } = this.props;
-    onActiveUser(userNum);
+    if (onActiveUser) onActiveUser(userNum);
   }
 
   handleClientCursor(msg) {
@@ -309,13 +309,14 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
 }
 
 AppEnabledWikiEditorCodeMirror.propTypes = {
-  onActiveUser: PropTypes.func.isRequired,
+  onActiveUser: PropTypes.func,
   defaultValue: PropTypes.string,
   value: PropTypes.string,
   roomName: PropTypes.string,
   heightMargin: PropTypes.number,
 };
 AppEnabledWikiEditorCodeMirror.defaultProps = {
+  onActiveUser: () => {},
   defaultValue: '',
   value: null,
   roomName: null,
