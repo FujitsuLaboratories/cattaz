@@ -1,15 +1,10 @@
 // const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const defaultConfigFunc = require('@storybook/react/dist/server/config/defaults/webpack.config');
-
-const environment = process.env.NODE_ENV;
-const isProduction = environment === 'production';
-
-function configure(base) {
-  const config = defaultConfigFunc(base);
+function configure(baseConfig, env, defaultConfig) {
+  const config = defaultConfig;
   config.entry.preview.unshift('babel-polyfill'); // required by async/await
-  config.devtool = isProduction ? 'source-map' : 'eval-source-map';
+  config.devtool = env === 'PRODUCTION' ? 'source-map' : 'eval-source-map';
   config.resolve.extensions.push('.jsx');
   config.plugins.push(new CopyWebpackPlugin([
     {
