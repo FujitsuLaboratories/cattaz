@@ -6,7 +6,7 @@ import 'babel-polyfill';
 
 import Y from 'yjs';
 import yWebsocketsServer from 'y-websockets-server';
-import yMemory from 'y-memory';
+import yleveldb from 'y-leveldb';
 
 import express from 'express';
 import socketIo from 'socket.io';
@@ -15,7 +15,9 @@ import bodyParser from 'body-parser';
 import clone from 'lodash/clone';
 import crypto from 'crypto';
 
-Y.extend(yWebsocketsServer, yMemory);
+import LevelDBLib from './src/server/LevelDBLib';
+
+Y.extend(yWebsocketsServer, yleveldb);
 
 const isProduction = process.env.NODE_ENV === 'production';
 const serverMode = process.env.SERVER_MODE;
@@ -27,15 +29,15 @@ const io = socketIo.listen(server);
 const bodyParserText = bodyParser.text();
 
 const yInstances = {};
-const metadata = {};
+const metadata = LevelDBLib.restoreMetadata('y-leveldb-databases');
 
 function getInstanceOfY(room) {
   if (yInstances[room] == null) {
     yInstances[room] = Y({
       db: {
-        name: 'memory',
+        name: 'leveldb',
         dir: 'y-leveldb-databases',
-        namespace: room,
+        namespace: LevelDBLib.escapeNamespace(room),
       },
       connector: {
         name: 'websockets-server',
@@ -46,17 +48,15 @@ function getInstanceOfY(room) {
       },
       share: {},
     });
-    metadata[room] = {
-      created: new Date(),
-      modified: new Date(),
-      active: 0,
-    };
+    if (!metadata[room]) {
+      metadata[room] = {
+        created: new Date(),
+        modified: new Date(),
+        active: 0,
+      };
+    }
   }
   return yInstances[room];
-}
-function removeInstanceOfY(room) {
-  delete yInstances[room];
-  delete metadata[room];
 }
 
 function getSha1Hash(plaintext) {
@@ -83,13 +83,7 @@ app.post('/deletePage', bodyParserText, async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   const room = req.body;
-  const yPromise = yInstances[room];
-  if (!yPromise) {
-    res.end(JSON.stringify({ status: 'FAILURE', msg: 'No y instance' }));
-    return;
-  }
   try {
-    const y = await yPromise;
     const roomMetadata = metadata[room];
     if (!roomMetadata) {
       res.end(JSON.stringify({ status: 'FAILURE', msg: 'No metadata' }));
@@ -99,17 +93,12 @@ app.post('/deletePage', bodyParserText, async (req, res) => {
       res.end(JSON.stringify({ status: 'FAILURE', msg: 'There are still users on this page' }));
       return;
     }
-    try {
-      await y.destroy();
-      removeInstanceOfY(room);
-      res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
-    } catch (ex) {
-      console.error(ex);
-      res.end(JSON.stringify({ status: 'FAILURE', msg: 'Y instance destroy error' }));
-    }
+    await LevelDBLib.deleteDatabase('y-leveldb-databases', room);
+    delete metadata[room];
+    res.end(JSON.stringify({ status: 'SUCCESS', msg: `Delete ${room}` }));
   } catch (ex) {
     console.error(ex);
-    res.end(JSON.stringify({ status: 'FAILURE', msg: ex }));
+    res.end(JSON.stringify({ status: 'FAILURE', msg: 'Failed to delete database' }));
   }
 });
 
@@ -148,6 +137,13 @@ io.on('connection', (socket) => {
       const escapedRoom = encodeURIComponent(room);
       io.in(escapedRoom).emit('activeUser', metadata[room].active);
       io.in(escapedRoom).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+      if (metadata[room].active === 0) {
+        LevelDBLib.closeDatabase(y).then(() => {
+          delete yInstances[room];
+        }, (ex) => {
+          console.error(ex);
+        });
+      }
     }));
     rooms.splice(0, rooms.length);
   });
@@ -162,6 +158,13 @@ io.on('connection', (socket) => {
       metadata[room].active -= 1;
       io.in(room).emit('activeUser', metadata[room].active);
       io.in(room).emit('clientCursor', { type: 'delete', id: getSha1Hash(socket.id) });
+      if (metadata[room].active === 0) {
+        LevelDBLib.closeDatabase(y).then(() => {
+          delete yInstances[room];
+        }, (ex) => {
+          console.error(ex);
+        });
+      }
     }
   });
   socket.on('clientCursor', (msg) => {

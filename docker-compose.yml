@@ -9,3 +9,5 @@ services:
         PORT: ${PORT:-8080}
     ports:
       - "${PORT:-8080}:8080"
+    volumes:
+      - ./y-leveldb-databases:/usr/src/app/y-leveldb-databases

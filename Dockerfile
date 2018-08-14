@@ -16,4 +16,6 @@ RUN yarn run build
 
 EXPOSE 8080
 
+VOLUME ["/usr/src/app/y-leveldb-databases"]
+
 CMD ["yarn", "run", "server"]

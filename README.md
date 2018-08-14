@@ -38,7 +38,7 @@ Now you can visit `http://localhost:8080/` to view the application.
 
 ```bash
 docker build . -t cattaz # --build-arg http_proxy=http://user:pass@proxy.example.com:8080 --build-arg https_proxy=http://user:pass@proxy.example.com:8080
-docker run -it -p 8080:8080 cattaz
+docker run -it -p 8080:8080 -v $(pwd)/y-leveldb-databases:/usr/src/app/y-leveldb-databases cattaz
 ```
 
 Now you can visit `http://localhost:8080/` to view the application.
