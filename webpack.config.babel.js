@@ -9,7 +9,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const js = {
   mode: isProduction ? 'production' : 'development',
   entry: [
-    'babel-polyfill',
+    '@babel/polyfill',
     'whatwg-fetch',
     './src/index.jsx',
     ...(isProduction ? [] : [
@@ -72,7 +72,7 @@ const js = {
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ['env'],
+            presets: ['@babel/preset-env'],
           },
         },
       },
@@ -82,7 +82,7 @@ const js = {
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ['env'],
+            presets: ['@babel/preset-env'],
           },
         },
       },
@@ -92,7 +92,7 @@ const js = {
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ['react', 'env'],
+            presets: ['@babel/preset-react', '@babel/preset-env'],
             plugins: [
               ...(isProduction ? [
                 'transform-react-remove-prop-types',

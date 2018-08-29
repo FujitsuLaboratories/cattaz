@@ -1,6 +1,6 @@
 #!./node_modules/.bin/babel-node
 
-import 'babel-polyfill';
+import '@babel/polyfill';
 
 /* eslint-disable no-console */
 

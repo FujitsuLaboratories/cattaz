@@ -4,8 +4,8 @@
   "description": "Application environment in Wiki",
   "main": "src/index.jsx",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "actual": "^0.4.0",
-    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "codemirror": "^5.40.0",
     "color-convert": "^1.9.3",
@@ -39,14 +39,16 @@
     "yjs": "^12.3.3"
   },
   "devDependencies": {
-    "@storybook/react": "^3.4.10",
-    "ava": "^0.25.0",
-    "babel-cli": "^6.26.0",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-istanbul": "^4.1.6",
+    "@babel/core": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@storybook/react": "^4.0.0-alpha.18",
+    "ava": "^1.0.0-beta.8",
+    "babel-loader": "^8.0.0",
+    "babel-plugin-istanbul": "^5.0.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.15",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
     "codeclimate-test-reporter": "^0.5.0",
     "codecov": "^3.0.4",
     "copy-webpack-plugin": "^4.5.2",
@@ -69,7 +71,7 @@
     "markdownlint-cli": "^0.13.0",
     "nodemon": "^1.18.3",
     "npm-run-all": "^4.1.3",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "postcss": "^7.0.2",
     "postcss-loader": "^3.0.0",
     "react-test-renderer": "^16.4.2",
@@ -105,11 +107,10 @@
   },
   "ava": {
     "require": [
-      "babel-register",
-      "babel-polyfill",
+      "@babel/register",
+      "@babel/polyfill",
       "./test/setup-enzyme.js"
-    ],
-    "babel": "inherit"
+    ]
   },
   "author": "Ohtake, Tomohiro <ohtake.tomohiro@jp.fujitsu.com>",
   "contributors": [
