@@ -4,7 +4,7 @@
   "description": "Application environment in Wiki",
   "main": "src/index.jsx",
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
+    "@babel/polyfill": "^7.4.4",
     "actual": "^0.4.0",
     "body-parser": "^1.19.0",
     "codemirror": "^5.46.0",
@@ -39,11 +39,11 @@
     "yjs": "^12.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.0.0",
+    "@babel/register": "^7.4.4",
     "@storybook/react": "^4.0.0-alpha.18",
     "ava": "^1.0.0-beta.8",
     "babel-loader": "^8.0.6",
