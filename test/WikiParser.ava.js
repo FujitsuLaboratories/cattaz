@@ -207,13 +207,13 @@ test('including [backticks or tildes] in fenced code block increases surrounding
   const replacedB7 = WikiParser.replaceAppCode(mdB, posB, 'hello', '```````');
   const replacedBMultiLine343 = WikiParser.replaceAppCode(mdB, posB, 'hello', '```\n````\n```');
   const replacedBT3 = WikiParser.replaceAppCode(mdB, posB, 'hello', '~~~');
-  const posIndentB = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdBIndent)).children[0].children[1].children[3].children[1].children[3].position;
+  const posIndentB = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdBIndent)).children[0].children[1].children[1].children[1].children[1].position;
   const replacedIndentB = WikiParser.replaceAppCode(mdBIndent, posIndentB, 'hello', '```');
   const posT = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdB)).children[0].position;
   const replacedT3 = WikiParser.replaceAppCode(mdT, posT, 'hello', '~~~');
   const replacedT7 = WikiParser.replaceAppCode(mdT, posT, 'hello', '~~~~~~~');
   const replacedTB3 = WikiParser.replaceAppCode(mdT, posT, 'hello', '```');
-  const posIndentT = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdTIndent)).children[0].children[1].children[3].children[1].children[3].position;
+  const posIndentT = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdTIndent)).children[0].children[1].children[1].children[1].children[1].position;
   const replacedIndentT = WikiParser.replaceAppCode(mdTIndent, posIndentT, 'hello', '~~~');
   const posB5 = WikiParser.convertToCustomHast(WikiParser.parseToHast(mdB5)).children[0].position;
   const replacedB5 = WikiParser.replaceAppCode(mdB5, posB5, 'hello', '```');
