@@ -1,10 +1,9 @@
 // const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-function configure(baseConfig, env, defaultConfig) {
-  const config = defaultConfig;
-  config.entry.iframe.unshift('@babel/polyfill'); // required by async/await
-  config.devtool = env === 'PRODUCTION' ? 'source-map' : 'eval-source-map';
+function configure(baseConfig, mode) {
+  const { config } = baseConfig;
+  config.devtool = mode === 'PRODUCTION' ? 'source-map' : 'eval-source-map';
   config.resolve.extensions.push('.jsx');
   config.plugins.push(new CopyWebpackPlugin([
     {

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { storiesOf, linkTo } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
+import { linkTo } from '@storybook/addon-links';
 
 // To be converted by postcss via webpack
 import 'github-markdown-css/github-markdown.css';
