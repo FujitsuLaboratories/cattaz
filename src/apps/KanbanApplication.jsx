@@ -500,7 +500,8 @@ class KanbanApplication extends React.Component {
         {/* TODO find a better way for a new 'ref' API since React 16.3 */}
         <input ref={(c) => { this[`input${index}`] = c; }} type="text" placeholder="Add item" />
         <input type="button" value="Add" data-index={index} onClick={this.handleAddItem} />
-      </td>);
+      </td>
+    );
   }
 
   render() {
@@ -521,7 +522,8 @@ class KanbanApplication extends React.Component {
             </tr>
           </tbody>
         </table>
-      </div>);
+      </div>
+    );
   }
 }
 

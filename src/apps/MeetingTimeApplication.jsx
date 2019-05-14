@@ -138,7 +138,8 @@ export default class MeetingTimeApplication extends React.Component {
         <div key="duration">
           {`Duration of a meeting: ${duration}`}
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

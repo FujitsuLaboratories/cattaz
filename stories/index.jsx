@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { storiesOf, linkTo } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
+import { linkTo } from '@storybook/addon-links';
 
 // To be converted by postcss via webpack
 import 'github-markdown-css/github-markdown.css';
@@ -27,7 +28,8 @@ function WikiNavigationPage(props) {
         </span>
       </div>
       <AppEnabledWikiEditorCodeMirror defaultValue="syncing..." roomName={name} heightMargin={33 + 4} />
-    </div>);
+    </div>
+  );
 }
 WikiNavigationPage.propTypes = {
   name: PropTypes.string.isRequired,
@@ -59,7 +61,8 @@ storiesOf('Wiki navigation', module)
         <input type="text" placeholder="new page name" />
         <input type="button" value="Create" onClick={linkTo('Wiki navigation', 'page3')} />
       </div>
-    </div>))
+    </div>
+  ))
   .add('page1', () => <WikiNavigationPage name="page1" />)
   .add('page2', () => <WikiNavigationPage name="page2" />)
   .add('page3', () => <WikiNavigationPage name="page3" />);
@@ -77,7 +80,8 @@ storiesOf('Kanban usecase', module)
         '  * **task 3**',
         '* DONE',
       ].join('\n')}
-    />))
+    />
+  ))
   .add('app', () => (
     <AppEnabledWikiEditorCodeMirror
       defaultValue={[
@@ -92,7 +96,8 @@ storiesOf('Kanban usecase', module)
         '* DONE',
         '```',
       ].join('\n')}
-    />))
+    />
+  ))
   .add('add from app', () => (
     <AppEnabledWikiEditorCodeMirror
       defaultValue={[
@@ -108,7 +113,8 @@ storiesOf('Kanban usecase', module)
         '  * task 4',
         '```',
       ].join('\n')}
-    />))
+    />
+  ))
   .add('dnd', () => (
     <AppEnabledWikiEditorCodeMirror
       defaultValue={[
@@ -124,4 +130,5 @@ storiesOf('Kanban usecase', module)
         '  * task 4',
         '```',
       ].join('\n')}
-    />));
+    />
+  ));

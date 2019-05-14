@@ -30,7 +30,8 @@ export default class HelloApplication extends React.Component {
         <div key="message">
           {name ? `Hello, ${name}` : 'Input your name'}
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

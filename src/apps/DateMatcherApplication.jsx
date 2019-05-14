@@ -145,7 +145,8 @@ export default class DateMatcherApplication extends React.Component {
         <button onClick={this.handleSetCandidates} type="button">
           Start date matching
         </button>
-      </div>);
+      </div>
+    );
   }
 
   renderAnswers(model) {
@@ -158,7 +159,8 @@ export default class DateMatcherApplication extends React.Component {
             {s}
           </th>
         ))}
-      </tr>);
+      </tr>
+    );
     const attendees = Object.keys(model.attendees).map((attendeeName) => {
       const ans = model.attendees[attendeeName] || {};
       const isEditingRow = attendeeName === editing;
@@ -185,8 +187,10 @@ export default class DateMatcherApplication extends React.Component {
               {isEditingRow
                 ? <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />
                 : ans[s]}
-            </td>))}
-        </tr>);
+            </td>
+          ))}
+        </tr>
+      );
     });
     return (
       <div>
@@ -204,7 +208,8 @@ export default class DateMatcherApplication extends React.Component {
             Add attendee
           </button>
         </p>
-      </div>);
+      </div>
+    );
   }
 
   render() {

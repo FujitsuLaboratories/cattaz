@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import RouterLink from 'react-router-dom/Link';
 import TimeAgo from 'react-timeago';
 import Modal from 'react-modal';
+import { createHashHistory } from 'history';
 
 import logo from '../docs/assets/cattaz.svg';
 
@@ -68,8 +68,8 @@ export default class Main extends React.Component {
   handleNew() {
     const pageName = this.refInputNewPageName.current.value;
     if (pageName) {
-      const { router } = this.context;
-      router.history.push(`/page/${pageName}`);
+      const history = createHashHistory();
+      history.push(`/page/${pageName}`);
     }
   }
 
@@ -152,7 +152,8 @@ export default class Main extends React.Component {
               <button className="deleteBtn" onClick={this.handleDeleteOpenModal} id={p.page} type="button">
                 Delete
               </button>
-            </li>))}
+            </li>
+          ))}
         </ul>
         {currentPageNum > 1 ? (
           <button type="button" onClick={this.handlePrevious}>
@@ -169,7 +170,8 @@ export default class Main extends React.Component {
             Next
           </button>
         ) : null}
-      </React.Fragment>);
+      </React.Fragment>
+    );
   }
 
   render() {
@@ -306,6 +308,3 @@ export default class Main extends React.Component {
     );
   }
 }
-Main.contextTypes = {
-  router: PropTypes.shape({ history: PropTypes.shape({ push: PropTypes.func }) }).isRequired,
-};

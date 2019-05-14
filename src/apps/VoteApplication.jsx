@@ -100,7 +100,8 @@ export default class VoteApplication extends React.Component {
             </li>
           ))}
         </ul>
-      </div>);
+      </div>
+    );
   }
 }
 

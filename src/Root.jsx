@@ -14,6 +14,7 @@ const Root = () => (
       <Route path="/page/:page+" component={Page} />
       <Route path="/doc/:page+" render={props => <Page {...props} doc />} />
     </Switch>
-  </HashRouter>);
+  </HashRouter>
+);
 
 export default hot(module)(Root);
