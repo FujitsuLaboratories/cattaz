@@ -48,7 +48,8 @@ export default class AppContainer extends React.Component {
     return (
       <div className={className}>
         {children}
-      </div>);
+      </div>
+    );
   }
 }
 AppContainer.propTypes = {

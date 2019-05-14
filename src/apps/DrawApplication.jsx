@@ -139,7 +139,8 @@ export default class DrawApplication extends React.Component {
           {dispElected}
         </div>
         <input type="button" value={start ? 'Stop' : 'Start'} onClick={this.handleStartStop} />
-      </div>);
+      </div>
+    );
   }
 }
 

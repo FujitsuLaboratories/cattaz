@@ -104,7 +104,8 @@ export default class VoteHelpfulApplication extends React.Component {
         data-index={key}
         onClick={this.handleAddVote}
         value={key}
-      />));
+      />
+    ));
 
     const W = 320;
     const ny = model.candidates.Yes;
@@ -128,7 +129,8 @@ export default class VoteHelpfulApplication extends React.Component {
           {Math.round(wn * 100)}
           %
         </span>
-      </div>);
+      </div>
+    );
 
     return (
       <div>
@@ -137,7 +139,8 @@ export default class VoteHelpfulApplication extends React.Component {
             ? (
               <p style={styles.message}>
                 Thank you for contribution!
-              </p>)
+              </p>
+            )
             : buttonElems
         }
         {
@@ -145,7 +148,8 @@ export default class VoteHelpfulApplication extends React.Component {
             ? barElems
             : null
         }
-      </div>);
+      </div>
+    );
   }
 }
 

@@ -80,11 +80,12 @@ export default class Page extends React.Component {
           {activeUser > 0 ? (
             <div style={style.active}>
               {`(active: ${activeUser})`}
-            </div>)
-            : null}
+            </div>
+          ) : null}
         </div>
         <AppEnabledWikiEditor key={doc ? `doc/${pageName}` : `page/${pageName}`} roomName={roomName} defaultValue={defaultValue} value={docText} heightMargin={style.header.height + (style.header.padding * 2)} onActiveUser={this.handleActiveUserDisp} />
-      </React.Fragment>);
+      </React.Fragment>
+    );
   }
 }
 

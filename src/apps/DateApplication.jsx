@@ -68,7 +68,8 @@ export default class DateApplication extends React.Component {
       <div>
         {`Date and time: ${date.date}`}
         <input type="button" value="Get current time" onClick={this.handleUpdateDate} />
-      </div>);
+      </div>
+    );
   }
 }
 

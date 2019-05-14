@@ -31,7 +31,8 @@ export default class ErrorApplication extends React.Component {
           <button onClick={this.handleStartRaisingError} type="button">
             Start raising an error
           </button>
-        </div>);
+        </div>
+      );
     }
     throw new Error(`error because length of '${text}' is even.`);
   }

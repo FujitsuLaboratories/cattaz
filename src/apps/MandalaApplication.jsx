@@ -82,7 +82,8 @@ export default class MandalaApplication extends React.Component {
         <div style={blockStyle}>
           {rows.map(row => [row, <br />])}
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

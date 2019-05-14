@@ -93,7 +93,8 @@ export default class ReversiApplication extends React.Component {
     const rows = cells.map((r, x) => (
       <tr>
         {r.map((c, y) => this.toCell(model, c, x, y))}
-      </tr>));
+      </tr>
+    ));
     return (
       <div>
         <p>
@@ -120,7 +121,8 @@ export default class ReversiApplication extends React.Component {
             {rows}
           </tbody>
         </table>
-      </div>);
+      </div>
+    );
   }
 }
 

@@ -37,7 +37,8 @@ export default class YoutubeApplication extends React.Component {
         <div key="input">
           <input type="text" style={{ width: '300px' }} ref={this.refInput} placeholder="YouTube URL" value={data} onChange={this.handleEdit} />
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

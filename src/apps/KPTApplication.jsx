@@ -112,7 +112,8 @@ export default class KPTApplication extends React.Component {
             <input type="button" value="Add" onClick={handlerAdd} />
           </li>
         </ul>
-      </td>);
+      </td>
+    );
   }
 
   render() {
@@ -131,7 +132,8 @@ export default class KPTApplication extends React.Component {
             </tr>
           </tbody>
         </table>
-      </div>);
+      </div>
+    );
   }
 }
 

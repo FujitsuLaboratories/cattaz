@@ -201,7 +201,8 @@ export default class MapApplication extends React.Component {
         <div style={{ color: '#D8000C' }}>
           {errorMessage}
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

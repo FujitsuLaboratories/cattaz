@@ -102,7 +102,8 @@ export default class WeatherApplication extends React.Component {
           ] : null
           }
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 

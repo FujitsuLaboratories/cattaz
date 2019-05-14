@@ -163,14 +163,16 @@ export default class BookmarksApplication extends React.Component {
               <a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>
                 {b[0].name}
               </a>
-            </li>))}
+            </li>
+          ))}
         </ol>
         <input type="text" ref={this.refInputName} placeholder="name" />
         <input type="text" ref={this.refInputLink} placeholder="link" />
         <button onClick={this.handleAdd} type="button">
           Add bookmark
         </button>
-      </React.Fragment>);
+      </React.Fragment>
+    );
   }
 }
 

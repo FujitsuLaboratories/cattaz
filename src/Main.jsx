@@ -152,7 +152,8 @@ export default class Main extends React.Component {
               <button className="deleteBtn" onClick={this.handleDeleteOpenModal} id={p.page} type="button">
                 Delete
               </button>
-            </li>))}
+            </li>
+          ))}
         </ul>
         {currentPageNum > 1 ? (
           <button type="button" onClick={this.handlePrevious}>
@@ -169,7 +170,8 @@ export default class Main extends React.Component {
             Next
           </button>
         ) : null}
-      </React.Fragment>);
+      </React.Fragment>
+    );
   }
 
   render() {
