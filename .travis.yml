@@ -9,8 +9,8 @@ cache:
     - node_modules
 env:
   global:
-    # CODECLIMATE_REPO_TOKEN
-    - secure: "QihmjCmSiHY6FnzHTNP0u4SEEB3JkxEMJeCjveyGFgQa7r4SG8HuA5b3WIEo7eDWQHq9+p0NknVmk5TNRSTZdXI/Pq6WLDzDohDK79B4lnM5JQnBh8WGYAnU/6ewfmX0cg4AhL0ey8yrYB744RoDwiPikALL6oEA0sdt4cQxvzIK7fxyDdYa10Fu6OwmsWgsxMpfbQktRE6n35LBmqOwlQIhm2WhF9wv4bI9XAgu6qxhi9m9MqZ8obLXqiIh/lAzpxxzoCdpb0M4ovzLtL20hfl4eDkJEozz5AffxvtmOmYD3bJNVXuGGIItXZAkPPZMwONnCL/bSxZJF8tYcDSwiswzA0IEZ/sNmKPAUVj0zzIKr5n8wNyNDZ8UIayoxMgb5bKSjjFizBxmt0pHnFNzGPfOYMXkq5BR92XXc5sfrBGAV3y/i4IYtTQmNsVSXW1/Uy9+jZUVhfWKz7RLUsLvLHwWqA+vLhqFCip/Z4xw5EFfsfXlZb/eWam75AtQDPiOj0x6Bh5Rq54Z0nRTuU0Q79VHWDrtPsiIRnCTVJ9hxscuc8auvypXlN62npiUzUWfj00ZPubd6pGGUe7ZoRWPAH9dQGXTHW/elfM2Ice+MFe2Kk/kQHmdbh1Skt95AtfUgWr6DamjFpE6RLezMnDhcdlE1vzUDXjZmkh8qEbVorY="
+    # CC_TEST_REPORTER_ID
+    - secure: "aBlxCcn2sS8J1Y3W9heWLXKQUyK/w4ebydk85EnW9cytQh71rYucyvdRKLx+/d5nqkgstCVd3YQS/qneEEl0XRn5py9j5eI1n25VtlMbotOoQ2GTeXBsx83ij6di1WjuPUk3EAqDy29Hess/nlxAYiSItkC7si4TWXRqlSgC9gMaB3g2twLLuzrtC6YXCPGnALnFwH9Ie7JyRpPccSrguZIVRm7boDmdeAfs4mohkgoujKYkSNMzKgIaDs+QdHD9Q9+80Nw+rkfEJowI4u6kZWnGZENqr6ZacmOV0gXKdHgATsriMMgasA91E8+VCnBvRWU6hru5orfjWBQMRVSQcanIHhKAC32axUKWwN1BrfzIZAai1Jeh0JvbHiBg1O9cmUhmXTtZvEhCZF8M5/xJmuB14yAT40MHvJOeSmU8PesRHFUlbQ32kgkMtavbYPJGKcnc+3dwvK8cN5M7SCxTJG0EB1SWj0RsvriFD3nbi/mWaZLZCXUvZ7QtqTxFwcehylF7WN66NlXmLnmd83EMVaOTQJ6aO+pcrzWAgNklK8cOaqHcp9aEAl2iKK/ENwZGE4OwG9YuCDa3jcFZYPgAizdFURJuGAw8Q9nXi5yavb5nBwzIMN3jBGo0DVL5UMN2U3g3V2wqnDGdMjgkt03owctYDws17j6lz9FExYzFixs="
     - AWS_ACCESS_KEY_ID=AKIAI7GXDJMDI4AHQ6HA
     # AWS_SECRET_ACCESS_KEY
     - secure: "3FbeNtgfhu3WFzoC2JZthOgrE/Oh9c4xMOBtS1NZ72rro2vuVVjY5wvwN9aPib/qRpLt9qndI71kttgobUOhTWOJVt6tfYn3/+DjDBnPXOUhLRp2tMi5MhbRY4pRzqQqrGEwj6U6LnUd9uB/164P6pvhfArvCFtcF/g3Zv3wcYIRP9Ett7VMNIoqRzLxPCryF5iSEHlirlkciouYjNVSVknjg6yTvzmUvkqLqOYIfvdxI57HnkFrJhPFACD4REX9VTyxCuChyfl7vtqAeMWTipVf5DaanPS/U6cbymIeCB9pmq33xNi9TpyXh6WnDm2TJHZDfY8iN3znp9/NZkftp3/pT30psbcx20K7qQVV3b84+NfxVs8MVspiIIqPzL972H9b54tH3EMUMPymT46BsBvN2EQTEWw8/2tvZcAjJzdSQf0ZzCI5FL68SGk03AQ4nFBG/v1SRIKsGWTl0PH9uHHXrgtwtvjqL28M0yivSuBut+CCtfi26RZdnP+xDDahBcBG8EOLiQGx/PP99s2ItDgJ0L9SL6UXfyVIZY0mqdYkc6GJO8VvQsKjDb0axS4oKgXXcDbViPb6lqAiqdxq936nkG32PdqpxIiSD3DkwGugxy4tWphLEgKggQQ71/Qk94NgCxrQWru1I6hMKa/LxTv1xxmXI8l60SRDN1eH4QU="
@@ -18,12 +18,17 @@ env:
     - ECS_CLUSTER=cattaz2
     - ECS_SERVICE=cattaz-ecs2-EcsService-1X471KVWUPJT1
     - ECS_REPO=cattaz
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
   - ./scripts/run-travis-tests.sh
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT # Rquires CC_TEST_REPORTER_ID
 after_success:
   - ./node_modules/.bin/codecov # CODECOV_TOKEN is not required for Travis to test public repositories
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js # COVERALLS_SERVICE_NAME and COVERALLS_REPO_TOKEN env variables is not required for Travis
-  - ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info # Needs CODECLIMATE_REPO_TOKEN env variable
 before_deploy:
   - sudo apt-get update
   - sudo apt-get install -y python-pip

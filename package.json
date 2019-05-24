@@ -51,7 +51,6 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-istanbul": "^5.1.4",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "codeclimate-test-reporter": "^0.5.1",
     "codecov": "^3.5.0",
     "copy-webpack-plugin": "^5.0.3",
     "coveralls": "^3.0.3",
