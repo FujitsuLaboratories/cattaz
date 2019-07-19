@@ -1,6 +1,7 @@
 #!./node_modules/.bin/babel-node
 
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 /* eslint-disable no-console */
 

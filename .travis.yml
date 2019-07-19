@@ -3,7 +3,7 @@ language: node_js
 services:
   - docker
 node_js:
-  - "10.15.3"
+  - "10.16.0"
 cache:
   directories:
     - node_modules
