@@ -5,7 +5,7 @@ import assign from 'lodash/assign';
 import clone from 'lodash/clone';
 import repeat from 'lodash/repeat';
 
-import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
+import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 class KanbanModelItem {
@@ -508,7 +508,7 @@ class KanbanApplication extends React.Component {
     const { data } = this.props;
     const model = KanbanModel.deserialize(data);
     return (
-      <div>
+      <DndProvider backend={HTML5Backend}>
         <input ref={this.refInputList} type="text" placeholder="Add list" />
         <input type="button" value="Add list" onClick={this.handleAddList} />
         <KanbanTrashDraggable app={this} />
@@ -522,7 +522,7 @@ class KanbanApplication extends React.Component {
             </tr>
           </tbody>
         </table>
-      </div>
+      </DndProvider>
     );
   }
 }
@@ -535,4 +535,4 @@ KanbanApplication.propTypes = {
   appContext: PropTypes.shape({}).isRequired,
 };
 
-export default DragDropContext(HTML5Backend)(KanbanApplication);
+export default KanbanApplication;
