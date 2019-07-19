@@ -4,11 +4,11 @@
   "description": "Application environment in Wiki",
   "main": "src/index.jsx",
   "dependencies": {
-    "@babel/polyfill": "^7.4.4",
     "actual": "^0.4.0",
     "body-parser": "^1.19.0",
     "codemirror": "^5.48.0",
     "color-convert": "^2.0.0",
+    "core-js": "^3.1.4",
     "diff": "^4.0.1",
     "express": "^4.17.1",
     "github-markdown-css": "^3.0.1",
@@ -28,6 +28,7 @@
     "react-router-dom": "^5.0.1",
     "react-split-pane": "^0.1.87",
     "react-timeago": "^4.4.0",
+    "regenerator-runtime": "^0.13.2",
     "remark": "^10.0.1",
     "socket.io": "1.3.7",
     "socket.io-client": "1.3.7",
@@ -109,7 +110,8 @@
   "ava": {
     "require": [
       "@babel/register",
-      "@babel/polyfill",
+      "core-js/stable",
+      "regenerator-runtime/runtime",
       "./test/setup-enzyme.js"
     ],
     "files": [
