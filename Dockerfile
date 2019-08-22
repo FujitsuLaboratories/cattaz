@@ -1,4 +1,4 @@
-FROM node:10.16.0
+FROM node:10.16.3
 
 ARG http_proxy
 ARG https_proxy
