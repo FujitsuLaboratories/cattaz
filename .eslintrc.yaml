@@ -4,6 +4,8 @@
     - airbnb
   rules:
     max-len: off
+    react/jsx-fragments: warn # ESDoc is not compatible with jsx fragments
+    max-classes-per-file: warn
     valid-jsdoc:
       - warn
       -

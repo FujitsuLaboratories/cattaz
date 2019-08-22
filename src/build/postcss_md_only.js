@@ -14,8 +14,8 @@ const postcss = require('postcss');
 const plugin = postcss.plugin('md-only', (/* opts */) => (css) => {
   const splitter = /[ \n]/;
   css.walkRules((rule) => {
-    const tokens = rule.selectors.map(selector => selector.split(splitter));
-    const modified = tokens.map(arr => arr.map((t) => {
+    const tokens = rule.selectors.map((selector) => selector.split(splitter));
+    const modified = tokens.map((arr) => arr.map((t) => {
       if (t === '.markdown-body') return t;
       // cannot place '.class' after '::pseudo-elements'
       const pseudoElementIndex = t.indexOf('::');
@@ -25,7 +25,7 @@ const plugin = postcss.plugin('md-only', (/* opts */) => (css) => {
       return `${t}.md`;
     }));
     // eslint-disable-next-line no-param-reassign
-    rule.selector = modified.map(ts => ts.join(' ')).join(', ');
+    rule.selector = modified.map((ts) => ts.join(' ')).join(', ');
   });
 });
 

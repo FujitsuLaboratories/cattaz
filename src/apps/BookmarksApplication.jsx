@@ -69,7 +69,7 @@ class BookmarksModel {
 
   serialize() {
     return Yaml.safeDump({
-      bookmarks: this.bookmarks.map(b => b.toSerializable()),
+      bookmarks: this.bookmarks.map((b) => b.toSerializable()),
     });
   }
 
@@ -78,12 +78,12 @@ class BookmarksModel {
   }
 
   hasBookmark(link) {
-    const bookmark = this.bookmarks.find(b => b.link === link);
+    const bookmark = this.bookmarks.find((b) => b.link === link);
     return !!bookmark;
   }
 
   addClickCount(link, datetime) {
-    const bookmark = this.bookmarks.find(b => b.link === link);
+    const bookmark = this.bookmarks.find((b) => b.link === link);
     if (bookmark) {
       bookmark.addClickCount(datetime);
     }
@@ -153,12 +153,12 @@ export default class BookmarksApplication extends React.Component {
     const now = new Date();
     const { data } = this.props;
     const bookmarks = BookmarksModel.deserialize(data);
-    const scoredBookmarks = bookmarks.bookmarks.map(b => [b, b.getScore(now)]);
+    const scoredBookmarks = bookmarks.bookmarks.map((b) => [b, b.getScore(now)]);
     scoredBookmarks.sort((a, b) => b[1] - a[1]);
     return (
       <React.Fragment>
         <ol>
-          {scoredBookmarks.map(b => (
+          {scoredBookmarks.map((b) => (
             <li key={b[0].link}>
               <a href={b[0].link} onClick={this.handleClick} data-link={b[0].link}>
                 {b[0].name}

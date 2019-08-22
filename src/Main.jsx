@@ -132,7 +132,7 @@ export default class Main extends React.Component {
           <input type="button" value="Create" onClick={this.handleNew} />
         </p>
         <ul>
-          {currentPages.map(p => (
+          {currentPages.map((p) => (
             <li key={p.page}>
               <RouterLink to={`/page/${decodeURIComponent(p.page)}`}>
                 {decodeURIComponent(p.page)}

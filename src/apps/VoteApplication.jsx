@@ -90,7 +90,7 @@ export default class VoteApplication extends React.Component {
           {errorMessage}
         </div>
         <ul>
-          {Object.keys(model.candidates).map(s => (
+          {Object.keys(model.candidates).map((s) => (
             <li key={s}>
               {s}
               {': '}
