@@ -12,7 +12,7 @@ const Root = () => (
     <Switch>
       <Route exact path="/" component={Main} />
       <Route path="/page/:page+" component={Page} />
-      <Route path="/doc/:page+" render={props => <Page {...props} doc />} />
+      <Route path="/doc/:page+" render={(routeProps) => <Page match={routeProps.match} location={routeProps.location} history={routeProps.history} doc />} />
     </Switch>
   </HashRouter>
 );

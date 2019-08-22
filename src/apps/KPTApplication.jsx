@@ -102,7 +102,7 @@ export default class KPTApplication extends React.Component {
           {title}
         </h2>
         <ul>
-          {items.map(s => (
+          {items.map((s) => (
             <li>
               {s}
             </li>

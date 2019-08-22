@@ -53,13 +53,13 @@ class KanbanModelList {
   toMarkdown() {
     return [
       `* ${this.name}`,
-      ...this.items.map(i => `  * ${i.toMarkdown()}`),
+      ...this.items.map((i) => `  * ${i.toMarkdown()}`),
     ].join('\n');
   }
 
   clone() {
     const c = clone(this);
-    c.items = this.items.map(i => i.clone());
+    c.items = this.items.map((i) => i.clone());
     return c;
   }
 }
@@ -108,12 +108,12 @@ class KanbanModel {
 
   clone() {
     const c = clone(this);
-    c.lists = this.lists.map(l => l.clone());
+    c.lists = this.lists.map((l) => l.clone());
     return c;
   }
 
   serialize() {
-    return this.lists.map(l => l.toMarkdown()).join('\n');
+    return this.lists.map((l) => l.toMarkdown()).join('\n');
   }
 
   static deserialize(str) {
@@ -267,7 +267,7 @@ KanbanCard.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-const KanbanCardDraggable = DropTarget(dndTypes.kanbanCard, cardTarget, connect => ({
+const KanbanCardDraggable = DropTarget(dndTypes.kanbanCard, cardTarget, (connect) => ({
   connectDropTarget: connect.dropTarget(),
 }))(DragSource(dndTypes.kanbanCard, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
@@ -344,9 +344,9 @@ KanbanList.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, connect => ({
+const KanbanListDraggable = DropTarget(dndTypes.kanbanCard, listCardTarget, (connect) => ({
   connectDropTarget: connect.dropTarget(),
-}))(DropTarget(dndTypes.kanbanList, listTarget, connect => ({
+}))(DropTarget(dndTypes.kanbanList, listTarget, (connect) => ({
   connectDropTarget2: connect.dropTarget(),
 }))(DragSource(dndTypes.kanbanList, listSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),

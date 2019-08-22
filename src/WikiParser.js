@@ -69,7 +69,7 @@ export default class WikiParser {
       }
     }
     const cloned = clone(hast);
-    cloned.children = hast.children.map(c => WikiParser.convertToCustomHast(c));
+    cloned.children = hast.children.map(WikiParser.convertToCustomHast);
     cloned.properties = (cloned.properties && clone(cloned.properties)) || {};
     // Original Hast posirion will be lost in hyperscript.
     cloned.properties.position = JSON.stringify(hast.position);
@@ -161,7 +161,7 @@ export default class WikiParser {
   static indentAppCode(originalAppLocation, appText) {
     if (originalAppLocation.start.column <= 1) return appText;
     const indent = repeat(' ', originalAppLocation.start.column - 1);
-    return appText.split('\n').map(l => `${indent}${l}`).join('\n');
+    return appText.split('\n').map((l) => `${indent}${l}`).join('\n');
   }
 
   /**

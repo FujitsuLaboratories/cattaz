@@ -11,7 +11,7 @@ import AppEnabledWikiEditorCodeMirror from '../src/AppEnabledWikiEditorCodeMirro
 import logo from '../docs/assets/cattaz.svg';
 
 storiesOf('CodeMirror', module)
-  .add('no sync', () => <AppEnabledWikiEditorCodeMirror defaultValue={['kpt', 'mandala', 'votecrypto'].map(s => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
+  .add('no sync', () => <AppEnabledWikiEditorCodeMirror defaultValue={['kpt', 'mandala', 'votecrypto'].map((s) => `\`\`\`${s}\n\`\`\``).join('\n\n')} />)
   .add('sync in room1', () => <AppEnabledWikiEditorCodeMirror defaultValue="syncing with room1" roomName="room1" />)
   .add('sync in room2', () => <AppEnabledWikiEditorCodeMirror defaultValue="syncing with room2" roomName="room2" />);
 

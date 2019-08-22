@@ -99,8 +99,7 @@ export default class WeatherApplication extends React.Component {
             `Weather: ${weather.weather}`,
             <img src={`${iconURL}${weather.icon}.png`} alt={weather.weather} width="24px" />,
             `Temperature: ${weather.temp}℃`,
-          ] : null
-          }
+          ] : null }
         </div>
       </div>
     );

@@ -81,7 +81,7 @@ export default class DateMatcherApplication extends React.Component {
   handleSetCandidates() {
     const { value } = this.refInputCandidates.current;
     if (!value) return;
-    const candidates = uniq(value.split('\n').map(s => s.trim()).filter(s => s));
+    const candidates = uniq(value.split('\n').map((s) => s.trim()).filter((s) => s));
     if (candidates.length === 0) return;
     const { onEdit, appContext } = this.props;
     const model = new DateMatcherModel();
@@ -153,8 +153,8 @@ export default class DateMatcherApplication extends React.Component {
     const { editing } = this.state;
     const header = (
       <tr>
-        <th />
-        {model.candidates.map(s => (
+        <th>Attendees / Date</th>
+        {model.candidates.map((s) => (
           <th style={cellStyle}>
             {s}
           </th>
@@ -182,7 +182,7 @@ export default class DateMatcherApplication extends React.Component {
                 </button>
               )}
           </th>
-          {model.candidates.map(s => (
+          {model.candidates.map((s) => (
             <td key={s} style={cellStyle}>
               {isEditingRow
                 ? <input type="text" value={ans[s]} size="4" onChange={this.handleSetAnswer} data-attendee={attendeeName} data-candidate={s} />

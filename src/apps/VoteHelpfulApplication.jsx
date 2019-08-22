@@ -93,14 +93,10 @@ export default class VoteHelpfulApplication extends React.Component {
       },
     };
 
-    const buttonElems = ['Yes', 'No'].map(key => (
+    const buttonElems = ['Yes', 'No'].map((key) => (
       <input
         type="button"
-        style={Object.assign(
-          {},
-          styles.button,
-          { borderColor: colors[key] },
-        )}
+        style={{ ...styles.button, borderColor: colors[key] }}
         data-index={key}
         onClick={this.handleAddVote}
         value={key}
@@ -119,10 +115,10 @@ export default class VoteHelpfulApplication extends React.Component {
           {Math.round(wy * 100)}
           %
         </span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.Yes, width: (ny / (ny + nn)) * W })}>
+        <span style={{ ...styles.bar, backgroundColor: colors.Yes, width: (ny / (ny + nn)) * W }}>
           {ny}
         </span>
-        <span style={Object.assign({}, styles.bar, { backgroundColor: colors.No, width: (nn / (ny + nn)) * W })}>
+        <span style={{ ...styles.bar, backgroundColor: colors.No, width: (nn / (ny + nn)) * W }}>
           {nn}
         </span>
         <span style={styles.barLabel}>

@@ -122,7 +122,7 @@ export default class MeetingTimeApplication extends React.Component {
     const { data } = this.props;
     const time = MeetingTimeModel.deserialize(data);
     const duration = calculationDuration(time.startTime, time.endTime);
-    const convertDateToString = date => `${date.year}/${date.month}/${date.day} (${date.week}) ${date.hour}:${date.minute}`;
+    const convertDateToString = (date) => `${date.year}/${date.month}/${date.day} (${date.week}) ${date.hour}:${date.minute}`;
     return (
       <div>
         <div key="start">

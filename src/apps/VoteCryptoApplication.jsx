@@ -114,7 +114,7 @@ export default class VoteCryptoApplication extends React.Component {
     const { voteMessage, errorMessage } = this.state;
     let votingResult = '';
     if (model.opened) {
-      votingResult = Object.keys(model.candidates).map(s => (
+      votingResult = Object.keys(model.candidates).map((s) => (
         <li key={s}>
           {s}
           {': '}
@@ -124,7 +124,7 @@ export default class VoteCryptoApplication extends React.Component {
         </li>
       ));
     } else {
-      votingResult = Object.keys(model.candidates).map(s => (
+      votingResult = Object.keys(model.candidates).map((s) => (
         <li key={s}>
           {s}
           {' '}
@@ -146,8 +146,7 @@ export default class VoteCryptoApplication extends React.Component {
           {votingResult}
         </ul>
         { model.opened
-          ? null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} />
-        }
+          ? null : <input key="result" type="button" value="Result" onClick={this.handleVotingResult} /> }
       </div>
     );
   }

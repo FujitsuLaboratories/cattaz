@@ -39,7 +39,7 @@ function findFlippablesInDirection(cells, x, y, color, directionX, directionY) {
 }
 function findFlippables(cells, x, y, color) {
   const directions = [-1, 0, 1];
-  return flatMap(directions, directionX => flatMap(directions, (directionY) => {
+  return flatMap(directions, (directionX) => flatMap(directions, (directionY) => {
     if (directionX === 0 && directionY === 0) return [];
     return findFlippablesInDirection(cells, x, y, color, directionX, directionY);
   }));
