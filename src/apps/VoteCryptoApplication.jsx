@@ -116,10 +116,7 @@ export default class VoteCryptoApplication extends React.Component {
     if (model.opened) {
       votingResult = Object.keys(model.candidates).map((s) => (
         <li key={s}>
-          {s}
-          {': '}
-          {model.candidates[s]}
-          {' '}
+          {`${s}: ${model.candidates[s]} `}
           <input data-index={s} type="button" value="Vote" onClick={this.handleAddVote} />
         </li>
       ));
