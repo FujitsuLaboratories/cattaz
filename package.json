@@ -15,7 +15,7 @@
     "hast-to-hyperscript": "^7.0.3",
     "history": "^4.10.1",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mdast-util-to-hast": "^7.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
