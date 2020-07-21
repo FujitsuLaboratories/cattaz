@@ -52,7 +52,7 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-istanbul": "^5.2.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "codecov": "^3.6.1",
+    "codecov": "^3.7.1",
     "copy-webpack-plugin": "^5.0.5",
     "coveralls": "^3.0.7",
     "cross-env": "^6.0.3",
