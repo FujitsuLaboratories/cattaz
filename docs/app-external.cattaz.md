@@ -31,10 +31,7 @@ Cattaz sends this message to the external app whenever the data is updated. Stru
 
 ```js
 {
-  cattazState: {
-    data: '(string)',
-    appContext: { /* ... */ },
-  }
+  cattazState: { data: '(string)' }
 }
 ```
 
@@ -43,7 +40,7 @@ Your external application should store the `appContext` for sending back later i
 ### App &rarr; Cattaz: `cattazEdit`
 
 ```js
-parent.postMessage({ cattazEdit: { data, appContext } }, '*');
+parent.postMessage({ cattazEdit: { data } }, '*');
 ```
 
 Edits App’s data.

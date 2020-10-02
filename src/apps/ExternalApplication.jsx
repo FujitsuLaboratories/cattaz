@@ -102,8 +102,21 @@ function ExternalApplicationHost({
 }) {
   const [height, setHeight] = React.useState(120);
   const iframeRef = React.useRef(/** @type {HTMLIFrameElement | null} */ (null));
+  const latestDataRef = React.useRef(/** @type {string | null} */ (null));
+  const latestAppContextRef = React.useRef(appContext);
   const latestStateRef = React.useRef(/** @type {{ data; appContext }} */ ({ data, appContext }));
   const onEditRef = React.useRef(onEdit);
+
+  const synchronize = () => {
+    const iframeWindow = iframeRef.current && iframeRef.current.contentWindow;
+    if (!iframeWindow) {
+      return;
+    }
+    if (latestDataRef.current !== latestStateRef.current.data) {
+      latestDataRef.current = latestStateRef.current.data;
+      iframeWindow.postMessage({ cattazState: latestStateRef.current }, '*');
+    }
+  };
 
   // Handle messages from iframe
   React.useLayoutEffect(() => {
@@ -119,9 +132,10 @@ function ExternalApplicationHost({
         iframeWindow.postMessage({ cattazState: latestStateRef.current }, '*');
       }
       if (e.data.cattazEdit) {
-        const { data: nextData, appContext: receivedAppState } = e.data.cattazEdit;
-        if (typeof nextData === 'string' && typeof receivedAppState === 'object' && receivedAppState) {
-          onEditRef.current(nextData, receivedAppState);
+        const { data: nextData } = e.data.cattazEdit;
+        if (typeof nextData === 'string') {
+          latestDataRef.current = nextData;
+          onEditRef.current(nextData, latestAppContextRef.current);
         }
       }
       if (e.data.cattazSetHeight) {
@@ -135,19 +149,20 @@ function ExternalApplicationHost({
   }, []);
 
   // Synchronize state with iframe
-  React.useEffect(() => {
-    latestStateRef.current = { data, appContext };
-    const iframeWindow = iframeRef.current && iframeRef.current.contentWindow;
-    if (!iframeWindow) {
-      return;
-    }
-    iframeWindow.postMessage({ cattazState: latestStateRef.current }, '*');
-  }, [data, appContext]);
+  React.useLayoutEffect(() => {
+    latestStateRef.current = { data };
+    synchronize();
+  }, [data]);
 
   // Ensure latest edit function is used
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     onEditRef.current = onEdit;
   }, [onEdit]);
+
+  // Ensure latest appContext is used
+  React.useLayoutEffect(() => {
+    latestAppContextRef.current = appContext;
+  }, [appContext]);
 
   return (
     <iframe
