@@ -31,7 +31,7 @@ function useDebouncedUrl(url) {
 }
 
 function ExternalApplication({ data, onEdit, appContext }) {
-  const urlMatch = data.match(/^(https?:\/\/.+)\n/);
+  const urlMatch = data.match(/^(https?:\/\/.+)(\n|$)/);
   const url = urlMatch && urlMatch[1];
   const trimLength = urlMatch && urlMatch[0].length;
 
@@ -73,13 +73,19 @@ function ExternalApplicationUrlNeeded({ onSubmit }) {
   const urlRef = React.useRef(/** @type {HTMLIFrameElement | null} */ (null));
   return (
     <form
+      style={{
+        border: '1px solid #999',
+        background: '#eee',
+        color: 'black',
+        padding: '1em',
+      }}
       onSubmit={(e) => {
         e.preventDefault();
         const submittedText = urlRef.current.value;
         onSubmit(submittedText);
       }}
     >
-      A URL is needed
+      Please enter a URL to external application:
       <br />
       <input type="url" required ref={urlRef} />
       <button type="submit">Load</button>

@@ -6,6 +6,7 @@ const files = [
   'app-datematcher',
   'app-draw',
   'app-error',
+  'app-external',
   'app-hello',
   'app-helpful',
   'app-kanban',
