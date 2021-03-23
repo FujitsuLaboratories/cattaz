@@ -6,7 +6,7 @@ import clone from 'lodash/clone';
 import repeat from 'lodash/repeat';
 
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 class KanbanModelItem {
   constructor(name, importance = 0) {
