@@ -1,6 +1,6 @@
 import test from 'ava';
 import React from 'react';
-import RouterLink from 'react-router-dom/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 
 import WikiParser from '../src/WikiParser';

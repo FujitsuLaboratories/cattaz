@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RouterLink from 'react-router-dom/Link';
+import { Link as RouterLink } from 'react-router-dom';
 
 import AppEnabledWikiEditor from './AppEnabledWikiEditorCodeMirror';
 import docs from './docs';

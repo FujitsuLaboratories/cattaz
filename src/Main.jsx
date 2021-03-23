@@ -1,5 +1,5 @@
 import React from 'react';
-import RouterLink from 'react-router-dom/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import TimeAgo from 'react-timeago';
 import Modal from 'react-modal';
 import { createHashHistory } from 'history';
