@@ -58,4 +58,3 @@ Sets the height of the external app’s iframe.
 Due to the asynchronous nature of `postMessage` APIs, if you’re not careful, race conditions may occur when multiple people are using the same external app at the same time.
 
 To avoid this situation, please follow this guideline: **If your app received state from Cattaz, please handle it silently. Do not send the same state back.** Otherwise, the app may run into the infinite update loop problem.
-

@@ -21,9 +21,9 @@ Markdownには、3つ以上のバッククォート、または、チルダで�
 
   <!-- markdownlint-disable MD040 -->
 
-  ```
+  ~~~
   hello
-  ```
+  ~~~
 
   <!-- markdownlint-enable MD040 -->
 
@@ -42,11 +42,11 @@ fenced code blockは、言語指定ができます。
 
 * Output
 
-  ```js
+  ~~~js
   function hello(name) {
     return `hello, ${name}!`;
   }
-  ```
+  ~~~
 
 Cattazは、fenced code blockに新しい機能を導入しました。
 言語指定はアプリケーションの名前を表します。
@@ -62,9 +62,9 @@ fenced code block内のテキストは、アプリケーションの状態を表
 
 * Output
 
-  ```hello
+  ~~~hello
   world
-  ```
+  ~~~
 
 アプリケーションはインタラクティブに動きます。
 例えば、上記のテキストボックスにあなたの名前を入力すれば、アプリケーションはあなたにメッセージを表示します。

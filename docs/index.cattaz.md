@@ -21,9 +21,9 @@ Normally, text in a fenced code block will be rendered in fixed width.
 
   <!-- markdownlint-disable MD040 -->
 
-  ```
+  ~~~
   hello
-  ```
+  ~~~
 
   <!-- markdownlint-enable MD040 -->
 
@@ -42,11 +42,11 @@ In this example, `js` stands for JavaScript and its content will be JavaScript c
 
 * Output
 
-  ```js
+  ~~~js
   function hello(name) {
     return `hello, ${name}!`;
   }
-  ```
+  ~~~
 
 Cattaz introduces a new interpretation to fenced code blocks.
 Language specifier is a name of application.
@@ -62,9 +62,9 @@ Text in a fenced code block is state of the application.
 
 * Output
 
-  ```hello
+  ~~~hello
   world
-  ```
+  ~~~
 
 An application can be interactive.
 For instance, you can type your name in the textbox above and the application will show a hello message to you.
