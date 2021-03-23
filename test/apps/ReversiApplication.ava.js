@@ -24,24 +24,24 @@ function getButton(wrapper, positionLabel) {
 /** @test {ReversiApplication} */
 test('ReversiApplication should render initial cells if no data is given', t => {
   const wrapper = mountApp(ReversiApplication);
-  t.deepEqual([2, 2], extractStoneCounts(wrapper));
+  t.deepEqual(extractStoneCounts(wrapper), [2, 2]);
 });
 
 /** @test {ReversiApplication#handlePlaceStone} */
 test('ReversiApplication should place stones', t => {
   const wrapper = mountApp(ReversiApplication);
   getButton(wrapper, 'c4').simulate('click');
-  t.deepEqual([4, 1], extractStoneCounts(wrapper));
+  t.deepEqual(extractStoneCounts(wrapper), [4, 1]);
   t.is(getButton(wrapper, 'c4').length, 0, 'button should be disappeared');
 });
 
 /** @test {ReversiApplication#shouldComponentUpdate} */
 test('ReversiApplication should be updated by props', t => {
   const wrapper = mountApp(ReversiApplication);
-  t.deepEqual([2, 2], extractStoneCounts(wrapper));
+  t.deepEqual(extractStoneCounts(wrapper), [2, 2]);
   const model = new Model();
   model.addStep(Black, 3, 2);
   model.addStep(White, 2, 2);
   wrapper.setProps({ data: model.serialize() });
-  t.deepEqual([3, 3], extractStoneCounts(wrapper));
+  t.deepEqual(extractStoneCounts(wrapper), [3, 3]);
 });

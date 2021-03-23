@@ -80,7 +80,7 @@ test.cb('WeatherApplication should get weather for kawasaki', t => {
       t.true(result.indexOf('City: Kawasaki, JP') >= 0);
       t.true(result.indexOf('Weather: Rain') >= 0);
       t.true(result.indexOf('Temperature: 14') >= 0);
-      t.is(1, calls);
+      t.is(calls, 1);
       t.end();
     });
   } finally {
@@ -110,7 +110,7 @@ test.cb('WeatherApplication should display error when no API key is set', t => {
     setCityAndSubmit(wrapper, 'kawasaki');
     setTimeout(() => {
       t.true(hasError(wrapper));
-      t.is(1, calls);
+      t.is(calls, 1);
       t.end();
     }, 100);
   } finally {
@@ -141,7 +141,7 @@ test.cb('WeatherApplication should not get weather for nonexistant city', t => {
     setImmediate(() => {
       t.true(hasError(wrapper));
       t.falsy(getResult(wrapper));
-      t.is(1, calls);
+      t.is(calls, 1);
       t.end();
     });
   } finally {
@@ -166,14 +166,13 @@ test.cb('WeatherApplication should display error if there is an error on request
     setCityAndSubmit(wrapper, 'kawasaki');
     setImmediate(() => {
       t.true(hasError(wrapper));
-      t.is(1, calls);
+      t.is(calls, 1);
       t.end();
     });
   } finally {
     fetch.restore();
   }
 });
-
 
 /** @test {WeatherApplication#shouldComponentUpdate} */
 test('WeatherApplication should be updated by props', t => {

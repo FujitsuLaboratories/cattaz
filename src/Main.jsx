@@ -1,5 +1,5 @@
 import React from 'react';
-import RouterLink from 'react-router-dom/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import TimeAgo from 'react-timeago';
 import Modal from 'react-modal';
 import { createHashHistory } from 'history';
@@ -37,32 +37,6 @@ export default class Main extends React.Component {
   componentDidMount() {
     Modal.setAppElement(this.refContainer.current);
     this.getListPages();
-  }
-
-  async getListPages() {
-    try {
-      const response = await window.fetch(`${url}/pages`, {
-        headers,
-      });
-      const data = await response.json();
-      this.setState({
-        pages: data.sort((x, y) => {
-          if (x.modified === y.modified) return 0;
-          if (!x.modified) return 1;
-          if (!y.modified) return -1;
-          if (x.modified > y.modified) {
-            return -1;
-          }
-          if (x.modified < y.modified) {
-            return 1;
-          }
-          return 0;
-        }),
-        getPagesError: '',
-      });
-    } catch (e) {
-      this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
-    }
   }
 
   handleNew() {
@@ -112,6 +86,32 @@ export default class Main extends React.Component {
   handleNext() {
     const { currentPageNum } = this.state;
     this.setState({ currentPageNum: currentPageNum + 1 });
+  }
+
+  async getListPages() {
+    try {
+      const response = await window.fetch(`${url}/pages`, {
+        headers,
+      });
+      const data = await response.json();
+      this.setState({
+        pages: data.sort((x, y) => {
+          if (x.modified === y.modified) return 0;
+          if (!x.modified) return 1;
+          if (!y.modified) return -1;
+          if (x.modified > y.modified) {
+            return -1;
+          }
+          if (x.modified < y.modified) {
+            return 1;
+          }
+          return 0;
+        }),
+        getPagesError: '',
+      });
+    } catch (e) {
+      this.setState({ pages: [], getPagesError: `Get Pages Error [ ${e} ]` });
+    }
   }
 
   renderListPages() {

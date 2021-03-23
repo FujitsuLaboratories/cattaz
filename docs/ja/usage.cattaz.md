@@ -5,7 +5,7 @@ CattazはJavaScriptで実装されています。
 
 ## Local
 
-[Node 8](https://nodejs.org/en/download/)と[yarn](https://yarnpkg.com/en/docs/install)をインストールしてください。
+[Node 14](https://nodejs.org/en/download/)と[yarn](https://yarnpkg.com/getting-started/install)をインストールしてください。
 
 ```bash
 yarn install

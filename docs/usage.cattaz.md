@@ -5,7 +5,7 @@ You can run it in many ways.
 
 ## Local
 
-Install [Node 8](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/en/docs/install).
+Install [Node 14](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/getting-started/install).
 
 ```bash
 yarn install

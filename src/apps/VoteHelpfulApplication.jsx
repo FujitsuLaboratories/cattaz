@@ -12,7 +12,7 @@ class VoteHelpfulModel {
   }
 
   addVote(name) {
-    this.candidates[name] = this.candidates[name] + 1;
+    this.candidates[name] += 1;
   }
 
   equals(other) {
@@ -20,12 +20,12 @@ class VoteHelpfulModel {
   }
 
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.dump(this);
   }
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new VoteHelpfulModel();
       if (obj.candidates) model.candidates = obj.candidates;
       return model;

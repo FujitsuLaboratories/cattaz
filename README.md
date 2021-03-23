@@ -25,7 +25,7 @@ Cattaz is a realtime collaborative tool which can run custom applications in a W
 
 ### Local
 
-Install [Node 12](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/en/docs/install).
+Install [Node 14](https://nodejs.org/en/download/) and [yarn](https://yarnpkg.com/getting-started/install).
 
 ```bash
 yarn install

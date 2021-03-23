@@ -42,59 +42,58 @@ function addTry(wrapper, text) {
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if no data is given', t => {
   const wrapper = mountApp(KPTApplication);
-  t.deepEqual([], getKeeps(wrapper));
-  t.deepEqual([], getProblems(wrapper));
-  t.deepEqual([], getTries(wrapper));
+  t.deepEqual(getKeeps(wrapper), []);
+  t.deepEqual(getProblems(wrapper), []);
+  t.deepEqual(getTries(wrapper), []);
 });
 
 /** @test {KPTApplication} */
 test('KPTApplication should render initial state if an empty yaml object is given', t => {
   const wrapper = mountApp(KPTApplication, '{}');
-  t.deepEqual([], getKeeps(wrapper));
-  t.deepEqual([], getProblems(wrapper));
-  t.deepEqual([], getTries(wrapper));
+  t.deepEqual(getKeeps(wrapper), []);
+  t.deepEqual(getProblems(wrapper), []);
+  t.deepEqual(getTries(wrapper), []);
 });
 
 /** @test {KPTApplication#handleAddKeep} */
 test('KPTApplication should add keep', t => {
   const wrapper = mountApp(KPTApplication);
   addKeep(wrapper, '');
-  t.deepEqual([], getKeeps(wrapper));
+  t.deepEqual(getKeeps(wrapper), []);
   addKeep(wrapper, 'keep1');
-  t.deepEqual(['keep1'], getKeeps(wrapper));
+  t.deepEqual(getKeeps(wrapper), ['keep1']);
   addKeep(wrapper, 'keep2');
-  t.deepEqual(['keep1', 'keep2'], getKeeps(wrapper));
+  t.deepEqual(getKeeps(wrapper), ['keep1', 'keep2']);
   addKeep(wrapper, 'keep1');
-  t.deepEqual(['keep1', 'keep2', 'keep1'], getKeeps(wrapper));
-  t.deepEqual([], getProblems(wrapper));
-  t.deepEqual([], getTries(wrapper));
+  t.deepEqual(getKeeps(wrapper), ['keep1', 'keep2', 'keep1']);
+  t.deepEqual(getProblems(wrapper), []);
+  t.deepEqual(getTries(wrapper), []);
 });
 
 /** @test {KPTApplication#handleAddProblem} */
 test('KPTApplication should add problem', t => {
   const wrapper = mountApp(KPTApplication);
   addProblem(wrapper, '');
-  t.deepEqual([], getProblems(wrapper));
+  t.deepEqual(getProblems(wrapper), []);
   addProblem(wrapper, 'p1');
-  t.deepEqual(['p1'], getProblems(wrapper));
+  t.deepEqual(getProblems(wrapper), ['p1']);
 });
-
 
 /** @test {KPTApplication#handleAddTry} */
 test('KPTApplication should add try', t => {
   const wrapper = mountApp(KPTApplication);
   addTry(wrapper, '');
-  t.deepEqual([], getTries(wrapper));
+  t.deepEqual(getTries(wrapper), []);
   addTry(wrapper, 't1');
-  t.deepEqual(['t1'], getTries(wrapper));
+  t.deepEqual(getTries(wrapper), ['t1']);
 });
 
 /** @test {KPTApplication#shouldComponentUpdate} */
 test('KPTApplication should be updated by props', t => {
   const wrapper = mountApp(KPTApplication);
-  t.deepEqual([], getKeeps(wrapper));
-  t.deepEqual([], getProblems(wrapper));
-  t.deepEqual([], getTries(wrapper));
+  t.deepEqual(getKeeps(wrapper), []);
+  t.deepEqual(getProblems(wrapper), []);
+  t.deepEqual(getTries(wrapper), []);
   const model = new KPTApplication.Model();
   model.addKeep('k1');
   model.addProblem('p1');
@@ -103,7 +102,7 @@ test('KPTApplication should be updated by props', t => {
   model.addProblem('p2');
   model.addTry('t2');
   wrapper.setProps({ data: model.serialize() });
-  t.deepEqual(['k1', 'k2'], getKeeps(wrapper));
-  t.deepEqual(['p1', 'p2'], getProblems(wrapper));
-  t.deepEqual(['t1', 't2'], getTries(wrapper));
+  t.deepEqual(getKeeps(wrapper), ['k1', 'k2']);
+  t.deepEqual(getProblems(wrapper), ['p1', 'p2']);
+  t.deepEqual(getTries(wrapper), ['t1', 't2']);
 });

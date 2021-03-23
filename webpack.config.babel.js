@@ -3,6 +3,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import ESLintPlugin from 'eslint-webpack-plugin';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -24,29 +25,31 @@ const js = {
   },
   devtool: 'source-map',
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: 'LICENSE',
-        to: 'LICENSE.txt',
-      },
-      {
-        from: 'src/index.html',
-        to: '',
-      },
-      {
-        from: 'src/cattaz.css',
-        to: '',
-      },
-      {
-        from: 'node_modules/codemirror/lib/codemirror.css',
-        to: '',
-      },
-      {
-        from: 'node_modules/codemirror/theme/*.css',
-        to: 'codemirror-theme',
-        flatten: true,
-      },
-    ]),
+    new ESLintPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'LICENSE',
+          to: 'LICENSE.txt',
+        },
+        {
+          from: 'src/index.html',
+          to: '',
+        },
+        {
+          from: 'src/cattaz.css',
+          to: '',
+        },
+        {
+          from: 'node_modules/codemirror/lib/codemirror.css',
+          to: '',
+        },
+        {
+          from: 'node_modules/codemirror/theme/*.css',
+          to: 'codemirror-theme/[name].[ext]',
+        },
+      ],
+    }),
     new webpack.DefinePlugin({
       'process.env.PORT': process.env.PORT || '8080',
     }),
@@ -57,20 +60,11 @@ const js = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        include: path.resolve('src'),
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        options: {
-          emitWarning: !isProduction,
-        },
-      },
-      {
         test: /\.js$/,
         include: path.resolve('src'),
         use: {
           loader: 'babel-loader',
-          query: {
+          options: {
             presets: [['@babel/preset-env', { useBuiltIns: 'usage', corejs: 3 }]],
           },
         },
@@ -80,7 +74,7 @@ const js = {
         test: /\.es6$/,
         use: {
           loader: 'babel-loader',
-          query: {
+          options: {
             presets: ['@babel/preset-env'],
           },
         },
@@ -90,7 +84,7 @@ const js = {
         include: path.resolve('src'),
         use: {
           loader: 'babel-loader',
-          query: {
+          options: {
             presets: ['@babel/preset-react', ['@babel/preset-env', { useBuiltIns: 'usage', corejs: 3 }]],
             plugins: [
               ...(isProduction ? [
@@ -104,7 +98,7 @@ const js = {
         test: /\.(png|svg)$/,
         use: {
           loader: 'file-loader',
-          query: {
+          options: {
             name: '[name]-[hash:hex:8].[ext]',
           },
         },
@@ -113,7 +107,7 @@ const js = {
         test: /\.cattaz.md$/,
         use: {
           loader: 'file-loader',
-          query: {
+          options: {
             name: 'docs/[name]-[hash:hex:8].[ext]',
           },
         },
@@ -123,7 +117,7 @@ const js = {
         use: [
           {
             loader: 'file-loader',
-            query: {
+            options: {
               name: 'github-markdown-md-only.css',
             },
           },

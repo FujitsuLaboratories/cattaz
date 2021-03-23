@@ -69,26 +69,26 @@ test('DateMatcherApplication should render empty table after setting candidates'
   t.false(hasTable(wrapper), 'completely ignore');
   setCandidates(wrapper, ['c1', '', 'c2', 'c1', ' c1 ']);
   t.true(hasTable(wrapper));
-  t.deepEqual(['c1', 'c2'], getCandidates(wrapper), 'should ignore empty and duplicated');
+  t.deepEqual(getCandidates(wrapper), ['c1', 'c2'], 'should ignore empty and duplicated');
 });
 
 /** @test {DateMatcherApplication#handleAddAttendee} */
 test('DateMatcherApplication should add an attendee without answers', t => {
   const wrapper = mountApp(DateMatcherApplication);
   setCandidates(wrapper, ['c1', 'c2']);
-  t.deepEqual({}, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, {});
   addAttendee(wrapper, '');
-  t.deepEqual({}, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, {});
   addAttendee(wrapper, ' ');
-  t.deepEqual({}, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, {});
   addAttendee(wrapper, 'a1');
-  t.deepEqual({ a1: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: {} });
   addAttendee(wrapper, 'a2');
-  t.deepEqual({ a1: {}, a2: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: {}, a2: {} });
   addAttendee(wrapper, 'a1');
-  t.deepEqual({ a1: {}, a2: {} }, getModel(wrapper).attendees, 'should ignore duplicated attendee');
+  t.deepEqual(getModel(wrapper).attendees, { a1: {}, a2: {} }, 'should ignore duplicated attendee');
   addAttendee(wrapper, ' a1 ');
-  t.deepEqual({ a1: {}, a2: {} }, getModel(wrapper).attendees, 'should trim');
+  t.deepEqual(getModel(wrapper).attendees, { a1: {}, a2: {} }, 'should trim');
 });
 
 /** @test {DateMatcherApplication#handleRemoveAttendee} */
@@ -97,10 +97,10 @@ test('DateMatcherApplication should remove attendee', t => {
   setCandidates(wrapper, ['c1', 'c2']);
   addAttendee(wrapper, 'a1');
   addAttendee(wrapper, 'a2');
-  t.deepEqual({ a1: {}, a2: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: {}, a2: {} });
   startEdit(wrapper, 'a1');
   removeAttendee(wrapper, 'a1');
-  t.deepEqual({ a2: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a2: {} });
 });
 
 /** @test {DateMatcherApplication#handleSetAnswer} */
@@ -109,11 +109,11 @@ test('DateMatcherApplication should set answers', t => {
   setCandidates(wrapper, ['c1', 'c2']);
   addAttendee(wrapper, 'a1');
   addAttendee(wrapper, 'a2');
-  t.deepEqual({ a1: {}, a2: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: {}, a2: {} });
   startEdit(wrapper, 'a1');
   inputAnswers(wrapper, 'a1', ['x', 'y']);
   endEdit(wrapper, 'a1');
-  t.deepEqual({ a1: { c1: 'x', c2: 'y' }, a2: {} }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: { c1: 'x', c2: 'y' }, a2: {} });
 });
 
 /** @test {DateMatcherApplication#shouldComponentUpdate} */
@@ -130,5 +130,5 @@ test('DateMatcherApplication should be updated by props', t => {
   model.setAnswer('a2', 'c2', 'z');
   wrapper.setProps({ data: model.serialize() });
   t.true(hasTable(wrapper));
-  t.deepEqual({ a1: { c1: 'w', c2: 'x' }, a2: { c1: 'y', c2: 'z' } }, getModel(wrapper).attendees);
+  t.deepEqual(getModel(wrapper).attendees, { a1: { c1: 'w', c2: 'x' }, a2: { c1: 'y', c2: 'z' } });
 });

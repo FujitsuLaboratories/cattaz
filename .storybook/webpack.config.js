@@ -5,21 +5,22 @@ function configure(baseConfig, mode) {
   const { config } = baseConfig;
   config.devtool = mode === 'PRODUCTION' ? 'source-map' : 'eval-source-map';
   config.resolve.extensions.push('.jsx');
-  config.plugins.push(new CopyWebpackPlugin([
-    {
-      from: 'src/cattaz.css',
-      to: '',
-    },
-    {
-      from: 'node_modules/codemirror/lib/codemirror.css',
-      to: '',
-    },
-    {
-      from: 'node_modules/codemirror/theme/*.css',
-      to: 'codemirror-theme',
-      flatten: true,
-    },
-  ]));
+  config.plugins.push(new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: 'src/cattaz.css',
+        to: '',
+      },
+      {
+        from: 'node_modules/codemirror/lib/codemirror.css',
+        to: '',
+      },
+      {
+        from: 'node_modules/codemirror/theme/*.css',
+        to: 'codemirror-theme/[name].[ext]',
+      },
+    ],
+  }));
   /*
   // FIXME Not working?
   config.plugins.push(new webpack.DefinePlugin({

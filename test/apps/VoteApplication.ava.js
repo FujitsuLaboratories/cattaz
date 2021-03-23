@@ -32,18 +32,18 @@ function addVote(wrapper, candidateText) {
 /** @test {VoteApplication} */
 test('VoteApplication should render initial state if no data is given', t => {
   const wrapper = mountApp(VoteApplication);
-  t.deepEqual({}, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), {});
 });
 
 /** @test {VoteApplication#handleAddCandidate} */
 test('VoteApplication should reject duplicated candidates', t => {
   const wrapper = mountApp(VoteApplication);
   addCandidate(wrapper, '');
-  t.deepEqual({}, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), {});
   addCandidate(wrapper, 'c1');
-  t.deepEqual({ c1: 0 }, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), { c1: 0 });
   addCandidate(wrapper, 'c1');
-  t.deepEqual({ c1: 0 }, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), { c1: 0 });
 });
 
 /** @test {VoteApplication#handleAddVote} */
@@ -51,17 +51,17 @@ test('VoteApplication should count votes', t => {
   const wrapper = mountApp(VoteApplication);
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
-  t.deepEqual({ c1: 0, c2: 0 }, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), { c1: 0, c2: 0 });
   addVote(wrapper, 'c1');
   addVote(wrapper, 'c2');
   addVote(wrapper, 'c1');
-  t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), { c1: 2, c2: 1 });
 });
 
 /** @test {VoteApplication#shouldComponentUpdate} */
 test('VoteApplication should be updated by props', t => {
   const wrapper = mountApp(VoteApplication);
-  t.deepEqual({}, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), {});
   const model = new VoteApplication.Model();
   model.addCandidate('c1');
   model.addCandidate('c2');
@@ -69,5 +69,5 @@ test('VoteApplication should be updated by props', t => {
   model.addVote('c2');
   model.addVote('c1');
   wrapper.setProps({ data: model.serialize() });
-  t.deepEqual({ c1: 2, c2: 1 }, getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), { c1: 2, c2: 1 });
 });

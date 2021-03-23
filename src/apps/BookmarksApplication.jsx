@@ -68,7 +68,7 @@ class BookmarksModel {
   }
 
   serialize() {
-    return Yaml.safeDump({
+    return Yaml.dump({
       bookmarks: this.bookmarks.map((b) => b.toSerializable()),
     });
   }
@@ -91,7 +91,7 @@ class BookmarksModel {
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new BookmarksModel();
       if (obj.bookmarks) {
         model.bookmarks = obj.bookmarks.map(Bookmark.fromDeserialized);
