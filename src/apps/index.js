@@ -15,6 +15,7 @@ import map from './MapApplication';
 import draw from './DrawApplication';
 import kanban from './KanbanApplication';
 import youtube from './YoutubeApplication';
+import external from './ExternalApplication';
 
 export default {
   bookmarks,
@@ -34,4 +35,5 @@ export default {
   draw,
   kanban,
   youtube,
+  external,
 };
