@@ -29,7 +29,7 @@ test('MandalaApplication should accept changes in textarea', t => {
   setText(wrapper, 0, 's0');
   setText(wrapper, 4, 's4');
   setText(wrapper, 8, 's8');
-  t.deepEqual(['s0', '', '', '', 's4', '', '', '', 's8'], getTexts(wrapper));
+  t.deepEqual(getTexts(wrapper), ['s0', '', '', '', 's4', '', '', '', 's8']);
 });
 
 /** @test {MandalaApplication#shouldComponentUpdate} */

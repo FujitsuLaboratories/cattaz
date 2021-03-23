@@ -34,7 +34,7 @@ function makeOpen(wrapper) {
 /** @test {VoteCryptoApplication} */
 test('VoteCryptoApplication should render initial state if no data is given', t => {
   const wrapper = mountApp(VoteCryptoApplication);
-  t.deepEqual([], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), []);
   t.true(hasResultButton(wrapper));
 });
 
@@ -43,17 +43,17 @@ test('VoteCryptoApplication should not render result before open', t => {
   const clock = sinon.useFakeTimers();
   try {
     const wrapper = mountApp(VoteCryptoApplication);
-    t.deepEqual([], getVotes(wrapper));
+    t.deepEqual(getVotes(wrapper), []);
     t.true(hasResultButton(wrapper));
     addCandidate(wrapper, 'c1');
     addCandidate(wrapper, 'c2');
     addCandidate(wrapper, 'c1'); // should be ignored
-    t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+    t.deepEqual(getVotes(wrapper), ['c1 ', 'c2 ']);
     t.true(hasResultButton(wrapper));
     addVote(wrapper, 'c1');
     addVote(wrapper, 'c2');
     addVote(wrapper, 'c1');
-    t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+    t.deepEqual(getVotes(wrapper), ['c1 ', 'c2 ']);
     t.true(hasResultButton(wrapper));
     t.truthy(wrapper.state('voteMessage'), 'should show message');
     clock.tick(2 * 1000);
@@ -66,24 +66,24 @@ test('VoteCryptoApplication should not render result before open', t => {
 /** @test {VoteCryptoApplication#handleVotingResult} */
 test('VoteCryptoApplication should render result after open', t => {
   const wrapper = mountApp(VoteCryptoApplication);
-  t.deepEqual([], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), []);
   t.true(hasResultButton(wrapper));
   addCandidate(wrapper, 'c1');
   addCandidate(wrapper, 'c2');
   addVote(wrapper, 'c1');
   addVote(wrapper, 'c2');
   addVote(wrapper, 'c1');
-  t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), ['c1 ', 'c2 ']);
   t.true(hasResultButton(wrapper));
   makeOpen(wrapper);
-  t.deepEqual(['c1: 2 ', 'c2: 1 '], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), ['c1: 2 ', 'c2: 1 ']);
   t.false(hasResultButton(wrapper));
 });
 
 /** @test {VoteCryptoApplication#shouldComponentUpdate} */
 test('VoteCryptoApplication should be updated by props', t => {
   const wrapper = mountApp(VoteCryptoApplication);
-  t.deepEqual([], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), []);
   t.true(hasResultButton(wrapper));
   const model = new VoteCryptoApplication.Model();
   model.addCandidate('c1');
@@ -92,11 +92,11 @@ test('VoteCryptoApplication should be updated by props', t => {
   model.addVote('c2');
   model.addVote('c1');
   wrapper.setProps({ data: model.serialize() });
-  t.deepEqual(['c1 ', 'c2 '], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), ['c1 ', 'c2 ']);
   t.true(hasResultButton(wrapper));
   model.openVoted();
   wrapper.setProps({ data: model.serialize() });
-  t.deepEqual(['c1: 2 ', 'c2: 1 '], getVotes(wrapper));
+  t.deepEqual(getVotes(wrapper), ['c1: 2 ', 'c2: 1 ']);
   t.false(hasResultButton(wrapper));
 });
 

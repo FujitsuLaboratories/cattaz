@@ -40,7 +40,7 @@ test('VoteHelpfulApplication should hide buttons and show bars after voting', t 
   voteYes(wrapper);
   t.false(hasVoteButtons(wrapper));
   t.true(hasBar(wrapper));
-  t.deepEqual(['100%', '1', '0', '0%'], getBarTexts(wrapper));
+  t.deepEqual(getBarTexts(wrapper), ['100%', '1', '0', '0%']);
 
   t.true(wrapper.state('voted'));
   wrapper.setState({ voted: false });
@@ -50,7 +50,7 @@ test('VoteHelpfulApplication should hide buttons and show bars after voting', t 
   voteNo(wrapper);
   t.false(hasVoteButtons(wrapper));
   t.true(hasBar(wrapper));
-  t.deepEqual(['50%', '1', '1', '50%'], getBarTexts(wrapper));
+  t.deepEqual(getBarTexts(wrapper), ['50%', '1', '1', '50%']);
 });
 
 /** @test {VoteHelpfulApplication#shouldComponentUpdate} */
@@ -65,5 +65,5 @@ test('VoteHelpfulApplication should be updated by props', t => {
   wrapper.setProps({ data: model.serialize() });
   t.true(hasVoteButtons(wrapper));
   t.true(hasBar(wrapper));
-  t.deepEqual(['67%', '2', '1', '33%'], getBarTexts(wrapper));
+  t.deepEqual(getBarTexts(wrapper), ['67%', '2', '1', '33%']);
 });

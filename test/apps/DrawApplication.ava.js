@@ -30,7 +30,7 @@ test('DrawApplication should render initial state if no data is given', t => {
   const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
-  t.is('', getDisplayed(wrapper));
+  t.is(getDisplayed(wrapper), '');
 });
 
 /** @test {DrawApplication#handleAddCandidates} */
@@ -42,7 +42,7 @@ test('DrawApplication should render candidates', t => {
   addCandidate(wrapper, ''); // ignored
   t.true(getCandidates(wrapper).indexOf('["c1","c2"]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
-  t.is('', getDisplayed(wrapper));
+  t.is(getDisplayed(wrapper), '');
 });
 
 /** @test {DrawApplication#handleStartStop} */
@@ -55,7 +55,7 @@ test('DrawApplication should display candidates in randomly when it is in draw s
     addCandidate(wrapper, 'c3');
     addCandidate(wrapper, 'c4');
     t.true(getElected(wrapper).indexOf('[]') >= 0);
-    t.is('', getDisplayed(wrapper));
+    t.is(getDisplayed(wrapper), '');
     pressStartStop(wrapper);
     const firstSeen = getDisplayed(wrapper);
     let changed = false;
@@ -83,7 +83,7 @@ test('DrawApplication should be updated by props', t => {
   const wrapper = mountApp(DrawApplication);
   t.true(getCandidates(wrapper).indexOf('[]') >= 0);
   t.true(getElected(wrapper).indexOf('[]') >= 0);
-  t.is('', getDisplayed(wrapper));
+  t.is(getDisplayed(wrapper), '');
   const model = new DrawApplication.Model();
   model.addCandidate('c1');
   model.addCandidate('c2');
@@ -91,5 +91,5 @@ test('DrawApplication should be updated by props', t => {
   wrapper.setProps({ data: model.serialize() });
   t.true(getCandidates(wrapper).indexOf('["c1","c2"]') >= 0);
   t.true(getElected(wrapper).indexOf('[c1]') >= 0);
-  t.is('c1', getDisplayed(wrapper));
+  t.is(getDisplayed(wrapper), 'c1');
 });

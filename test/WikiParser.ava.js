@@ -136,20 +136,20 @@ test('renderCustomHast should highlight element at cursor position', t => {
 
 /** @test {WikiParser.removeLastNewLine} */
 test('removeLastNewLine', t => {
-  t.is('', WikiParser.removeLastNewLine(''));
-  t.is('aaa', WikiParser.removeLastNewLine('aaa'));
-  t.is('aaa', WikiParser.removeLastNewLine('aaa\n'));
-  t.is('aaa\n', WikiParser.removeLastNewLine('aaa\n\n'));
-  t.is('aaa\nbbb', WikiParser.removeLastNewLine('aaa\nbbb'));
-  t.is('aaa\nbbb', WikiParser.removeLastNewLine('aaa\nbbb\n'));
+  t.is(WikiParser.removeLastNewLine(''), '');
+  t.is(WikiParser.removeLastNewLine('aaa'), 'aaa');
+  t.is(WikiParser.removeLastNewLine('aaa\n'), 'aaa');
+  t.is(WikiParser.removeLastNewLine('aaa\n\n'), 'aaa\n');
+  t.is(WikiParser.removeLastNewLine('aaa\nbbb'), 'aaa\nbbb');
+  t.is(WikiParser.removeLastNewLine('aaa\nbbb\n'), 'aaa\nbbb');
 });
 
 /** @test {WikiParser.indentAppCode} */
 test('indentAppCode', t => {
   const posWithoutIndent = WikiParser.convertToCustomHast(WikiParser.parseToHast('~~~kpt\n~~~')).children[0].position;
   const posWithIndent = WikiParser.convertToCustomHast(WikiParser.parseToHast('1. a\n\n   ~~~kpt\n~~~')).children[0].children[1].children[3].position;
-  t.is('{\n}', WikiParser.indentAppCode(posWithoutIndent, '{\n}'));
-  t.is('   {\n   }', WikiParser.indentAppCode(posWithIndent, '{\n}'));
+  t.is(WikiParser.indentAppCode(posWithoutIndent, '{\n}'), '{\n}');
+  t.is(WikiParser.indentAppCode(posWithIndent, '{\n}'), '   {\n   }');
 });
 
 /** @test {WikiParser.replaceAppCode} */

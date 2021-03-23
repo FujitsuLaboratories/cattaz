@@ -25,7 +25,7 @@ function clickEnd(wrapper) {
 /** @test {MeetingTimeApplication} */
 test('MeetingTimeApplication should render initial state if no data is given', t => {
   const wrapper = mountApp(MeetingTimeApplication);
-  t.is('', getDurationText(wrapper));
+  t.is(getDurationText(wrapper), '');
   t.false(hasStart(wrapper));
   t.false(hasEnd(wrapper));
 });
@@ -34,7 +34,7 @@ test('MeetingTimeApplication should render initial state if no data is given', t
 test('MeetingTimeApplication should not render duration if no end is given', t => {
   const wrapper = mountApp(MeetingTimeApplication);
   clickStart(wrapper);
-  t.is('', getDurationText(wrapper));
+  t.is(getDurationText(wrapper), '');
   t.true(hasStart(wrapper));
   t.false(hasEnd(wrapper));
 });
@@ -47,7 +47,7 @@ test('MeetingTimeApplication should render duration if both start and end are gi
     clickStart(wrapper);
     clock.tick('01:02:00');
     clickEnd(wrapper);
-    t.is('01:02', getDurationText(wrapper));
+    t.is(getDurationText(wrapper), '01:02');
     t.true(hasStart(wrapper));
     t.true(hasEnd(wrapper));
     clock.tick('01:02:00');
@@ -61,7 +61,7 @@ test('MeetingTimeApplication should render duration if both start and end are gi
 /** @test {MeetingTimeApplication#shouldComponentUpdate} */
 test('MeetingTimeApplication should be updated by props', t => {
   const wrapper = mountApp(MeetingTimeApplication);
-  t.is('', getDurationText(wrapper));
+  t.is(getDurationText(wrapper), '');
   const model = new MeetingTimeApplication.Model();
   model.updateStartTime({
     year: '2017', month: '01', day: '02', week: 'Mon', hour: '10', minute: '10',
@@ -70,5 +70,5 @@ test('MeetingTimeApplication should be updated by props', t => {
     year: '2017', month: '01', day: '02', week: 'Mon', hour: '11', minute: '11',
   });
   wrapper.setProps({ data: model.serialize() });
-  t.is('01:01', getDurationText(wrapper));
+  t.is(getDurationText(wrapper), '01:01');
 });
