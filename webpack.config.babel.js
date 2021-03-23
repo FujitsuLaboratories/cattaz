@@ -3,6 +3,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import ESLintPlugin from 'eslint-webpack-plugin';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -24,6 +25,7 @@ const js = {
   },
   devtool: 'source-map',
   plugins: [
+    new ESLintPlugin(),
     new CopyWebpackPlugin([
       {
         from: 'LICENSE',
@@ -56,15 +58,6 @@ const js = {
   ],
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        include: path.resolve('src'),
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        options: {
-          emitWarning: !isProduction,
-        },
-      },
       {
         test: /\.js$/,
         include: path.resolve('src'),
