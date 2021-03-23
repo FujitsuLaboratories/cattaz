@@ -94,7 +94,7 @@
     "lint:eslint": "eslint --color --report-unused-disable-directives src/**/*.js src/**/*.jsx test/**/*.js .storybook/**/*.js stories/**/*.jsx *.js",
     "lint:markdownlint": "markdownlint --config .markdownlint.json README.md docs",
     "build": "npm-run-all -l -p build:app -p build:esdoc build:licenses build:sme build:storybook",
-    "build:app": "cross-env NODE_ENV=production webpack --mode production --progress --colors --config webpack.config.babel.js",
+    "build:app": "cross-env NODE_ENV=production webpack --mode production --progress --color --config webpack.config.babel.js",
     "build:esdoc": "esdoc -c esdoc.json",
     "build:licenses": "yarn licenses generate-disclaimer --prod > build/licenses.txt",
     "build:sme": "source-map-explorer build/bundle.js build/bundle.js.map --html > build/sme.html",
