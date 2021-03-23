@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import remark from 'remark';
+import remarkGfm from 'remark-gfm';
 import toHast from 'mdast-util-to-hast';
 import toH from 'hast-to-hyperscript';
 
@@ -33,7 +34,7 @@ export default class WikiParser {
    * @returns {object} Hast object
    */
   static parseToHast(markdown) {
-    const mdast = remark().parse(markdown);
+    const mdast = remark().use(remarkGfm).parse(markdown);
     const hast = toHast(mdast);
     return hast;
   }
