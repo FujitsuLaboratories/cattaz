@@ -51,7 +51,7 @@
     "@storybook/react": "^6.1.21",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.5.0",
     "ava": "^3.15.0",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^8.2.2",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "codecov": "^3.8.1",
@@ -83,9 +83,9 @@
     "rimraf": "^3.0.2",
     "sinon": "^10.0.0",
     "source-map-explorer": "^2.5.2",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-middleware": "^3.7.3",
+    "webpack": "^5.27.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-middleware": "^4.1.0",
     "webpack-hot-middleware": "^2.25.0"
   },
   "scripts": {
