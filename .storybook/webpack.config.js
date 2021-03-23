@@ -17,8 +17,7 @@ function configure(baseConfig, mode) {
       },
       {
         from: 'node_modules/codemirror/theme/*.css',
-        to: 'codemirror-theme',
-        flatten: true,
+        to: 'codemirror-theme/[name].[ext]',
       },
     ],
   }));
