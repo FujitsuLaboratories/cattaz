@@ -26,29 +26,31 @@ const js = {
   devtool: 'source-map',
   plugins: [
     new ESLintPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: 'LICENSE',
-        to: 'LICENSE.txt',
-      },
-      {
-        from: 'src/index.html',
-        to: '',
-      },
-      {
-        from: 'src/cattaz.css',
-        to: '',
-      },
-      {
-        from: 'node_modules/codemirror/lib/codemirror.css',
-        to: '',
-      },
-      {
-        from: 'node_modules/codemirror/theme/*.css',
-        to: 'codemirror-theme',
-        flatten: true,
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'LICENSE',
+          to: 'LICENSE.txt',
+        },
+        {
+          from: 'src/index.html',
+          to: '',
+        },
+        {
+          from: 'src/cattaz.css',
+          to: '',
+        },
+        {
+          from: 'node_modules/codemirror/lib/codemirror.css',
+          to: '',
+        },
+        {
+          from: 'node_modules/codemirror/theme/*.css',
+          to: 'codemirror-theme',
+          flatten: true,
+        },
+      ],
+    }),
     new webpack.DefinePlugin({
       'process.env.PORT': process.env.PORT || '8080',
     }),
