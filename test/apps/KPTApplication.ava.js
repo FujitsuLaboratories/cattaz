@@ -79,7 +79,6 @@ test('KPTApplication should add problem', t => {
   t.deepEqual(['p1'], getProblems(wrapper));
 });
 
-
 /** @test {KPTApplication#handleAddTry} */
 test('KPTApplication should add try', t => {
   const wrapper = mountApp(KPTApplication);

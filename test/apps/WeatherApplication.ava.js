@@ -174,7 +174,6 @@ test.cb('WeatherApplication should display error if there is an error on request
   }
 });
 
-
 /** @test {WeatherApplication#shouldComponentUpdate} */
 test('WeatherApplication should be updated by props', t => {
   const wrapper = mountApp(WeatherApplication);

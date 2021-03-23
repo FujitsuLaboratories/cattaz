@@ -434,13 +434,6 @@ class KanbanApplication extends React.Component {
     return !oldModel.equals(newModel);
   }
 
-  updateKanban(updator) {
-    const { data, onEdit, appContext } = this.props;
-    const newKanban = KanbanModel.deserialize(data);
-    updator(newKanban);
-    onEdit(newKanban.serialize(), appContext);
-  }
-
   handleAddItem(ev) {
     const index = parseInt(ev.target.getAttribute('data-index'), 10);
     const textbox = this[`input${index}`];
@@ -492,6 +485,13 @@ class KanbanApplication extends React.Component {
     this.updateKanban((k) => {
       k.moveList(sourceId, targetId);
     });
+  }
+
+  updateKanban(updator) {
+    const { data, onEdit, appContext } = this.props;
+    const newKanban = KanbanModel.deserialize(data);
+    updator(newKanban);
+    onEdit(newKanban.serialize(), appContext);
   }
 
   renderRow2(index) {

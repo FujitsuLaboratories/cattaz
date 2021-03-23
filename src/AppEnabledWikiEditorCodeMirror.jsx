@@ -123,36 +123,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
     }
   }
 
-  updateHeight() {
-    const { heightMargin } = this.props;
-    const { height } = this.state;
-    const newHeight = actual('height', 'px') - heightMargin;
-    if (newHeight !== height) {
-      this.setState({ height: newHeight });
-      if (this.refEditor.current) {
-        this.refEditor.current.editor.setSize(null, newHeight);
-      }
-    }
-  }
-
-  updateWidth() {
-    const { editorPercentage, width } = this.state;
-    const vw = actual('width', 'px');
-    let newWidth = (vw * (editorPercentage / 100)) - resizerMargin;
-    if (newWidth < 0) {
-      newWidth = 0;
-    }
-    const previewWidth = vw - newWidth - (2 * resizerMargin) - 1;
-    if (newWidth !== width) {
-      this.setState({ width: newWidth, previewWidth });
-    }
-  }
-
-  updateSize() {
-    this.updateWidth();
-    this.updateHeight();
-  }
-
   handleActiveUser(userNum) {
     const { onActiveUser } = this.props;
     if (onActiveUser) onActiveUser(userNum);
@@ -175,18 +145,6 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
         client.removeCursor();
         this.otherClients.delete(msg.id);
       }
-    }
-  }
-
-  sendCursorMsg(type, cursorPos) {
-    const { roomName } = this.props;
-    if (this.socket) {
-      const cursorMsg = {
-        type,
-        room: roomName,
-        cursorPos,
-      };
-      this.socket.emit('clientCursor', cursorMsg);
     }
   }
 
@@ -276,6 +234,48 @@ export default class AppEnabledWikiEditorCodeMirror extends React.Component {
 
   handleBlur() {
     this.setState({ onFocus: false });
+  }
+
+  updateHeight() {
+    const { heightMargin } = this.props;
+    const { height } = this.state;
+    const newHeight = actual('height', 'px') - heightMargin;
+    if (newHeight !== height) {
+      this.setState({ height: newHeight });
+      if (this.refEditor.current) {
+        this.refEditor.current.editor.setSize(null, newHeight);
+      }
+    }
+  }
+
+  updateWidth() {
+    const { editorPercentage, width } = this.state;
+    const vw = actual('width', 'px');
+    let newWidth = (vw * (editorPercentage / 100)) - resizerMargin;
+    if (newWidth < 0) {
+      newWidth = 0;
+    }
+    const previewWidth = vw - newWidth - (2 * resizerMargin) - 1;
+    if (newWidth !== width) {
+      this.setState({ width: newWidth, previewWidth });
+    }
+  }
+
+  updateSize() {
+    this.updateWidth();
+    this.updateHeight();
+  }
+
+  sendCursorMsg(type, cursorPos) {
+    const { roomName } = this.props;
+    if (this.socket) {
+      const cursorMsg = {
+        type,
+        room: roomName,
+        cursorPos,
+      };
+      this.socket.emit('clientCursor', cursorMsg);
+    }
   }
 
   render() {

@@ -5,7 +5,6 @@ import { mountApp } from '../helper';
 
 import MeetingTimeApplication from '../../src/apps/MeetingTimeApplication';
 
-
 function hasStart(wrapper) {
   return wrapper.find('div div').filterWhere(div => div.key() === 'start').text().indexOf('?') < 0;
 }

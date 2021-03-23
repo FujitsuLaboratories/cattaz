@@ -77,12 +77,6 @@ export default class DrawApplication extends React.Component {
     onEdit(newModel.serialize(), appContext);
   }
 
-  drawRun() {
-    const { data } = this.props;
-    const draw = DrawModel.deserialize(data);
-    this.setState({ electedTemp: draw.candidates[Math.ceil(Math.random() * draw.candidates.length) - 1] });
-  }
-
   handleStartStop() {
     const { start } = this.state;
     if (!start) {
@@ -100,6 +94,12 @@ export default class DrawApplication extends React.Component {
       });
       onEdit(newModel.serialize(), appContext);
     }
+  }
+
+  drawRun() {
+    const { data } = this.props;
+    const draw = DrawModel.deserialize(data);
+    this.setState({ electedTemp: draw.candidates[Math.ceil(Math.random() * draw.candidates.length) - 1] });
   }
 
   render() {

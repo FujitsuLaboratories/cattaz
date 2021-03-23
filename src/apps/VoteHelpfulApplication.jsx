@@ -12,7 +12,7 @@ class VoteHelpfulModel {
   }
 
   addVote(name) {
-    this.candidates[name] = this.candidates[name] + 1;
+    this.candidates[name] += 1;
   }
 
   equals(other) {

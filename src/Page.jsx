@@ -27,6 +27,10 @@ export default class Page extends React.Component {
     }
   }
 
+  handleActiveUserDisp(userNum) {
+    this.setState({ activeUser: userNum });
+  }
+
   async loadDoc(pageName) {
     const mdFileName = docs[pageName];
     if (!mdFileName) {
@@ -37,10 +41,6 @@ export default class Page extends React.Component {
     const res = await window.fetch(mdFileName);
     const text = await res.text();
     this.setState({ docText: text });
-  }
-
-  handleActiveUserDisp(userNum) {
-    this.setState({ activeUser: userNum });
   }
 
   render() {
