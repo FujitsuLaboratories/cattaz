@@ -36,7 +36,7 @@ class VoteCryptoModel {
       return window.btoa(unescape(encodeURIComponent(plaintext)));
     }
     const obj = { ciphertext: encrypt(JSON.stringify(this.candidates)), opened: this.opened };
-    return Yaml.safeDump(obj);
+    return Yaml.dump(obj);
   }
 
   static deserialize(str) {
@@ -45,7 +45,7 @@ class VoteCryptoModel {
       return decodeURIComponent(escape(window.atob(ciphertext)));
     }
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new VoteCryptoModel();
       if (obj.ciphertext) model.candidates = JSON.parse(decrypt(obj.ciphertext));
       model.opened = !!obj.opened;

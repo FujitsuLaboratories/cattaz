@@ -29,12 +29,12 @@ class DrawModel {
   }
 
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.dump(this);
   }
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new DrawModel();
       if (obj.candidates) model.candidates = obj.candidates;
       if (obj.elected) model.elected = obj.elected;

@@ -116,7 +116,7 @@ export default class ReversiModel {
   }
 
   serialize() {
-    return Yaml.safeDump({
+    return Yaml.dump({
       steps: this.steps,
       nextTurn: this.nextTurn,
     });
@@ -124,7 +124,7 @@ export default class ReversiModel {
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new ReversiModel();
       if (obj.steps) {
         if (!every(obj.steps, (step) => {

@@ -27,12 +27,12 @@ class KPTModel {
   }
 
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.dump(this);
   }
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new KPTModel();
       if (obj.keeps) model.keeps = obj.keeps;
       if (obj.problems) model.problems = obj.problems;

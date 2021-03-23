@@ -23,12 +23,12 @@ class MapModel {
   }
 
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.dump(this);
   }
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new MapModel();
       if (typeof obj.lat === 'number') model.lat = obj.lat;
       if (typeof obj.lng === 'number') model.lng = obj.lng;

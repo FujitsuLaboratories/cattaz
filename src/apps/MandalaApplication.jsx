@@ -21,12 +21,12 @@ class MandalaModel {
   }
 
   serialize() {
-    return Yaml.safeDump(this);
+    return Yaml.dump(this);
   }
 
   static deserialize(str) {
     try {
-      const obj = Yaml.safeLoad(str);
+      const obj = Yaml.load(str);
       const model = new MandalaModel();
       if (obj.block) model.block = obj.block;
       return model;

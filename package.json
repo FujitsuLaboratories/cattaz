@@ -14,7 +14,7 @@
     "github-markdown-css": "^4.0.0",
     "hast-to-hyperscript": "^9.0.1",
     "history": "^4.10.1",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.0.0",
     "lodash": "^4.17.21",
     "mdast-util-to-hast": "^10.2.0",
     "prop-types": "^15.7.2",
