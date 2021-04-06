@@ -11,7 +11,7 @@ COPY package.json yarn.lock /usr/src/app/
 RUN yarn && yarn cache clean
 COPY . /usr/src/app
 
-RUN yarn run cover
+# RUN yarn run cover
 RUN yarn run build
 
 EXPOSE 8080
