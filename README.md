@@ -11,15 +11,11 @@
 
 Cattaz is a realtime collaborative tool which can run custom applications in a Wiki page.
 
-* [Project site](http://cattaz.io/)
-
 ## Features
 
 * Wiki using Markdown with realtime preview and operational transformation
-  * Try it in [sandbox page](http://cattaz.io/build/#/page/sandbox)
 * Custom applications run in preview pane
-  * For instance, you can drag-and-drop task cards in [Kanban](http://cattaz.io/build/#/doc/app-kanban)
-  * To create your own, see [documentation on Hello World](http://cattaz.io/build/#/doc/app-hello) and [browse more in documentation](http://cattaz.io/build/#/doc/index)
+  * E.g. [Kanban useace](https://www.youtube.com/watch?v=V7lqCuoK9Lw) ([ja](https://www.youtube.com/watch?v=vmm9y5bRehQ))
 
 ## Usage
 
@@ -55,6 +51,5 @@ Now you can visit `http://localhost:8080/` to view the application.
 
 ## Links
 
-* [Project site](http://cattaz.io/)
-* [Demo site](http://cattaz.io/build/)
-* [Documentation](http://cattaz.io/build/#/doc/index)
+* Project site `http://cattaz.io/` has been terminated
+* [Some YouTube videos](https://www.youtube.com/channel/UCi7df3g6U6XJsOe7NwL24vg/videos)
